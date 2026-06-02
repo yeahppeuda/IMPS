@@ -1,261 +1,230 @@
-<!DOCTYPE html>
-
+﻿<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Login | IP Management System</title>
-<!-- Tailwind CSS v3 CDN -->
+<title>Login | ITSO IP Management System</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Google Fonts: Inter -->
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-secondary-fixed": "#23005c",
-                        "on-primary": "#ffffff",
-                        "on-secondary": "#ffffff",
-                        "outline": "#727785",
-                        "error": "#ba1a1a",
-                        "surface-tint": "#005ac2",
-                        "primary-container": "#2170e4",
-                        "on-primary-fixed": "#001a42",
-                        "surface-container": "#ecedf7",
-                        "background": "#f9f9ff",
-                        "surface-bright": "#f9f9ff",
-                        "on-secondary-fixed-variant": "#5516be",
-                        "surface-dim": "#d8d9e3",
-                        "on-surface-variant": "#424754",
-                        "surface-container-low": "#f2f3fd",
-                        "error-container": "#ffdad6",
-                        "primary-fixed": "#d8e2ff",
-                        "on-error-container": "#93000a",
-                        "inverse-on-surface": "#eff0fa",
-                        "on-surface": "#191b23",
-                        "tertiary-container": "#b75b00",
-                        "on-tertiary": "#ffffff",
-                        "primary-fixed-dim": "#adc6ff",
-                        "tertiary-fixed": "#ffdcc6",
-                        "surface-container-high": "#e6e7f2",
-                        "secondary": "#6b38d4",
-                        "tertiary-fixed-dim": "#ffb786",
-                        "surface-variant": "#e1e2ec",
-                        "surface": "#f9f9ff",
-                        "secondary-fixed": "#e9ddff",
-                        "secondary-fixed-dim": "#d0bcff",
-                        "inverse-primary": "#adc6ff",
-                        "on-primary-fixed-variant": "#004395",
-                        "on-primary-container": "#fefcff",
-                        "surface-container-highest": "#e1e2ec",
-                        "surface-container-lowest": "#ffffff",
-                        "on-tertiary-fixed-variant": "#723600",
-                        "on-background": "#191b23",
-                        "primary": "#0058be",
-                        "on-error": "#ffffff",
-                        "inverse-surface": "#2e3038",
-                        "tertiary": "#924700",
-                        "on-tertiary-fixed": "#311400",
-                        "outline-variant": "#c2c6d6",
-                        "on-tertiary-container": "#fffbff",
-                        "secondary-container": "#8455ef",
-                        "on-secondary-container": "#fffbff",
-                        brand: {
-                            light: '#f8fafc',
-                            accent: '#6366f1',
-                            dark: '#0f172a',
-                        }
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "4xl": "2.5rem",
-                        "5xl": "4rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "lg": "32px",
-                        "base": "4px",
-                        "md": "24px",
-                        "xs": "8px",
-                        "xl": "48px",
-                        "sm": "16px",
-                        "gutter": "24px",
-                        "container-max": "1440px"
-                    },
-                    "fontFamily": {
-                        "sans": ["Inter", "sans-serif"],
-                        "body-md": ["Inter"],
-                        "display": ["Inter"],
-                        "label-caps": ["Inter"],
-                        "headline-lg-mobile": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "headline-lg": ["Inter"]
-                    },
-                    "fontSize": {
-                        "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
-                        "display": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
-                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
-                        "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
-                        "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
-                        "headline-lg": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}]
-                    }
-                },
-            },
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-secondary-fixed": "#23005c","on-primary": "#ffffff","on-secondary": "#ffffff","outline": "#727785","error": "#ba1a1a","surface-tint": "#005ac2","primary-container": "#2170e4","on-primary-fixed": "#001a42","surface-container": "#ecedf7","background": "#f9f9ff","surface-bright": "#f9f9ff","on-secondary-fixed-variant": "#5516be","surface-dim": "#d8d9e3","on-surface-variant": "#424754","surface-container-low": "#f2f3fd","error-container": "#ffdad6","primary-fixed": "#d8e2ff","on-error-container": "#93000a","inverse-on-surface": "#eff0fa","on-surface": "#191b23","tertiary-container": "#b75b00","on-tertiary": "#ffffff","primary-fixed-dim": "#adc6ff","tertiary-fixed": "#ffdcc6","surface-container-high": "#e6e7f2","secondary": "#6b38d4","tertiary-fixed-dim": "#ffb786","surface-variant": "#e1e2ec","surface": "#f9f9ff","secondary-fixed": "#e9ddff","secondary-fixed-dim": "#d0bcff","inverse-primary": "#adc6ff","on-primary-fixed-variant": "#004395","on-primary-container": "#fefcff","surface-container-highest": "#e1e2ec","surface-container-lowest": "#ffffff","on-tertiary-fixed-variant": "#723600","on-background": "#191b23","primary": "#0058be","on-error": "#ffffff","inverse-surface": "#2e3038","tertiary": "#924700","on-tertiary-fixed": "#311400","outline-variant": "#c2c6d6","on-tertiary-container": "#fffbff","secondary-container": "#8455ef","on-secondary-container": "#fffbff",
+          brand: { light: '#f8fafc', accent: '#6366f1', dark: '#0f172a' }
+        },
+        borderRadius: { "DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","4xl": "2.5rem","5xl": "4rem","full": "9999px" },
+        spacing: { "lg": "32px","base": "4px","md": "24px","xs": "8px","xl": "48px","sm": "16px","gutter": "24px","container-max": "1440px" },
+        fontFamily: { "sans": ["Inter", "sans-serif"] },
+        fontSize: {
+          "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+          "display": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+          "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+          "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+          "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+          "headline-lg": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}]
         }
-    </script>
-<style data-purpose="custom-layout">
-        body {
-            background-color: #f9f9ff;
-            overflow-x: hidden;
-        }
-        .ethereal-glow {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .glass-panel {
-            background: #ffffff;
-            border: 1px solid #c2c6d6;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
-        }
-        .main-gradient {
-            background: #f9f9ff;
-        }
-        .brand-text-gradient {
-            background: linear-gradient(to right, #191b23, #424754);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .floating-card-shadow {
-            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.1), 0 20px 40px -30px rgba(0, 0, 0, 0.05);
-        }
-        input:focus {
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
-        }
-    </style>
+      }
+    }
+  }
+</script>
+<style>
+  body { background-color: #f9f9ff; overflow-x: hidden; }
+  .ethereal-glow { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, rgba(99,102,241,0) 70%); border-radius: 50%; pointer-events: none; z-index: 0; }
+  .glass-panel { background: #ffffff; border: 1px solid #c2c6d6; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08); }
+  .brand-text-gradient { background: linear-gradient(to right, #191b23, #424754); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .floating-card-shadow { box-shadow: 0 40px 80px -20px rgba(0,0,0,0.1), 0 20px 40px -30px rgba(0,0,0,0.05); }
+  input:focus { box-shadow: 0 0 0 2px rgba(99,102,241,0.1); }
+  .error-shake { animation: shake 0.3s ease; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+</style>
 </head>
 <body class="font-sans antialiased text-on-surface min-h-screen selection:bg-brand-accent/20 selection:text-brand-accent">
-<!-- Background Accents -->
+
 <div class="ethereal-glow -top-48 -left-48"></div>
-<div class="ethereal-glow bottom-0 -right-48" style="background: radial-gradient(circle, rgba(124, 58, 237, 0.05) 0%, rgba(124, 58, 237, 0) 70%);"></div>
+<div class="ethereal-glow bottom-0 -right-48" style="background: radial-gradient(circle, rgba(124,58,237,0.05) 0%, rgba(124,58,237,0) 70%);"></div>
+
 <div class="relative z-10 min-h-screen flex flex-col">
-<!-- Header/Nav -->
-<header class="w-full px-8 py-2 md:px-16 flex justify-center items-center"></header>
-<!-- Main Content Area -->
-<main class="flex-grow flex items-center justify-center px-6 py-4 md:py-8 -mt-4 md:-mt-5">
-<div class="relative w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-0">
-<!-- Left Branding Area -->
-<div class="w-full lg:w-3/5 lg:pr-24 relative z-0 text-center lg:text-left">
-<div class="space-y-8">
-<div class="inline-block px-4 py-1.5 rounded-full bg-surface-container border border-outline-variant text-[10px] font-bold uppercase tracking-widest text-brand-accent mb-2">
-                            Next Generation IP Control
-                        </div>
-<h1 class="text-5xl md:text-7xl font-bold leading-tight brand-text-gradient tracking-tight">
-                            Securing the <br/>
-<span class="text-brand-accent">Future of Ideas.</span>
-</h1>
-<p class="text-lg md:text-xl text-on-surface-variant max-w-xl font-light leading-relaxed mx-auto lg:mx-0">
-                            Unified management for global intellectual property portfolios. Access patents, trademarks, and industrial designs within a single, secure environment.
-                        </p>
-<div class="flex items-center gap-6 justify-center lg:justify-start pt-4">
-<div class="flex -space-x-3">
-<div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container-high text-on-surface flex items-center justify-center text-[10px] font-bold">PT</div>
-<div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container-high text-on-surface flex items-center justify-center text-[10px] font-bold">TM</div>
-<div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container-high text-on-surface flex items-center justify-center text-[10px] font-bold">CR</div>
-</div>
-<span class="text-xs text-on-surface-variant/60 uppercase tracking-widest">Global Standards Compliant</span>
-</div>
-</div>
-</div>
-<!-- Right Login Card Area -->
-<div class="w-full lg:w-2/5 relative lg:-ml-12">
-<!-- Stacked Card Effect -->
-<div class="absolute inset-0 bg-brand-accent/5 -rotate-2 rounded-[3rem] blur-xl"></div>
-<div class="absolute inset-0 bg-surface-container/60 rotate-1 translate-x-4 translate-y-4 rounded-[3rem]"></div>
-<div class="relative glass-panel p-8 md:p-12 rounded-tr-[5rem] rounded-bl-[5rem] rounded-tl-4xl rounded-br-4xl floating-card-shadow overflow-hidden group">
-<!-- Subtle Interior Glow -->
-<div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-accent/5 blur-3xl rounded-full"></div>
-<div class="relative z-10">
-<div class="mb-10">
-<h2 class="text-3xl font-semibold text-on-surface mb-2">Sign In</h2>
-<div class="h-1 w-12 bg-brand-accent rounded-full mb-4"></div>
-<p class="text-on-surface-variant text-sm">Welcome back. Please verify your identity.</p>
-</div>
-<form action="#" class="space-y-8" method="POST" onsubmit="login(event)">
-<!-- Field: Email -->
-<div class="space-y-2">
-<label class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70 ml-1" for="email">Institutional Email</label>
-<div class="relative">
-<input class="w-full px-5 py-4 bg-surface-container-low border-0 border-b-2 border-outline-variant rounded-xl text-on-surface placeholder-on-surface-variant/40 focus:ring-0 focus:border-brand-accent focus:bg-white transition-all duration-300" id="email" name="email" placeholder="admin@ipmanagement.com" type="email" value="admin@ipmanagement.com"/>
-<div class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30">
-<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-</div>
-</div>
-</div>
-<!-- Field: Password -->
-<div class="space-y-2">
-<div class="flex justify-between items-center px-1">
-<label class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70" for="password">Security Key</label>
-<a class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 hover:text-brand-accent transition-colors" href="#">Recovery</a>
-</div>
-<div class="relative">
-<input class="w-full px-5 py-4 bg-surface-container-low border-0 border-b-2 border-outline-variant rounded-xl text-on-surface placeholder-on-surface-variant/40 focus:ring-0 focus:border-brand-accent focus:bg-white transition-all duration-300" id="password" name="password" placeholder="••••••••" type="password"/>
-<div class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30">
-<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-</div>
-</div>
-</div>
-<!-- Remember Me Toggle -->
-<div class="flex items-center gap-3">
-<div class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" id="remember" type="checkbox"/>
-<div class="w-10 h-5 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-accent"></div>
-</div>
-<label class="text-xs font-medium text-on-surface-variant select-none cursor-pointer" for="remember">Trust this device</label>
-</div>
-<!-- CTA Button -->
-<button class="group relative w-full overflow-hidden rounded-2xl bg-brand-accent py-4 font-bold text-white shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all hover:shadow-[0_0_35px_rgba(99,102,241,0.5)] hover:-translate-y-1 active:translate-y-0" type="submit">
-<span class="relative z-10 flex items-center justify-center gap-2">
-                                        Authenticate 
-                                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-</span>
-<div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full"></div>
-</button>
-</form>
-<div class="mt-12 text-center">
-<p class="text-xs text-on-surface-variant/60 flex items-center justify-center gap-2">
-                                    System Status: <span class="flex items-center gap-1.5 text-emerald-600 font-bold uppercase tracking-tighter"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Optimal</span>
-</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-<!-- Footer -->
-<footer class="w-full px-8 py-8 border-t border-outline-variant/30 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">
-<div class="flex gap-8">
-<a class="hover:text-brand-accent transition-colors" href="#">Privacy Policy</a>
-<a class="hover:text-brand-accent transition-colors" href="#">Security Architecture</a>
-<a class="hover:text-brand-accent transition-colors" href="#">Legal Framework</a>
-</div>
-<div>
-                © 2023 IP Management Authority. Version 4.2.1
+  <header class="w-full px-8 py-2 md:px-16 flex justify-center items-center"></header>
+
+  <main class="flex-grow flex items-center justify-center px-6 py-4 md:py-8 -mt-4 md:-mt-5">
+    <div class="relative w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-0">
+
+      <!-- Left Branding -->
+      <div class="w-full lg:w-3/5 lg:pr-24 relative z-0 text-center lg:text-left">
+        <div class="space-y-8">
+          <div class="inline-block px-4 py-1.5 rounded-full bg-surface-container border border-outline-variant text-[10px] font-bold uppercase tracking-widest text-brand-accent mb-2">
+            ITSO · Technology Transfer Office
+          </div>
+          <h1 class="text-5xl md:text-7xl font-bold leading-tight brand-text-gradient tracking-tight">
+            Protecting the<br/>
+            <span class="text-brand-accent">Power of Innovation.</span>
+          </h1>
+          <p class="text-lg md:text-xl text-on-surface-variant max-w-xl font-light leading-relaxed mx-auto lg:mx-0">
+            A centralized platform for managing the institution's intellectual property assets — from patent filings and trademark registrations to copyright records and technology disclosures.
+          </p>
+          <div class="flex items-center gap-6 justify-center lg:justify-start pt-4">
+            <div class="flex -space-x-3">
+              <div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container-high text-on-surface flex items-center justify-center text-[10px] font-bold">PAT</div>
+              <div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container-high text-on-surface flex items-center justify-center text-[10px] font-bold">TM</div>
+              <div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container-high text-on-surface flex items-center justify-center text-[10px] font-bold">©</div>
             </div>
-</footer>
+            <span class="text-xs text-on-surface-variant/60 uppercase tracking-widest">Patents · Trademarks · Copyrights</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Login Card -->
+      <div class="w-full lg:w-2/5 relative lg:-ml-12">
+        <div class="absolute inset-0 bg-brand-accent/5 -rotate-2 rounded-[3rem] blur-xl"></div>
+        <div class="absolute inset-0 bg-surface-container/60 rotate-1 translate-x-4 translate-y-4 rounded-[3rem]"></div>
+        <div class="relative glass-panel p-8 md:p-12 rounded-tr-[5rem] rounded-bl-[5rem] rounded-tl-4xl rounded-br-4xl floating-card-shadow overflow-hidden group">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-accent/5 blur-3xl rounded-full"></div>
+          <div class="relative z-10">
+            <div class="mb-10">
+              <h2 class="text-3xl font-semibold text-on-surface mb-2">Sign In</h2>
+              <div class="h-1 w-12 bg-brand-accent rounded-full mb-4"></div>
+              <p class="text-on-surface-variant text-sm">Access your ITSO account to manage institutional IP assets.</p>
+            </div>
+
+            <!-- Error banner (hidden by default) -->
+            <div id="loginError" class="hidden mb-6 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm flex items-center gap-2">
+              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+              <span id="loginErrorText">Invalid email or password. Please try again.</span>
+            </div>
+
+            <form id="loginForm" class="space-y-8" method="POST" onsubmit="login(event)">
+              <!-- Email -->
+              <div class="space-y-2">
+                <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70 ml-1" for="email">Institutional Email</label>
+                <div class="relative">
+                  <input class="w-full px-5 py-4 bg-surface-container-low border-0 border-b-2 border-outline-variant rounded-xl text-on-surface placeholder-on-surface-variant/40 focus:ring-0 focus:border-brand-accent focus:bg-white transition-all duration-300" id="email" name="email" placeholder="yourname@institution.edu.ph" type="email" value="admin@itso.edu.ph"/>
+                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="space-y-2">
+                <div class="flex justify-between items-center px-1">
+                  <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70" for="password">Password</label>
+                  <a class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 hover:text-brand-accent transition-colors" href="#">Forgot Password?</a>
+                </div>
+                <div class="relative">
+                  <input class="w-full px-5 py-4 bg-surface-container-low border-0 border-b-2 border-outline-variant rounded-xl text-on-surface placeholder-on-surface-variant/40 focus:ring-0 focus:border-brand-accent focus:bg-white transition-all duration-300" id="password" name="password" placeholder="••••••••" type="password"/>
+                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Remember toggle -->
+              <div class="flex items-center gap-3">
+                <div class="relative inline-flex items-center cursor-pointer">
+                  <input checked class="sr-only peer" id="remember" type="checkbox"/>
+                  <div class="w-10 h-5 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-accent"></div>
+                </div>
+                <label class="text-xs font-medium text-on-surface-variant select-none cursor-pointer" for="remember">Keep me signed in on this device</label>
+              </div>
+
+              <!-- Submit -->
+              <button id="loginBtn" class="group relative w-full overflow-hidden rounded-2xl bg-brand-accent py-4 font-bold text-white shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all hover:shadow-[0_0_35px_rgba(99,102,241,0.5)] hover:-translate-y-1 active:translate-y-0" type="submit">
+                <span class="relative z-10 flex items-center justify-center gap-2" id="loginBtnLabel">
+                  Sign In to ITSO Portal
+                  <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+                </span>
+                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full"></div>
+              </button>
+            </form>
+
+            <div class="mt-12 text-center">
+              <p class="text-xs text-on-surface-variant/60 flex items-center justify-center gap-2">
+                System Status: <span class="flex items-center gap-1.5 text-emerald-600 font-bold uppercase tracking-tighter"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Online</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="w-full px-8 py-8 border-t border-outline-variant/30 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">
+    <div class="flex gap-8">
+      <a class="hover:text-brand-accent transition-colors" href="#">Privacy Policy</a>
+      <a class="hover:text-brand-accent transition-colors" href="#">Security Policy</a>
+      <a class="hover:text-brand-accent transition-colors" href="#">ITSO Guidelines</a>
+    </div>
+    <div class="text-center">
+      © 2025 ITSO · Technology Transfer &amp; Business Development Office &nbsp;·&nbsp; Developed by Justine Kenneth L. Ibo &nbsp;·&nbsp; v4.2.1
+    </div>
+  </footer>
 </div>
-<script src="assets/js/app.js"></script>
+
+<script>
+  // ── Demo credentials ──────────────────────────────────────────────
+  // Change these to match your actual auth logic.
+  const VALID_EMAIL    = 'admin@itso.edu.ph';
+  const VALID_PASSWORD = 'admin123';
+
+  function login(e) {
+    e.preventDefault();
+
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const errorEl  = document.getElementById('loginError');
+    const btn      = document.getElementById('loginBtn');
+    const label    = document.getElementById('loginBtnLabel');
+
+    // Hide any previous error
+    errorEl.classList.add('hidden');
+
+    // Simple validation
+    if (!email || !password) {
+      showError('Please enter your email and password.');
+      return;
+    }
+
+    // Show loading state
+    btn.disabled = true;
+    label.innerHTML = `
+      <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      Signing in…`;
+
+    // Simulate brief auth check then redirect
+    setTimeout(() => {
+      if (email === VALID_EMAIL && password === VALID_PASSWORD) {
+        // Store session flag and redirect
+        sessionStorage.setItem('itso_authenticated', 'true');
+        sessionStorage.setItem('itso_user', email);
+        window.location.href = 'dashboard.html';
+      } else {
+        btn.disabled = false;
+        label.innerHTML = `
+          Sign In to ITSO Portal
+          <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </svg>`;
+        showError('Invalid email or password. Please try again.');
+      }
+    }, 800);
+  }
+
+  function showError(msg) {
+    const errorEl  = document.getElementById('loginError');
+    const errorTxt = document.getElementById('loginErrorText');
+    errorTxt.textContent = msg;
+    errorEl.classList.remove('hidden');
+    document.getElementById('loginForm').classList.add('error-shake');
+    setTimeout(() => document.getElementById('loginForm').classList.remove('error-shake'), 400);
+  }
+</script>
 </body></html>
-
-

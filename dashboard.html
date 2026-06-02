@@ -1,660 +1,1041 @@
 <!DOCTYPE html>
-
 <html class="light" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>IP Management System - Dashboard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-secondary": "#ffffff",
-                        "background": "#f9f9ff",
-                        "on-tertiary-container": "#fffbff",
-                        "secondary-container": "#8455ef",
-                        "inverse-on-surface": "#eff0fa",
-                        "surface-container-high": "#e6e7f2",
-                        "primary-fixed-dim": "#adc6ff",
-                        "primary": "#0058be",
-                        "on-secondary-container": "#fffbff",
-                        "on-primary-fixed": "#001a42",
-                        "inverse-surface": "#2e3038",
-                        "on-primary-container": "#fefcff",
-                        "surface-tint": "#005ac2",
-                        "on-primary": "#ffffff",
-                        "on-error-container": "#93000a",
-                        "on-error": "#ffffff",
-                        "secondary-fixed": "#e9ddff",
-                        "surface-container-low": "#f2f3fd",
-                        "on-tertiary-fixed-variant": "#723600",
-                        "surface-container": "#ecedf7",
-                        "outline": "#727785",
-                        "surface-container-highest": "#e1e2ec",
-                        "surface-variant": "#e1e2ec",
-                        "surface-container-lowest": "#ffffff",
-                        "tertiary-fixed": "#ffdcc6",
-                        "on-secondary-fixed-variant": "#5516be",
-                        "error": "#ba1a1a",
-                        "tertiary-fixed-dim": "#ffb786",
-                        "surface": "#f9f9ff",
-                        "on-tertiary-fixed": "#311400",
-                        "primary-fixed": "#d8e2ff",
-                        "secondary-fixed-dim": "#d0bcff",
-                        "outline-variant": "#c2c6d6",
-                        "secondary": "#6b38d4",
-                        "on-surface": "#191b23",
-                        "surface-bright": "#f9f9ff",
-                        "tertiary-container": "#b75b00",
-                        "error-container": "#ffdad6",
-                        "primary-container": "#2170e4",
-                        "on-primary-fixed-variant": "#004395",
-                        "tertiary": "#924700",
-                        "on-tertiary": "#ffffff",
-                        "on-background": "#191b23",
-                        "on-surface-variant": "#424754",
-                        "surface-dim": "#d8d9e3",
-                        "on-secondary-fixed": "#23005c",
-                        "inverse-primary": "#adc6ff"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "xs": "8px",
-                        "gutter": "24px",
-                        "xl": "48px",
-                        "md": "24px",
-                        "sm": "16px",
-                        "lg": "32px",
-                        "container-max": "1440px",
-                        "base": "4px"
-                    },
-                    "fontFamily": {
-                        "display": ["Inter"],
-                        "label-caps": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "headline-lg": ["Inter"],
-                        "body-md": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "headline-lg-mobile": ["Inter"]
-                    },
-                    "fontSize": {
-                        "display": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
-                        "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
-                        "headline-lg": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
-                        "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
-                        "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
-                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
-                    }
-                }
-            }
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "background": "#f9f9ff","inverse-on-surface": "#eff0fa","surface-container-high": "#e6e7f2",
+          "primary": "#0058be","inverse-surface": "#2e3038","on-primary-container": "#fefcff",
+          "on-primary": "#ffffff","secondary-fixed": "#e9ddff","surface-container-low": "#f2f3fd",
+          "surface-container": "#ecedf7","outline": "#727785","surface-container-highest": "#e1e2ec",
+          "surface-variant": "#e1e2ec","surface-container-lowest": "#ffffff","secondary": "#6b38d4",
+          "on-surface": "#191b23","surface-bright": "#f9f9ff","tertiary-container": "#b75b00",
+          "primary-container": "#2170e4","tertiary": "#924700","on-tertiary": "#ffffff",
+          "on-background": "#191b23","on-surface-variant": "#424754","surface-dim": "#d8d9e3",
+          "inverse-primary": "#adc6ff","outline-variant": "#c2c6d6","surface": "#f9f9ff"
+        },
+        borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+        fontFamily: { display: ["Inter"],"body-lg": ["Inter"],"headline-lg": ["Inter"],"body-md": ["Inter"],"headline-md": ["Inter"] },
+        fontSize: {
+          display: ["36px",{ lineHeight:"1.2",letterSpacing:"-0.02em",fontWeight:"700" }],
+          "body-lg": ["16px",{ lineHeight:"1.6",fontWeight:"400" }],
+          "headline-lg": ["28px",{ lineHeight:"1.3",fontWeight:"600" }],
+          "body-md": ["14px",{ lineHeight:"1.5",fontWeight:"400" }],
+          "headline-md": ["20px",{ lineHeight:"1.4",fontWeight:"600" }]
         }
-    </script>
+      }
+    }
+  }
+</script>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(226, 232, 240, 0.5);
-        }
-        .sidebar-active {
-            box-shadow: 0 4px 12px rgba(107, 56, 212, 0.15);
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #e2e8f0;
-            border-radius: 10px;
-        }
-    </style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .glass-panel { background:rgba(255,255,255,0.7); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(226,232,240,0.5); }
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:#e2e8f0; border-radius:10px; }
+
+  /* ── Nav ── */
+  .nav-item { display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:8px; cursor:pointer; transition:background 0.15s, color 0.15s; text-decoration:none; color:#424754; font-size:13.5px; font-weight:400; width:100%; }
+  .nav-item:hover { background-color:#f1f5f9; color:#191b23; transform:translateX(4px); }
+  .nav-item.active { background-color:#e8f0fd; color:#0058be; font-weight:500; transform:none; }
+  .nav-item.active i { color:#0058be; }
+  .nav-item i { font-size:18px; width:20px; text-align:center; flex-shrink:0; }
+  .nav-section-label { font-size:10px; font-weight:600; color:#727785; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin:12px 0 4px; }
+
+  /* ── Calendar ── */
+  .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .cal-nav-btn { background:none; border:1px solid rgba(255,255,255,0.15); border-radius:8px; width:28px; height:28px; cursor:pointer; font-size:16px; color:#e1e2ec; display:flex; align-items:center; justify-content:center; transition:background 0.15s; background:rgba(255,255,255,0.08); flex-shrink:0; }
+  .cal-nav-btn:hover { background:rgba(255,255,255,0.16); }
+
+  /* Month/year label — clickable */
+  .cal-month-label { font-size:13px; font-weight:600; color:#e1e2ec; cursor:pointer; display:flex; align-items:center; gap:4px; padding:3px 7px; border-radius:8px; transition:background 0.12s; user-select:none; }
+  .cal-month-label:hover { background:rgba(255,255,255,0.1); }
+  .cal-month-label .cal-chevron { font-size:14px; color:#8d95ab; transition:transform 0.2s; }
+  .cal-month-label.open .cal-chevron { transform:rotate(180deg); }
+
+  /* Month picker dropdown */
+  .cal-month-picker {
+    display:none; position:absolute; top:40px; left:50%; transform:translateX(-50%); z-index:20;
+    width:220px;
+    background:#2e3038; border:1px solid rgba(255,255,255,0.14); border-radius:14px;
+    padding:12px; box-shadow:0 10px 36px rgba(0,0,0,0.40); animation:mpIn 0.15s ease;
+  }
+  .cal-month-picker.open { display:block; }
+  @keyframes mpIn { from { opacity:0; transform:translateX(-50%) translateY(-6px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+  .mp-year-row { display:flex; align-items:center; justify-content:space-between; padding:2px 2px 10px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .mp-year-btn { background:none; border:1px solid rgba(255,255,255,0.18); border-radius:8px; width:28px; height:28px; cursor:pointer; color:#c2c6d6; display:flex; align-items:center; justify-content:center; font-size:15px; transition:background 0.12s; }
+  .mp-year-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+  .mp-year-val { font-size:14px; font-weight:700; color:#e1e2ec; }
+  .mp-months { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
+  .mp-month-btn { background:none; border:none; border-radius:9px; padding:8px 4px; font-size:12px; cursor:pointer; color:#c2c6d6; font-family:'Inter',sans-serif; font-weight:500; transition:background 0.12s,color 0.12s; text-align:center; }
+  .mp-month-btn:hover { background:rgba(255,255,255,0.1); color:#e1e2ec; }
+  .mp-month-btn.active { background:#0058be; color:#fff; font-weight:700; }
+
+  /* Calendar grid — fixed 6-row height so it never shifts */
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-day-label { font-size:9.5px; color:#8d95ab; text-align:center; padding:3px 0 4px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
+  .cal-day { font-size:11px; text-align:center; padding:5px 2px; border-radius:6px; cursor:pointer; color:#e1e2ec; position:relative; transition:background 0.12s; line-height:1.2; }
+  .cal-day:hover:not(.today) { background:rgba(255,255,255,0.1); }
+  .cal-day.other-month { color:#4a5060; cursor:default; }
+  .cal-day.other-month:hover { background:none; }
+  .cal-day.today { background:#0058be; color:#fff; font-weight:700; border-radius:7px; }
+  .cal-day.has-note::after { content:''; position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#d0bcff; }
+  .cal-day.today.has-note::after { background:#fff; }
+
+  /* ── Note Modal ── */
+  .note-overlay { position:fixed; inset:0; background:rgba(15,20,40,0.4); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; z-index:9999; }
+  .note-modal { background:#fff; border-radius:20px; border:1px solid #e2e8f0; padding:28px; width:360px; box-shadow:0 20px 60px rgba(0,0,0,0.15); animation:modalIn 0.2s ease; }
+  @keyframes modalIn { from { opacity:0; transform:translateY(8px) scale(0.97); } to { opacity:1; transform:none; } }
+  .note-modal-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:4px; }
+  .note-modal-title { font-size:16px; font-weight:600; color:#191b23; }
+  .note-modal-close { background:none; border:none; cursor:pointer; color:#727785; font-size:20px; line-height:1; padding:2px; border-radius:6px; }
+  .note-modal-close:hover { background:#f1f5f9; color:#191b23; }
+  .note-modal-date { font-size:12px; color:#727785; margin-bottom:16px; }
+  .note-view-wrap { background:#f2f3fd; border-radius:12px; padding:14px 16px; border-left:3px solid #6b38d4; margin-bottom:14px; }
+  .note-view-label { font-size:10px; font-weight:700; color:#6b38d4; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; display:flex; align-items:center; gap:5px; }
+  .note-view-text { font-size:13px; color:#191b23; line-height:1.6; }
+  .note-textarea { width:100%; height:88px; resize:none; font-size:13px; padding:10px 14px; border-radius:10px; border:1px solid #e2e8f0; background:#f9f9ff; color:#191b23; font-family:'Inter',sans-serif; outline:none; transition:border-color 0.15s; }
+  .note-textarea:focus { border-color:#0058be; background:#fff; }
+  .note-modal-btns { display:flex; gap:8px; margin-top:14px; justify-content:flex-end; align-items:center; }
+  .btn-note-cancel { background:none; border:1px solid #e2e8f0; border-radius:10px; padding:8px 16px; font-size:13px; cursor:pointer; color:#424754; font-family:'Inter',sans-serif; transition:background 0.12s; }
+  .btn-note-cancel:hover { background:#f1f5f9; }
+  .btn-note-save { background:#0058be; border:none; border-radius:10px; padding:8px 16px; font-size:13px; cursor:pointer; color:#fff; font-weight:600; font-family:'Inter',sans-serif; transition:background 0.12s; }
+  .btn-note-save:hover { background:#004fa6; }
+  .btn-note-delete { background:none; border:1px solid #fca5a5; border-radius:10px; padding:8px 16px; font-size:13px; cursor:pointer; color:#ef4444; font-family:'Inter',sans-serif; transition:background 0.12s; }
+  .btn-note-delete:hover { background:#fef2f2; }
+  .btn-note-edit { background:none; border:1px solid #0058be; border-radius:10px; padding:8px 16px; font-size:13px; cursor:pointer; color:#0058be; font-weight:600; font-family:'Inter',sans-serif; transition:background 0.12s; display:flex; align-items:center; gap:5px; }
+  .btn-note-edit:hover { background:#e8f0fd; }
+
+  /* ── Charts ── */
+  .chart-filter-btn { padding:5px 14px; border-radius:8px; font-size:12px; font-weight:600; border:none; cursor:pointer; background:transparent; color:#727785; transition:background 0.12s,color 0.12s; }
+  .chart-filter-btn.active { background:#fff; color:#0058be; box-shadow:0 1px 4px rgba(0,0,0,0.1); }
+  .chart-filter-btn:hover:not(.active) { color:#191b23; }
+  .pie-legend-item { display:flex; align-items:center; gap:8px; font-size:12px; color:#191b23; }
+  .pie-legend-sq { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+  .pie-legend-pct { font-weight:600; color:#727785; font-size:11px; margin-left:auto; padding-left:12px; }
+  .line-legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:#424754; }
+  .line-legend-dot { width:10px; height:3px; border-radius:2px; flex-shrink:0; }
+
+  /* ── Author row ── */
+  .author-row { display:flex; gap:8px; align-items:center; }
+  .author-row .remove-author { flex-shrink:0; width:30px; height:30px; border-radius:8px; border:1px solid #fca5a5; background:none; cursor:pointer; color:#ef4444; display:flex; align-items:center; justify-content:center; transition:background 0.12s; font-size:14px; }
+  .author-row .remove-author:hover { background:#fef2f2; }
+
+  /* ── Category selection card ── */
+  .cat-card {
+    display:flex; flex-direction:column; align-items:center; gap:13px; padding:28px 16px 24px;
+    border-radius:18px; border:2px solid #e2e8f0; cursor:pointer; transition:all 0.18s;
+    background:#fafafa; text-align:center; position:relative; overflow:hidden;
+  }
+  .cat-card:hover { border-color:#0058be; background:#eff6ff; transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,88,190,0.14); }
+  .cat-card.selected { border-color:#0058be; background:#eff6ff; box-shadow:0 0 0 4px rgba(0,88,190,0.15); }
+  .cat-card .cat-icon { width:58px; height:58px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:27px; flex-shrink:0; }
+  .cat-card .cat-name { font-size:13px; font-weight:700; color:#191b23; line-height:1.35; }
+  .cat-card .cat-check { position:absolute; top:10px; right:10px; width:20px; height:20px; border-radius:50%; background:#0058be; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.15s; }
+  .cat-card.selected .cat-check { opacity:1; }
+
+  /* ── Review modal ── */
+  .review-row { display:flex; flex-direction:column; gap:2px; padding:10px 0; border-bottom:1px solid #f1f5f9; }
+  .review-row:last-child { border-bottom:none; }
+  .review-label { font-size:10px; font-weight:700; color:#727785; text-transform:uppercase; letter-spacing:0.08em; }
+  .review-value { font-size:13px; color:#191b23; font-weight:500; line-height:1.5; }
+  .review-badge { display:inline-flex; align-items:center; gap:5px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:20px; padding:3px 10px; font-size:12px; font-weight:600; }
+  .cat-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+</style>
 </head>
-<body class="bg-background font-body-md text-on-surface selection:bg-primary-fixed">
-<!-- Side Navigation Shell -->
-<aside id="sidebarTarget"></aside>
-<!-- Top App Bar -->
-<header class="fixed top-0 left-0 right-0 pl-[280px] z-40 bg-surface/80 backdrop-blur-md">
-<div class="flex justify-between items-center h-[72px] px-lg w-full">
-<div class="flex-1 max-w-xl">
-<div class="relative group">
-<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
-<input class="w-full bg-surface-container-low border-none rounded-full pl-xl pr-md py-xs focus:ring-2 focus:ring-primary-container text-body-md placeholder:text-on-surface-variant/60" placeholder="Search records, applications, or documents..." type="text"/>
+<body class="bg-background font-body-md text-on-surface selection:bg-primary">
+
+<aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-surface-container-lowest flex flex-col z-50">
+  <div class="flex items-center gap-3 px-5 py-5 border-b border-outline-variant">
+    <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white flex-shrink-0">
+      <i class="ti ti-building-bank" style="font-size:18px;"></i>
+    </div>
+    <div>
+      <h1 class="text-sm font-semibold leading-tight text-on-surface">IP Management</h1>
+      <p class="text-[10px] text-on-surface-variant font-semibold tracking-widest uppercase">System</p>
+    </div>
+  </div>
+  <nav class="flex-1 overflow-y-auto px-3 pt-3 pb-2 space-y-2" aria-label="Primary navigation">
+    <a class="nav-item active" href="dashboard.html"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></a>
+    <div class="nav-section-label">IP Modules</div>
+    <a class="nav-item" href="copyright.html"><i class="ti ti-copyright"></i><span>Copyright</span></a>
+    <a class="nav-item" href="patent.html"><i class="ti ti-file-description"></i><span>Patent</span></a>
+    <a class="nav-item" href="trademark.html"><i class="ti ti-shield-check"></i><span>Trademark</span></a>
+    <a class="nav-item" href="utility-model.html"><i class="ti ti-settings-2"></i><span>Utility Model</span></a>
+    <a class="nav-item" href="industrial-design.html"><i class="ti ti-vector-bezier-2"></i><span>Industrial Design</span></a>
+    <div class="border-t border-slate-100 my-5"></div>
+    <div class="nav-section-label">General</div>
+    <a class="nav-item" href="event.html"><i class="ti ti-calendar-event"></i><span>Event</span></a>
+  </nav>
+  <div class="p-4 border-t border-outline-variant">
+  <button onclick="window.location.href='index.html'" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all duration-200">
+    <i class="ti ti-logout" style="font-size:16px;"></i><span>Log Out</span>
+  </button>
 </div>
-</div>
-<div class="flex items-center gap-md">
-<div class="flex items-center gap-sm pl-md border-l border-outline-variant">
-<div class="text-right">
-<p class="text-body-md font-bold leading-tight">Admin User</p>
-<p class="text-[11px] text-on-surface-variant font-label-caps tracking-wider uppercase">Administrator</p>
-</div>
-<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center overflow-hidden border-2 border-surface-container-highest">
-<img alt="Admin User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtS5si_PKG24Rw7q2_w4G1LPgv4qZ0IDFv16X_sDHSIjKkiAvbUb3IIhf7YLBfH-7mHmFgZxUFTm08OHMNK-fJM39n7IMRjiQC0aLPn-iu_zUj9DSGvVH0k1zRrb2-Ff38yVqqujD62M_WBdGWAnjmztqqh7JKfgo6XB2iQiIhySjsanYZ0WHfMu-51IhL-6xuSrra_gVjemHRGltkhHYPY0qF7bPm_irHwKJB7jsWNq0A9KMjRrphtmHInv9EjHoOZ_dtL46pTA"/>
-</div>
-</div>
-</div>
-</div>
+</aside>
+
+<header class="fixed top-0 left-0 right-0 pl-[260px] z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+  <div class="flex justify-between items-center h-[60px] px-8 w-full">
+    <div class="flex-1 max-w-xl">
+      <div class="relative group">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors text-[18px]">search</span>
+        <input class="w-full bg-surface-container-low border border-outline-variant rounded-full pl-10 pr-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary text-[13px] outline-none placeholder:text-on-surface-variant/60 transition-all" placeholder="Search records, applications, or documents..." type="text"/>
+      </div>
+    </div>
+    <div class="flex items-center gap-4 pl-6 border-l border-outline-variant ml-6">
+      <div class="text-right">
+        <p class="text-[13px] font-bold leading-tight">Admin User</p>
+        <p class="text-[10px] text-on-surface-variant font-semibold tracking-wider uppercase">Administrator</p>
+      </div>
+      <div class="w-9 h-9 rounded-full bg-secondary-fixed flex items-center justify-center overflow-hidden border-2 border-surface-container-highest">
+        <img alt="Admin User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtS5si_PKG24Rw7q2_w4G1LPgv4qZ0IDFv16X_sDHSIjKkiAvbUb3IIhf7YLBfH-7mHmFgZxUFTm08OHMNK-fJM39n7IMRjiQC0aLPn-iu_zUj9DSGvVH0k1zRrb2-Ff38yVqqujD62M_WBdGWAnjmztqqh7JKfgo6XB2iQiIhySjsanYZ0WHfMu-51IhL-6xuSrra_gVjemHRGltkhHYPY0qF7bPm_irHwKJB7jsWNq0A9KMjRrphtmHInv9EjHoOZ_dtL46pTA"/>
+      </div>
+    </div>
+  </div>
 </header>
-<!-- Main Content Canvas -->
-<main class="pl-[280px] pt-[72px] min-h-screen" style="opacity: 1; transition: opacity 0.8s ease-out, transform 0.8s ease-out; transform: translateY(0px);">
-<div class="p-lg max-w-[1440px] mx-auto">
-<!-- Dashboard Header Section -->
-<div class="flex justify-between items-end mb-lg">
-<div>
-<h2 class="font-display text-display text-on-surface">Good Morning, Justine!</h2>
-<p class="text-body-lg text-on-surface-variant mt-xs">Monitor your intellectual property portfolio with real-time analytics.</p>
-</div>
-<div class="flex gap-sm items-center">
-<button class="h-[44px] w-[44px] flex items-center justify-center bg-surface-container-highest text-on-surface rounded-xl font-bold hover:bg-surface-container-high transition-all shadow-sm" title="Export Report">
-  <span class="material-symbols-outlined text-[24px]">download</span>
-</button>
-<button onclick="openDashboardResearchModal()" class="h-[44px] min-w-[160px] px-md bg-primary text-on-primary rounded-xl font-bold flex items-center justify-center gap-xs hover:opacity-90 transition-all shadow-lg shadow-primary/20">
-  <span class="material-symbols-outlined text-[20px]">add</span>
-  Add Research
-</button>
-</div>
-</div>
-<!-- Bento Grid Layout -->
-<div class="grid grid-cols-12 gap-gutter">
-<!-- KPI: Total Records -->
-<div class="col-span-12 md:col-span-4 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl border border-outline-variant flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow group hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-<div class="flex justify-between items-start">
-<div class="p-xs bg-primary-container/10 text-primary rounded-lg">
-<span class="material-symbols-outlined" style='font-variation-settings: "FILL" 1;'>copyright</span>
-</div>
-<span class="text-tertiary font-bold text-xs flex items-center gap-1">
-<span class="material-symbols-outlined text-sm">trending_up</span>
-                            +12%
-                        </span>
-</div>
-<div class="mt-lg">
-<h3 class="text-label-caps text-on-surface-variant mb-1 uppercase tracking-widest">Copyright Applications</h3>
-<p class="font-display text-display leading-none">1,245</p>
-</div>
-</div>
-<!-- KPI: Active Applications -->
-<div class="col-span-12 md:col-span-4 lg:col-span-3 bg-surface-container-lowest p-md rounded-xl border border-outline-variant flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-<div class="flex justify-between items-start">
-<div class="p-xs bg-secondary-container/10 text-secondary rounded-lg">
-<span class="material-symbols-outlined" style='font-variation-settings: "FILL" 1;'>description</span>
-</div>
-<span class="text-tertiary font-bold text-xs flex items-center gap-1">
-<span class="material-symbols-outlined text-sm">trending_up</span>
-                            +8%
-                        </span>
-</div>
-<div class="mt-lg">
-<h3 class="text-label-caps text-on-surface-variant mb-1 uppercase tracking-widest">Patent Applications</h3>
-<p class="font-display text-display leading-none">892</p>
-</div>
-</div>
-<!-- KPI: Approved Records -->
-<div class="col-span-12 md:col-span-4 lg:col-span-3 flex flex-col gap-sm">
-<!-- Trademark Applications -->
-<div class="bg-surface-container-lowest p-sm rounded-xl border border-outline-variant flex items-center justify-between shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
-<div class="flex items-center gap-sm">
-<div class="p-1.5 bg-emerald-100 text-emerald-700 rounded-lg">
-<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">verified_user</span>
-</div>
-<div>
-<h3 class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Trademark</h3>
-<p class="text-lg font-bold leading-tight">412</p>
-</div>
-</div>
-<span class="text-emerald-600 font-bold text-[10px] flex items-center gap-0.5">
-<span class="material-symbols-outlined text-xs">trending_up</span>+5%
-    </span>
-</div>
-<!-- Utility Model Applications -->
-<div class="bg-surface-container-lowest p-sm rounded-xl border border-outline-variant flex items-center justify-between shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
-<div class="flex items-center gap-sm">
-<div class="p-1.5 bg-secondary-container/10 text-secondary rounded-lg">
-<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">settings_applications</span>
-</div>
-<div>
-<h3 class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Utility Model</h3>
-<p class="text-lg font-bold leading-tight">205</p>
-</div>
-</div>
-<span class="text-tertiary font-bold text-[10px] flex items-center gap-0.5">
-<span class="material-symbols-outlined text-xs">trending_up</span>+12%
-    </span>
-</div>
-<!-- Industrial Design Applications -->
-<div class="bg-surface-container-lowest p-sm rounded-xl border border-outline-variant flex items-center justify-between shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
-<div class="flex items-center gap-sm">
-<div class="p-1.5 bg-primary-container/10 text-primary rounded-lg">
-<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">draw</span>
-</div>
-<div>
-<h3 class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Ind. Design</h3>
-<p class="text-lg font-bold leading-tight">93</p>
-</div>
-</div>
-<span class="text-on-surface-variant/40 font-bold text-[10px] flex items-center gap-0.5">
-<span class="material-symbols-outlined text-xs">trending_flat</span>0%
-    </span>
-</div>
-</div>
-<!-- Revenue Growth - High Contrast Visualization -->
-<div class="col-span-12 lg:col-span-3 bg-inverse-surface p-md rounded-xl text-inverse-on-surface flex flex-col relative overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-<div class="relative z-10 flex flex-col h-full">
-<div class="flex justify-between items-center mb-base">
-<h3 class="text-label-caps text-surface-variant uppercase tracking-widest">Calendar</h3>
-<span class="text-xs text-secondary-fixed font-bold">June 2024</span>
-</div>
-<div class="grid grid-cols-7 gap-1 text-[10px] text-center mb-2">
-<div class="text-outline-variant">S</div>
-<div class="text-outline-variant">M</div>
-<div class="text-outline-variant">T</div>
-<div class="text-outline-variant">W</div>
-<div class="text-outline-variant">T</div>
-<div class="text-outline-variant">F</div>
-<div class="text-outline-variant">S</div>
-</div>
-<div class="grid grid-cols-7 gap-1 text-[11px] font-medium">
-<div class="p-1 text-outline-variant/30">26</div>
-<div class="p-1 text-outline-variant/30">27</div>
-<div class="p-1 text-outline-variant/30">28</div>
-<div class="p-1 text-outline-variant/30">29</div>
-<div class="p-1 text-outline-variant/30">30</div>
-<div class="p-1 text-outline-variant/30">31</div>
-<div class="p-1 bg-primary/20 rounded-sm text-primary-fixed">1</div>
-<div class="p-1">2</div>
-<div class="p-1">3</div>
-<div class="p-1 bg-secondary rounded-sm">4</div>
-<div class="p-1">5</div>
-<div class="p-1">6</div>
-<div class="p-1">7</div>
-<div class="p-1">8</div>
-<div class="p-1">9</div>
-<div class="p-1">10</div>
-<div class="p-1">11</div>
-<div class="p-1">12</div>
-<div class="p-1">13</div>
-<div class="p-1">14</div>
-<div class="p-1">15</div>
-</div>
-<div class="mt-auto">
-<div class="flex items-center gap-2 mt-xs p-xs bg-white/5 rounded-lg border border-white/10">
-<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
-<div class="text-[10px] truncate">Patent Renewal Deadline</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Category Comparison Chart Section -->
-<div class="col-span-12 glass-panel rounded-2xl p-lg shadow-sm lg:col-span-6 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-<div class="flex justify-between items-center mb-lg">
-<div>
-<h3 class="font-headline-md text-on-surface">IP Category Comparison</h3>
-<p class="text-body-md text-on-surface-variant">Distribution across different IP types</p>
-</div>
-<div class="flex bg-surface-container-high rounded-lg p-1">
-<button class="px-sm py-1 rounded-md text-xs font-bold text-on-surface-variant">Weekly</button>
-<button class="px-sm py-1 rounded-md text-xs font-bold bg-white shadow-sm text-primary">Monthly</button>
-<button class="px-sm py-1 rounded-md text-xs font-bold text-on-surface-variant">Yearly</button>
-</div>
-</div>
-<!-- Simulated Professional Chart -->
-<div class="h-64 flex items-end justify-between gap-md relative"><div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
-<div class="border-b border-on-surface-variant w-full h-0"></div>
-<div class="border-b border-on-surface-variant w-full h-0"></div>
-<div class="border-b border-on-surface-variant w-full h-0"></div>
-<div class="border-b border-on-surface-variant w-full h-0"></div>
-</div>
-<div class="flex-1 flex flex-col items-center group cursor-pointer">
-<div class="w-full flex gap-0.5 items-end h-full px-1">
-<div class="flex-1 bg-primary rounded-t-[1px] h-[60%]" title="Copyright"></div>
-<div class="flex-1 bg-secondary rounded-t-[1px] h-[40%]" title="Patent"></div>
-<div class="flex-1 bg-tertiary-container rounded-t-[1px] h-[30%]" title="Trademark"></div>
-<div class="flex-1 bg-emerald-500 rounded-t-[1px] h-[20%]" title="Utility"></div>
-<div class="flex-1 bg-primary-container rounded-t-[1px] h-[15%]" title="Industrial"></div>
-</div>
-<span class="text-[10px] mt-2 text-on-surface-variant font-bold">Jan</span>
-</div>
-<div class="flex-1 flex flex-col items-center group cursor-pointer">
-<div class="w-full flex gap-0.5 items-end h-full px-1">
-<div class="flex-1 bg-primary rounded-t-[1px] h-[70%]" title="Copyright"></div>
-<div class="flex-1 bg-secondary rounded-t-[1px] h-[50%]" title="Patent"></div>
-<div class="flex-1 bg-tertiary-container rounded-t-[1px] h-[35%]" title="Trademark"></div>
-<div class="flex-1 bg-emerald-500 rounded-t-[1px] h-[25%]" title="Utility"></div>
-<div class="flex-1 bg-primary-container rounded-t-[1px] h-[20%]" title="Industrial"></div>
-</div>
-<span class="text-[10px] mt-2 text-on-surface-variant font-bold">Feb</span>
-</div>
-<div class="flex-1 flex flex-col items-center group cursor-pointer">
-<div class="w-full flex gap-0.5 items-end h-full px-1">
-<div class="flex-1 bg-primary rounded-t-[1px] h-[85%]" title="Copyright"></div>
-<div class="flex-1 bg-secondary rounded-t-[1px] h-[60%]" title="Patent"></div>
-<div class="flex-1 bg-tertiary-container rounded-t-[1px] h-[40%]" title="Trademark"></div>
-<div class="flex-1 bg-emerald-500 rounded-t-[1px] h-[30%]" title="Utility"></div>
-<div class="flex-1 bg-primary-container rounded-t-[1px] h-[25%]" title="Industrial"></div>
-</div>
-<span class="text-[10px] mt-2 text-on-surface-variant font-bold">Mar</span>
-</div>
-<div class="flex-1 flex flex-col items-center group cursor-pointer">
-<div class="w-full flex gap-0.5 items-end h-full px-1">
-<div class="flex-1 bg-primary rounded-t-[1px] h-[78%]" title="Copyright"></div>
-<div class="flex-1 bg-secondary rounded-t-[1px] h-[52%]" title="Patent"></div>
-<div class="flex-1 bg-tertiary-container rounded-t-[1px] h-[38%]" title="Trademark"></div>
-<div class="flex-1 bg-emerald-500 rounded-t-[1px] h-[28%]" title="Utility"></div>
-<div class="flex-1 bg-primary-container rounded-t-[1px] h-[22%]" title="Industrial"></div>
-</div>
-<span class="text-[10px] mt-2 text-on-surface-variant font-bold">Apr</span>
-</div>
-<div class="flex-1 flex flex-col items-center group cursor-pointer">
-<div class="w-full flex gap-0.5 items-end h-full px-1">
-<div class="flex-1 bg-primary rounded-t-[1px] h-[95%]" title="Copyright"></div>
-<div class="flex-1 bg-secondary rounded-t-[1px] h-[65%]" title="Patent"></div>
-<div class="flex-1 bg-tertiary-container rounded-t-[1px] h-[45%]" title="Trademark"></div>
-<div class="flex-1 bg-emerald-500 rounded-t-[1px] h-[35%]" title="Utility"></div>
-<div class="flex-1 bg-primary-container rounded-t-[1px] h-[30%]" title="Industrial"></div>
-</div>
-<span class="text-[10px] mt-2 text-on-surface-variant font-bold">May</span>
-</div></div>
-</div><div class="col-span-12 lg:col-span-6 glass-panel rounded-2xl p-lg shadow-sm flex flex-col hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-<div class="flex justify-between items-center mb-lg">
-<div>
-<h3 class="font-headline-md text-on-surface">Portfolio Breakdown</h3>
-<p class="text-body-md text-on-surface-variant">Asset distribution by intellectual property type</p>
-</div>
-<button class="p-xs text-on-surface-variant hover:bg-surface-container-high rounded-full">
-<span class="material-symbols-outlined">more_vert</span>
-</button>
-</div>
-<div class="flex flex-1 items-center justify-center gap-xl">
-<div class="relative w-48 h-48 rounded-full border border-outline-variant/20 shadow-inner" style="background: conic-gradient(#0058be 0% 50%, #6b38d4 50% 75%, #924700 75% 90%, #10b981 90% 100%)">
-<div class="absolute inset-0 flex items-center justify-center">
-<div class="w-32 h-32 bg-white rounded-full flex flex-col items-center justify-center shadow-lg">
-<span class="text-body-md font-bold text-on-surface">Total</span>
-<span class="text-headline-md font-bold text-primary">2,847</span>
-</div>
-</div>
-</div>
-<div class="flex flex-col gap-sm">
-<div class="flex items-center gap-sm">
-<div class="w-3 h-3 rounded-full bg-primary"></div>
-<div class="flex flex-col">
-<span class="text-xs font-bold text-on-surface">Patents (50%)</span>
-<span class="text-[10px] text-on-surface-variant">1,424 assets</span>
-</div>
-</div>
-<div class="flex items-center gap-sm">
-<div class="w-3 h-3 rounded-full bg-secondary"></div>
-<div class="flex flex-col">
-<span class="text-xs font-bold text-on-surface">Trademarks (25%)</span>
-<span class="text-[10px] text-on-surface-variant">712 assets</span>
-</div>
-</div>
-<div class="flex items-center gap-sm">
-<div class="w-3 h-3 rounded-full bg-tertiary"></div>
-<div class="flex flex-col">
-<span class="text-xs font-bold text-on-surface">Copyrights (15%)</span>
-<span class="text-[10px] text-on-surface-variant">427 assets</span>
-</div>
-</div>
-<div class="flex items-center gap-sm">
-<div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-<div class="flex flex-col">
-<span class="text-xs font-bold text-on-surface">Others (10%)</span>
-<span class="text-[10px] text-on-surface-variant">284 assets</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Strategic Toolkit / AI Claims -->
-<!-- Global Activity Timeline -->
-<!-- Strategic Insights Visual -->
-</div>
-</div>
+
+<main id="mainContent" class="pl-[280px] pt-[76px] min-h-screen" style="opacity:0;transition:opacity 0.6s ease-out,transform 0.6s ease-out;transform:translateY(8px)">
+  <div class="py-6 px-8 max-w-[1440px]">
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h2 class="text-[28px] font-bold leading-tight text-on-surface tracking-tight">Good Morning, Justine!</h2>
+        <p class="text-[14px] text-on-surface-variant mt-1">Monitor your intellectual property portfolio with real-time analytics.</p>
+      </div>
+      <div class="flex gap-3 items-center">
+        <button class="h-[40px] w-[40px] flex items-center justify-center bg-surface-container-highest text-on-surface rounded-xl hover:bg-surface-container-high transition-all shadow-sm" title="Export Report">
+          <span class="material-symbols-outlined text-[20px]">download</span>
+        </button>
+        <button onclick="openCategoryModal()" class="h-[40px] px-5 bg-primary text-white rounded-xl font-semibold text-[13px] flex items-center gap-2 hover:opacity-90 transition-all shadow-md shadow-primary/20">
+          <span class="material-symbols-outlined text-[18px]">add</span>Add Research
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6">
+      <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col" style="border-left:3px solid #0058be;">
+        <div class="flex flex-col justify-between h-full p-4 gap-2">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <div class="p-1.5 rounded-lg" style="background:#e8f0fd;"><span class="material-symbols-outlined text-[18px]" style='color:#0058be;font-variation-settings:"FILL" 1;'>copyright</span></div>
+              <span class="text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant">Copyright</span>
+            </div>
+            <span class="text-[10px] font-bold flex items-center gap-0.5" style="color:#924700;"><span class="material-symbols-outlined" style="font-size:12px;">trending_up</span>+12%</span>
+          </div>
+          <div><p class="text-[28px] font-bold leading-none text-on-surface tracking-tight">1,245</p><p class="text-[11px] text-on-surface-variant mt-1">Applications filed</p></div>
+        </div>
+      </div>
+      <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col" style="border-left:3px solid #6b38d4;">
+        <div class="flex flex-col justify-between h-full p-4 gap-2">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <div class="p-1.5 rounded-lg" style="background:#f2edfd;"><span class="material-symbols-outlined text-[18px]" style='color:#6b38d4;font-variation-settings:"FILL" 1;'>description</span></div>
+              <span class="text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant">Patent</span>
+            </div>
+            <span class="text-[10px] font-bold flex items-center gap-0.5" style="color:#924700;"><span class="material-symbols-outlined" style="font-size:12px;">trending_up</span>+8%</span>
+          </div>
+          <div><p class="text-[28px] font-bold leading-none text-on-surface tracking-tight">892</p><p class="text-[11px] text-on-surface-variant mt-1">Applications filed</p></div>
+        </div>
+      </div>
+      <div class="col-span-12 md:col-span-6 lg:col-span-3 flex flex-col gap-2.5">
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant flex items-center gap-3 px-4 py-3 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 cursor-pointer flex-1">
+          <div class="p-1.5 rounded-lg flex-shrink-0" style="background:#d1fae5;"><span class="material-symbols-outlined text-[16px]" style="color:#059669;font-variation-settings:'FILL' 1;">verified_user</span></div>
+          <div class="flex-1 min-w-0"><h3 class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold leading-none mb-0.5">Trademark</h3><p class="text-[20px] font-bold leading-none text-on-surface">412</p></div>
+          <span class="text-[10px] font-bold flex items-center gap-0.5 flex-shrink-0" style="color:#059669;"><span class="material-symbols-outlined" style="font-size:12px;">trending_up</span>+5%</span>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant flex items-center gap-3 px-4 py-3 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 cursor-pointer flex-1">
+          <div class="p-1.5 rounded-lg flex-shrink-0" style="background:#f2edfd;"><span class="material-symbols-outlined text-[16px]" style="color:#6b38d4;font-variation-settings:'FILL' 1;">settings_applications</span></div>
+          <div class="flex-1 min-w-0"><h3 class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold leading-none mb-0.5">Utility Model</h3><p class="text-[20px] font-bold leading-none text-on-surface">205</p></div>
+          <span class="text-[10px] font-bold flex items-center gap-0.5 flex-shrink-0" style="color:#924700;"><span class="material-symbols-outlined" style="font-size:12px;">trending_up</span>+12%</span>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant flex items-center gap-3 px-4 py-3 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 cursor-pointer flex-1">
+          <div class="p-1.5 rounded-lg flex-shrink-0" style="background:#e8f0fd;"><span class="material-symbols-outlined text-[16px]" style="color:#0058be;font-variation-settings:'FILL' 1;">draw</span></div>
+          <div class="flex-1 min-w-0"><h3 class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold leading-none mb-0.5">Ind. Design</h3><p class="text-[20px] font-bold leading-none text-on-surface">93</p></div>
+          <span class="text-[10px] font-bold flex items-center gap-0.5 flex-shrink-0 text-on-surface-variant/40"><span class="material-symbols-outlined" style="font-size:12px;">trending_flat</span>0%</span>
+        </div>
+      </div>
+
+      <div class="col-span-12 lg:col-span-3 bg-inverse-surface p-4 rounded-xl text-inverse-on-surface flex flex-col relative overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+        <div class="relative z-10 flex flex-col h-full">
+          <div class="cal-header">
+            <button class="cal-nav-btn" id="calPrev" aria-label="Previous month">‹</button>
+            <div style="position:relative;">
+              <button class="cal-month-label" id="calMonthLabel" onclick="toggleMonthPicker(event)">
+                <span id="calMonthText"></span>
+                <span class="material-symbols-outlined cal-chevron" style="font-size:14px;">expand_more</span>
+              </button>
+              <div class="cal-month-picker" id="calMonthPicker">
+                <div class="mp-year-row">
+                  <button class="mp-year-btn" id="mpPrevYear">‹</button>
+                  <span class="mp-year-val" id="mpYearVal"></span>
+                  <button class="mp-year-btn" id="mpNextYear">›</button>
+                </div>
+                <div class="mp-months" id="mpMonths"></div>
+              </div>
+            </div>
+            <button class="cal-nav-btn" id="calNext" aria-label="Next month">›</button>
+          </div>
+          <div class="cal-grid" id="calGrid">
+            <div class="cal-day-label">Su</div><div class="cal-day-label">Mo</div><div class="cal-day-label">Tu</div>
+            <div class="cal-day-label">We</div><div class="cal-day-label">Th</div><div class="cal-day-label">Fr</div><div class="cal-day-label">Sa</div>
+          </div>
+          <div class="mt-auto pt-3" id="calUpcoming"></div>
+        </div>
+      </div>
+
+      <div class="col-span-12 glass-panel rounded-2xl p-6 shadow-sm lg:col-span-6 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <h3 class="text-[16px] font-semibold text-on-surface">Submissions Over Time</h3>
+            <p class="text-[13px] text-on-surface-variant mt-0.5">Volume of IP documents filed across all categories</p>
+          </div>
+          <div class="flex bg-surface-container-high rounded-lg p-1">
+            <button class="chart-filter-btn" data-period="weekly">Weekly</button>
+            <button class="chart-filter-btn active" data-period="monthly">Monthly</button>
+            <button class="chart-filter-btn" data-period="yearly">Yearly</button>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-4 mb-4" id="lineLegend"></div>
+        <div style="position:relative;width:100%;height:200px;"><canvas id="lineChart"></canvas></div>
+      </div>
+
+      <div class="col-span-12 lg:col-span-6 glass-panel rounded-2xl p-6 shadow-sm flex flex-col hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+        <div class="flex justify-between items-center mb-5">
+          <div>
+            <h3 class="text-[16px] font-semibold text-on-surface">Submissions by Course</h3>
+            <p class="text-[13px] text-on-surface-variant mt-0.5">Proportion of IP filings per degree program</p>
+          </div>
+          <button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+        </div>
+        <div class="flex flex-1 items-center justify-center gap-10">
+          <div style="position:relative;width:160px;height:160px;flex-shrink:0;"><canvas id="pieChart"></canvas></div>
+          <div class="flex flex-col gap-3" id="pieLegend"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
 
-<div id="dashboard-research-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
-  <div class="relative w-full max-w-3xl rounded-3xl bg-white shadow-2xl overflow-hidden">
-    <div class="px-8 py-6 border-b border-slate-200 flex items-start justify-between gap-4">
-      <div class="max-w-[70%]">
-        <h2 class="text-2xl font-semibold text-slate-950">New Research Submission</h2>
-        <p class="mt-2 text-sm leading-6 text-slate-600">Create a new entry for the research registry. The status is pre-defined and cannot be changed.</p>
+<div class="note-overlay" id="noteOverlay" role="dialog" aria-modal="true">
+  <div class="note-modal">
+    <div class="note-modal-header">
+      <span class="note-modal-title" id="noteTitleEl">Reminder</span>
+      <button class="note-modal-close" onclick="closeNoteModal()">×</button>
+    </div>
+    <div class="note-modal-date" id="noteDateEl"></div>
+    <div id="noteViewMode">
+      <div id="noteViewContent"></div>
+      <div id="noteEmptyMsg" class="hidden text-[13px] text-on-surface-variant text-center py-4 px-2 rounded-xl bg-slate-50 border border-dashed border-slate-200">No reminder set for this day.</div>
+      <div class="note-modal-btns" id="noteViewBtns"></div>
+    </div>
+    <div id="noteEditMode" class="hidden">
+      <textarea class="note-textarea" id="noteTextarea" placeholder="Add a reminder or note…"></textarea>
+      <div class="note-modal-btns" id="noteEditBtns">
+        <button class="btn-note-delete" id="noteDeleteBtn" onclick="deleteNote()">Delete</button>
+        <button class="btn-note-cancel" onclick="cancelEditNote()">Cancel</button>
+        <button class="btn-note-save" onclick="saveNote()">Save</button>
       </div>
-      <button type="button" onclick="closeDashboardResearchModal()" class="rounded-full p-3 text-slate-500 hover:bg-slate-100 transition">
-        <span class="material-symbols-outlined">close</span>
+    </div>
+  </div>
+</div>
+
+<div id="category-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
+  <div class="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col" style="animation:modalIn 0.22s ease;">
+    <div class="px-8 py-6 border-b border-slate-100 flex items-start justify-between gap-4">
+      <div>
+        <h2 class="text-[19px] font-bold text-on-surface">Select IP Category</h2>
+        <p class="text-[13px] text-on-surface-variant mt-1">Choose the type of intellectual property you want to register.</p>
+      </div>
+      <button onclick="closeCategoryModal()" class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline flex-shrink-0">
+        <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
     </div>
-    <form id="dashboard-research-form" class="p-8 space-y-8" onsubmit="return false;">
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <div class="px-8 py-7">
+      <div class="grid grid-cols-5 gap-4" id="catGrid">
+        </div>
+    </div>
+    <div class="px-8 pb-7 flex gap-3 justify-end">
+      <button onclick="closeCategoryModal()" class="px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant border border-slate-200 rounded-xl hover:bg-slate-100 transition-all">Cancel</button>
+      <button onclick="confirmCategory()" id="catNextBtn" class="px-6 py-2.5 text-[13px] font-bold text-white bg-primary rounded-xl hover:bg-blue-700 transition-all opacity-50 cursor-not-allowed" disabled>
+        Continue <span class="material-symbols-outlined text-[15px] align-middle">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="research-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
+  <div class="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div class="px-7 py-5 border-b border-slate-200 flex items-start justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <button onclick="backToCategory()" class="text-[11px] text-primary font-semibold hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">arrow_back</span>Change Category</button>
+          <span class="text-[11px] text-outline">›</span>
+          <span id="rm-cat-badge" class="cat-badge text-[11px]"></span>
+        </div>
+        <h2 class="text-[17px] font-bold text-on-surface">New Research Submission</h2>
+        <p class="text-[12px] text-on-surface-variant mt-0.5">Fill in the details below. Status is pre-set and cannot be changed.</p>
+      </div>
+      <button onclick="closeAllResearchModals()" class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline flex-shrink-0">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+    <div class="p-7 overflow-y-auto space-y-5 flex-1">
+      <div>
+        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Research Title</label>
+        <textarea id="rm-title" rows="2" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[13px] text-on-surface resize-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="Enter the full research title…"></textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.22em] mb-2 block">Research Title</label>
-          <input id="field-title" type="text" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Research title" />
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Reference Number</label>
+          <input id="rm-id" type="text" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="e.g. CR-2026-001"/>
         </div>
         <div>
-          <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.22em] mb-2 block">Reference Number</label>
-          <input id="field-id" type="text" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" placeholder="e.g. CR-2026-001" />
-        </div>
-        <div>
-          <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.22em] mb-2 block">Department / College</label>
-          <select id="field-dept" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none">
-            <option value="College of Computer Studies">College of Computer Studies</option>
-            <option value="College of Education">College of Education</option>
-            <option value="College of Engineering">College of Engineering</option>
-            <option value="College of Technology">College of Technology</option>
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Department</label>
+          <select id="rm-dept" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all appearance-none">
+            <option>College of Computer Studies</option>
+            <option>College of Education</option>
+            <option>College of Engineering</option>
+            <option>College of Technology</option>
           </select>
         </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.22em] mb-2 block">Date of Application</label>
-          <input id="field-date" type="date" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" />
-        </div>
-        <div class="col-span-2 space-y-4">
-          <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.22em]">Authors</label>
-          <div id="authors-container" class="space-y-3"></div>
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Date of Application</label>
+          <input id="rm-date" type="date" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all"/>
         </div>
         <div>
-          <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.22em] mb-2 block">Status</label>
-          <input id="field-status" type="text" readonly class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 cursor-not-allowed" value="Submitted" />
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Status</label>
+          <input type="text" value="Submitted to IPO" readonly class="w-full rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-[13px] font-semibold text-blue-700 cursor-not-allowed outline-none"/>
         </div>
       </div>
-      <p id="dashboard-form-error" class="hidden text-sm text-red-600"></p>
-    </form>
-    <div class="px-8 py-6 bg-slate-50 border-t border-slate-200 flex flex-wrap gap-3 justify-end">
-      <button type="button" onclick="closeDashboardResearchModal()" class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Cancel</button>
-      <button type="button" onclick="saveDashboardResearchEntry()" class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition">Save Research</button>
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <label class="text-[10px] font-bold text-outline uppercase tracking-widest">Authors</label>
+            <span id="rm-author-count" class="text-[10px] font-semibold text-on-surface-variant bg-surface-container-highest rounded-full px-2 py-0.5">0 / 15</span>
+          </div>
+          <button onclick="addAuthorField()" id="rm-add-author-btn" type="button" class="flex items-center gap-1 text-[11px] font-semibold text-primary hover:text-blue-700 transition-colors">
+            <span class="material-symbols-outlined text-[14px]">add</span> Add Author
+          </button>
+        </div>
+        <div id="rm-authors" class="space-y-2.5"></div>
+        <p id="rm-author-error" class="hidden text-[11px] font-semibold text-red-500 mt-2 flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px]">error</span>
+          <span id="rm-author-error-text"></span>
+        </p>
+        <p id="rm-author-hint" class="text-[11px] text-outline mt-2">Add at least one author (max 15). Paste multiple names on separate lines and they'll split automatically.</p>
+      </div>
+    </div>
+    <div class="px-7 py-5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3">
+      <p id="rm-error" class="text-[12px] text-red-500 hidden"></p>
+      <div class="flex gap-3 ml-auto">
+        <button onclick="closeAllResearchModals()" type="button" class="px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant border border-slate-200 rounded-xl hover:bg-slate-100 transition-all">Cancel</button>
+        <button onclick="reviewResearchEntry()" type="button" class="px-6 py-2.5 text-[13px] font-bold text-white bg-primary rounded-xl hover:bg-blue-700 hover:-translate-y-0.5 transition-all">Review & Submit</button>
+      </div>
     </div>
   </div>
 </div>
 
-<div id="dashboard-confirm-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
-  <div class="w-full max-w-sm rounded-3xl bg-white shadow-2xl p-8 text-center">
-    <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-      <span class="material-symbols-outlined text-3xl">check_circle</span>
+<div id="review-modal" class="fixed inset-0 z-[65] hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-sm">
+  <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col" style="animation:modalIn 0.22s ease;">
+    <div class="px-6 pt-6 pb-4 border-b border-slate-100">
+      <div class="flex items-center gap-3 mb-1">
+        <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-[20px] text-primary" style="font-variation-settings:'FILL' 1;">fact_check</span>
+        </div>
+        <div>
+          <h3 class="text-[16px] font-bold text-on-surface">Review Submission</h3>
+          <p class="text-[11px] text-on-surface-variant">Please confirm the details before saving.</p>
+        </div>
+      </div>
     </div>
-    <h3 class="text-xl font-semibold text-slate-950 mb-2">Research Saved</h3>
-    <p class="text-sm text-slate-600 mb-6">Your new submission was recorded successfully and can be reviewed in the registry.</p>
-    <div class="flex flex-col gap-3 sm:flex-row">
-      <button type="button" onclick="closeDashboardSuccessModal()" class="flex-1 rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Close</button>
-      <button type="button" onclick="viewDashboardResearch()" class="flex-1 rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition">View Research</button>
+    <div class="px-6 py-4 overflow-y-auto max-h-[55vh]">
+      <div class="space-y-1">
+        <div class="review-row"><span class="review-label">IP Category</span><div id="rv-cat" class="mt-1"></div></div>
+        <div class="review-row"><span class="review-label">Research Title</span><span class="review-value" id="rv-title">—</span></div>
+        <div class="grid grid-cols-2">
+          <div class="review-row pr-4"><span class="review-label">Reference No.</span><span class="review-value font-mono" id="rv-id">—</span></div>
+          <div class="review-row pl-4 border-l border-slate-100"><span class="review-label">Date</span><span class="review-value" id="rv-date">—</span></div>
+        </div>
+        <div class="review-row"><span class="review-label">Department</span><span class="review-value" id="rv-dept">—</span></div>
+        <div class="review-row"><span class="review-label">Status</span><span class="review-badge"><span class="material-symbols-outlined text-[13px]">send</span>Submitted to IPO</span></div>
+        <div class="review-row"><span class="review-label">Authors</span><div id="rv-authors" class="flex flex-wrap gap-1.5 mt-1"></div></div>
+      </div>
+    </div>
+    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex gap-3 justify-end">
+      <button onclick="backToResearchModal()" type="button" class="px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant border border-slate-200 rounded-xl hover:bg-slate-100 transition-all flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">arrow_back</span> Back
+      </button>
+      <button onclick="confirmResearchEntry()" type="button" class="px-6 py-2.5 text-[13px] font-bold text-white bg-primary rounded-xl hover:bg-blue-700 hover:-translate-y-0.5 transition-all flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">check</span> Confirm & Save
+      </button>
     </div>
   </div>
 </div>
 
-<!-- Micro-interaction JS -->
+<div id="success-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
+  <div class="w-full max-w-sm rounded-2xl bg-white shadow-2xl p-8 text-center" style="animation:modalIn 0.22s ease;">
+    <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+      <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1;">check_circle</span>
+    </div>
+    <h3 class="text-[17px] font-bold text-on-surface mb-2">Research Saved!</h3>
+    <p class="text-[13px] text-on-surface-variant mb-6">Your submission was recorded successfully and can be reviewed in the registry.</p>
+    <div class="flex gap-3">
+      <button onclick="closeSuccessModal()" class="flex-1 py-2.5 text-[13px] font-semibold text-on-surface-variant border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">Close</button>
+      <button onclick="viewResearch()" class="flex-1 py-2.5 text-[13px] font-bold text-white bg-primary rounded-xl hover:bg-blue-700 transition-colors">View Research</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Hover effect for side navigation links
-            const navLinks = document.querySelectorAll('aside nav a');
-            navLinks.forEach(link => {
-                link.addEventListener('mouseenter', () => {
-                    if(!link.classList.contains('sidebar-active')) {
-                        link.style.transform = 'translateX(4px)';
-                    }
-                });
-                link.addEventListener('mouseleave', () => {
-                    link.style.transform = 'translateX(0)';
-                });
-            });
+/* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const main = document.getElementById('mainContent');
+  setTimeout(() => { main.style.opacity='1'; main.style.transform='translateY(0)'; }, 80);
+  buildCalendar();
+  buildPieChart();
+  buildLineChart('monthly');
+  renderCategoryCards();
+});
 
-            // Smooth appear for main content
-            const mainContent = document.querySelector('main');
-            mainContent.style.opacity = '0';
-            mainContent.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
-            mainContent.style.transform = 'translateY(10px)';
-            
-            setTimeout(() => {
-                mainContent.style.opacity = '1';
-                mainContent.style.transform = 'translateY(0)';
-            }, 100);
-        });
-    </script>
-    <script>
-      function openDashboardResearchModal() {
-        const modal = document.getElementById('dashboard-research-modal');
-        if (!modal) return;
-        resetDashboardResearchForm();
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+/* ══════════════════════════════════
+   CALENDAR
+══════════════════════════════════ */
+// Empty object to start fresh without dummy data
+const calNotes = {}; 
+const today = new Date();
+let calYear  = today.getFullYear();
+let calMonth = today.getMonth();
+let pickerYear = calYear;
+let pickerOpen = false;
+
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function dateKey(y, m, d) {
+  return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+
+function buildCalendar() {
+  const grid = document.getElementById('calGrid');
+  document.getElementById('calMonthText').textContent = MONTH_NAMES[calMonth] + ' ' + calYear;
+
+  // Remove only day cells (not the 7 header labels)
+  grid.querySelectorAll('.cal-day').forEach(d => d.remove());
+
+  const firstDay     = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth  = new Date(calYear, calMonth + 1, 0).getDate();
+  const prevDays     = new Date(calYear, calMonth, 0).getDate();
+
+  // Always render exactly 42 cells (6 rows)
+  const TOTAL_CELLS = 42;
+  const cells = [];
+
+  // Leading overflow (previous month)
+  for (let i = 0; i < firstDay; i++) {
+    cells.push({ day: prevDays - firstDay + 1 + i, type: 'prev' });
+  }
+  // Current month
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push({ day: d, type: 'current' });
+  }
+  // Trailing overflow (next month) — pad to 42
+  let next = 1;
+  while (cells.length < TOTAL_CELLS) {
+    cells.push({ day: next++, type: 'next' });
+  }
+
+  cells.forEach(({ day, type }) => {
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    el.textContent = day;
+
+    if (type !== 'current') {
+      el.classList.add('other-month');
+    } else {
+      const key = dateKey(calYear, calMonth, day);
+      const isToday = today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === day;
+      if (isToday) {
+        el.classList.add('today');
+      } else {
+        el.addEventListener('mouseenter', () => { el.style.background='rgba(255,255,255,0.1)'; });
+        el.addEventListener('mouseleave', () => { el.style.background=''; });
       }
+      if (calNotes[key]) el.classList.add('has-note');
+      el.addEventListener('click', () => openNoteModal(calYear, calMonth, day));
+    }
 
-      function closeDashboardResearchModal() {
-        const modal = document.getElementById('dashboard-research-modal');
-        if (!modal) return;
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }
+    grid.appendChild(el);
+  });
 
-      function openDashboardSuccessModal() {
-        const confirmModal = document.getElementById('dashboard-confirm-modal');
-        if (!confirmModal) return;
-        confirmModal.classList.remove('hidden');
-        confirmModal.classList.add('flex');
-        window.dashboardSuccessTimer = window.setTimeout(closeDashboardSuccessModal, 2200);
-      }
+  renderUpcoming();
+  if (pickerOpen) renderMonthPicker();
+}
 
-      function closeDashboardSuccessModal() {
-        window.clearTimeout(window.dashboardSuccessTimer);
-        const confirmModal = document.getElementById('dashboard-confirm-modal');
-        if (confirmModal) {
-          confirmModal.classList.add('hidden');
-          confirmModal.classList.remove('flex');
-        }
-        closeDashboardResearchModal();
-      }
+function renderUpcoming() {
+  const el = document.getElementById('calUpcoming');
+  const upcoming = Object.entries(calNotes)
+    .filter(([k]) => k >= dateKey(today.getFullYear(), today.getMonth(), today.getDate()))
+    .sort(([a],[b]) => a.localeCompare(b))[0];
+  if (upcoming) {
+    const [,note] = upcoming;
+    el.innerHTML = `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:rgba(255,255,255,0.07);border-radius:10px;border:1px solid rgba(255,255,255,0.1);">
+      <div style="width:5px;height:5px;border-radius:50%;background:#d0bcff;flex-shrink:0;margin-top:4px;"></div>
+      <div style="font-size:11px;color:#c2c6d6;line-height:1.4;">${note.length>55?note.slice(0,52)+'…':note}</div>
+    </div>`;
+  } else { el.innerHTML=''; }
+}
 
-      function viewDashboardResearch() {
-        sessionStorage.setItem('copyrightJustAdded', 'true');
-        window.location.href = 'copyright.html';
-      }
+/* Month/year picker */
+function toggleMonthPicker(e) {
+  e.stopPropagation();
+  pickerOpen = !pickerOpen;
+  if (pickerOpen) pickerYear = calYear;
+  const picker = document.getElementById('calMonthPicker');
+  const label  = document.getElementById('calMonthLabel');
+  if (pickerOpen) {
+    picker.classList.add('open');
+    label.classList.add('open');
+    renderMonthPicker();
+  } else {
+    picker.classList.remove('open');
+    label.classList.remove('open');
+  }
+}
+function closeMonthPicker() {
+  pickerOpen = false;
+  document.getElementById('calMonthPicker').classList.remove('open');
+  document.getElementById('calMonthLabel').classList.remove('open');
+}
+function renderMonthPicker() {
+  document.getElementById('mpYearVal').textContent = pickerYear;
+  const container = document.getElementById('mpMonths');
+  container.innerHTML = '';
+  MONTH_SHORT.forEach((m, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'mp-month-btn';
+    btn.textContent = m;
+    if (i === calMonth && pickerYear === calYear) btn.classList.add('active');
+    btn.onclick = () => {
+      calMonth = i; calYear = pickerYear;
+      closeMonthPicker();
+      buildCalendar();
+    };
+    container.appendChild(btn);
+  });
+}
+document.getElementById('mpPrevYear').addEventListener('click', (e) => { e.stopPropagation(); pickerYear--; renderMonthPicker(); });
+document.getElementById('mpNextYear').addEventListener('click', (e) => { e.stopPropagation(); pickerYear++; renderMonthPicker(); });
+document.addEventListener('click', (e) => { if (pickerOpen && !document.getElementById('calMonthPicker').contains(e.target)) closeMonthPicker(); });
 
-      function resetDashboardResearchForm() {
-        const form = document.getElementById('dashboard-research-form');
-        if (!form) return;
-        form.reset();
-        document.getElementById('field-status').value = 'Submitted';
-        document.getElementById('dashboard-form-error').classList.add('hidden');
-        const authorsContainer = document.getElementById('authors-container');
-        authorsContainer.innerHTML = '';
-        addDashboardAuthorField();
-      }
+document.getElementById('calPrev').addEventListener('click', () => { calMonth--; if (calMonth<0){calMonth=11;calYear--;} buildCalendar(); });
+document.getElementById('calNext').addEventListener('click', () => { calMonth++; if (calMonth>11){calMonth=0;calYear++;} buildCalendar(); });
 
-      function addDashboardAuthorField(value = '') {
-        const authorsContainer = document.getElementById('authors-container');
-        if (!authorsContainer) return;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'author-row';
+/* Note modal */
+let activeNoteKey = null;
+function openNoteModal(y, m, d) {
+  activeNoteKey = dateKey(y, m, d);
+  const dateStr = new Date(y, m, d).toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('noteDateEl').textContent = dateStr;
+  showNoteViewMode(calNotes[activeNoteKey]);
+  document.getElementById('noteOverlay').style.display='flex';
+}
+function showNoteViewMode(noteText) {
+  document.getElementById('noteViewMode').classList.remove('hidden');
+  document.getElementById('noteEditMode').classList.add('hidden');
+  const viewContent = document.getElementById('noteViewContent');
+  const emptyMsg    = document.getElementById('noteEmptyMsg');
+  const viewBtns    = document.getElementById('noteViewBtns');
+  if (noteText) {
+    document.getElementById('noteTitleEl').textContent = 'Reminder';
+    emptyMsg.classList.add('hidden');
+    viewContent.innerHTML=`<div class="note-view-wrap"><div class="note-view-label"><span class="material-symbols-outlined" style="font-size:12px;font-variation-settings:'FILL' 1;">bookmark</span>Saved Note</div><div class="note-view-text">${noteText}</div></div>`;
+    viewBtns.innerHTML='';
+    const editBtn=document.createElement('button');
+    editBtn.className='btn-note-edit';
+    editBtn.innerHTML='<span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit Note';
+    editBtn.onclick=()=>showNoteEditMode(noteText);
+    viewBtns.appendChild(editBtn);
+  } else {
+    document.getElementById('noteTitleEl').textContent='Add Reminder';
+    viewContent.innerHTML='';
+    emptyMsg.classList.remove('hidden');
+    viewBtns.innerHTML='';
+    showNoteEditMode('');
+  }
+}
+function showNoteEditMode(existingText) {
+  document.getElementById('noteViewMode').classList.add('hidden');
+  document.getElementById('noteEditMode').classList.remove('hidden');
+  document.getElementById('noteTitleEl').textContent = existingText ? 'Edit Reminder' : 'Add Reminder';
+  const ta = document.getElementById('noteTextarea');
+  ta.value = existingText||'';
+  ta.placeholder = existingText ? 'Edit your reminder…' : 'Add a reminder or note…';
+  document.getElementById('noteDeleteBtn').style.display = existingText ? 'inline-flex' : 'none';
+  setTimeout(()=>ta.focus(),60);
+}
+function cancelEditNote() { const existing=calNotes[activeNoteKey]; existing?showNoteViewMode(existing):closeNoteModal(); }
+function closeNoteModal() { document.getElementById('noteOverlay').style.display='none'; }
+function saveNote() { const v=document.getElementById('noteTextarea').value.trim(); if(v)calNotes[activeNoteKey]=v; closeNoteModal(); buildCalendar(); }
+function deleteNote() { delete calNotes[activeNoteKey]; closeNoteModal(); buildCalendar(); }
+document.getElementById('noteOverlay').addEventListener('click',function(e){if(e.target===this)closeNoteModal();});
 
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = value;
-        input.placeholder = 'Author name';
-        input.className = 'w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none';
+/* ══════════════════════════════════
+   PIE CHART (Kept default data so dashboard isn't blank)
+══════════════════════════════════ */
+const PIE_DATA=[{label:'BSIT',pct:38,color:'#0058be'},{label:'BSCS',pct:22,color:'#6b38d4'},{label:'BS Engineering',pct:18,color:'#924700'},{label:'BS Education',pct:12,color:'#10b981'},{label:'Others',pct:10,color:'#e24b4a'}];
+function buildPieChart(){
+  const legendEl=document.getElementById('pieLegend'); legendEl.innerHTML='';
+  PIE_DATA.forEach(item=>{const div=document.createElement('div');div.className='pie-legend-item';div.innerHTML=`<span class="pie-legend-sq" style="background:${item.color}"></span><span style="font-size:12px;">${item.label}</span><span class="pie-legend-pct">${item.pct}%</span>`;legendEl.appendChild(div);});
+  new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:PIE_DATA.map(d=>d.label),datasets:[{data:PIE_DATA.map(d=>d.pct),backgroundColor:PIE_DATA.map(d=>d.color),borderWidth:3,borderColor:'#ffffff',hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}}});
+}
 
-        const enqueueEmptyField = () => {
-          const authorInputs = Array.from(authorsContainer.querySelectorAll('input'));
-          const lastInput = authorInputs[authorInputs.length - 1];
-          if (lastInput && lastInput.value.trim() && authorInputs.every((field) => field.value.trim() !== '')) {
-            addDashboardAuthorField();
-          }
-        };
+/* ══════════════════════════════════
+   LINE CHART (Kept default data so dashboard isn't blank)
+══════════════════════════════════ */
+const LINE_SERIES=[{label:'Copyright',color:'#0058be',dash:[]},{label:'Patent',color:'#6b38d4',dash:[6,3]},{label:'Trademark',color:'#10b981',dash:[3,3]},{label:'Utility Model',color:'#924700',dash:[8,4]}];
+const LINE_DATA={
+  weekly:{labels:['Wk 1','Wk 2','Wk 3','Wk 4','Wk 5','Wk 6','Wk 7','Wk 8','Wk 9','Wk 10','Wk 11','Wk 12'],data:[[12,18,15,22,30,27,24,35,32,38,40,45],[8,10,9,14,18,16,20,22,25,28,30,33],[4,6,5,8,10,9,11,13,12,15,14,17],[2,3,3,4,5,6,5,7,8,9,10,11]]},
+  monthly:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],data:[[45,60,72,68,85,90,78,95,102,110,95,120],[30,42,55,50,65,70,58,75,80,88,76,92],[15,20,18,22,28,30,26,33,36,40,35,44],[8,10,9,11,14,16,13,17,19,22,18,24]]},
+  yearly:{labels:['2019','2020','2021','2022','2023','2024','2025','2026'],data:[[280,320,410,480,540,620,780,420],[190,230,300,360,420,490,570,310],[90,110,150,180,210,250,310,165],[40,55,70,85,100,120,155,82]]}
+};
+let lineChartInstance=null;
+function buildLineChart(period){
+  const p=LINE_DATA[period];
+  const legendEl=document.getElementById('lineLegend'); legendEl.innerHTML='';
+  LINE_SERIES.forEach(s=>{const span=document.createElement('span');span.className='line-legend-item';span.innerHTML=`<span class="line-legend-dot" style="background:${s.color};height:3px;"></span>${s.label}`;legendEl.appendChild(span);});
+  const datasets=LINE_SERIES.map((s,i)=>({label:s.label,data:p.data[i],borderColor:s.color,borderWidth:2,borderDash:s.dash,pointBackgroundColor:s.color,pointRadius:3,pointHoverRadius:6,fill:false,tension:0.38}));
+  if(lineChartInstance)lineChartInstance.destroy();
+  lineChartInstance=new Chart(document.getElementById('lineChart'),{type:'line',data:{labels:p.labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y}`}}},scales:{x:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},autoSkip:false,maxRotation:0}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11}},beginAtZero:true}}}});
+}
+document.querySelectorAll('.chart-filter-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.chart-filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');buildLineChart(btn.dataset.period);});});
 
-        const splitPastedAuthors = (text) => {
-          const names = text.split(/\r?\n/).map((name) => name.trim()).filter(Boolean);
-          if (!names.length) return;
-          input.value = names.shift() || '';
-          names.forEach((name) => {
-            addDashboardAuthorField(name);
-          });
-          enqueueEmptyField();
-        };
+/* ══════════════════════════════════
+   CATEGORY SELECTION
+══════════════════════════════════ */
+const CATEGORIES = [
+  { id:'copyright',       label:'Copyright',       icon:'ti ti-copyright',       color:'#0058be', bg:'#e8f0fd' },
+  { id:'patent',          label:'Patent',          icon:'ti ti-file-description', color:'#6b38d4', bg:'#f2edfd' },
+  { id:'trademark',       label:'Trademark',       icon:'ti ti-shield-check',     color:'#059669', bg:'#d1fae5' },
+  { id:'utility-model',   label:'Utility Model',   icon:'ti ti-settings-2',       color:'#924700', bg:'#fef3c7' },
+  { id:'industrial-design',label:'Industrial Design',icon:'ti ti-vector-bezier-2',color:'#dc2626', bg:'#fee2e2' },
+];
+let selectedCategory = null;
 
-        input.oninput = () => {
-          enqueueEmptyField();
-        };
+function renderCategoryCards() {
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const card = document.createElement('div');
+    card.className = 'cat-card' + (selectedCategory === cat.id ? ' selected' : '');
+    card.dataset.id = cat.id;
+    card.innerHTML = `
+      <div class="cat-check"><span class="material-symbols-outlined text-white" style="font-size:12px;font-variation-settings:'FILL' 1;">check</span></div>
+      <div class="cat-icon" style="background:${cat.bg};"><i class="${cat.icon}" style="color:${cat.color};font-size:27px;"></i></div>
+      <span class="cat-name">${cat.label}</span>`;
+    card.addEventListener('click', () => selectCategory(cat.id));
+    grid.appendChild(card);
+  });
+}
 
-        input.onpaste = (event) => {
-          const clipboardData = event.clipboardData || window.clipboardData;
-          const pastedText = clipboardData.getData('text');
-          if (pastedText && /\r?\n/.test(pastedText)) {
-            event.preventDefault();
-            splitPastedAuthors(pastedText);
-          }
-        };
+function selectCategory(id) {
+  selectedCategory = id;
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.toggle('selected', c.dataset.id === id));
+  const btn = document.getElementById('catNextBtn');
+  btn.disabled = false;
+  btn.classList.remove('opacity-50','cursor-not-allowed');
+}
 
-        wrapper.appendChild(input);
-        authorsContainer.appendChild(wrapper);
-      }
+function openCategoryModal() {
+  selectedCategory = null;
+  renderCategoryCards();
+  const btn = document.getElementById('catNextBtn');
+  btn.disabled = true; btn.classList.add('opacity-50','cursor-not-allowed');
+  const m = document.getElementById('category-modal');
+  m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeCategoryModal() {
+  const m = document.getElementById('category-modal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+function confirmCategory() {
+  if (!selectedCategory) return;
+  closeCategoryModal();
+  openResearchForm();
+}
+function backToCategory() {
+  closeResearchModal();
+  openCategoryModal();
+}
 
-      function getDashboardAuthorValues() {
-        return Array.from(document.querySelectorAll('#authors-container input'))
-          .map((input) => input.value.trim())
-          .filter(Boolean);
-      }
+/* ══════════════════════════════════
+   RESEARCH FORM & CLEAN STATE
+══════════════════════════════════ */
+// This state object avoids DOM scraping and prevents the "person" text bug
+let pendingSubmission = null; 
 
-      function saveDashboardResearchEntry() {
-        const title = document.getElementById('field-title').value.trim();
-        const id = document.getElementById('field-id').value.trim();
-        const department = document.getElementById('field-dept').value;
-        const dateApplied = document.getElementById('field-date').value;
-        const authors = getDashboardAuthorValues();
-        const status = document.getElementById('field-status').value;
-        const errorEl = document.getElementById('dashboard-form-error');
+function openResearchForm() {
+  // Set category badge in form header
+  const cat = CATEGORIES.find(c => c.id === selectedCategory);
+  const badge = document.getElementById('rm-cat-badge');
+  badge.style.cssText = `background:${cat.bg};color:${cat.color};border:1px solid ${cat.color}33;`;
+  badge.innerHTML = `<i class="${cat.icon}" style="font-size:12px;"></i>${cat.label}`;
 
-        if (!title || !id || !authors.length || !dateApplied) {
-          errorEl.textContent = 'Please complete all required fields and add at least one author.';
-          errorEl.classList.remove('hidden');
-          return;
-        }
+  // Reset form
+  document.getElementById('rm-title').value='';
+  document.getElementById('rm-id').value='';
+  document.getElementById('rm-date').value='';
+  document.getElementById('rm-dept').selectedIndex=0;
+  document.getElementById('rm-error').classList.add('hidden');
+  document.getElementById('rm-authors').innerHTML='';
+  clearAuthorError();
+  addAuthorField();
 
-        const newRecord = {
-          id,
-          title,
-          department,
-          authors,
-          date: dateApplied,
-          status,
-        };
+  // Clear any existing pending submissions
+  pendingSubmission = null;
 
-        const stored = JSON.parse(sessionStorage.getItem('copyrightNewEntries') || '[]');
-        stored.push(newRecord);
-        sessionStorage.setItem('copyrightNewEntries', JSON.stringify(stored));
+  const m = document.getElementById('research-modal');
+  m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeResearchModal() {
+  const m = document.getElementById('research-modal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+function closeAllResearchModals() {
+  closeCategoryModal(); closeResearchModal();
+  document.getElementById('review-modal').classList.add('hidden');
+  document.getElementById('review-modal').classList.remove('flex');
+  pendingSubmission = null;
+}
 
-        openDashboardSuccessModal();
-      }
-    </script>
-    <script src="../assets/js/app.js"></script>
-</body></html>
+/* ── Author field with paste-split and 15-author limit ── */
+const MAX_AUTHORS = 15;
 
+function currentAuthorCount() {
+  return document.getElementById('rm-authors').querySelectorAll('.author-row').length;
+}
+
+function updateAuthorUI() {
+  const count = currentAuthorCount();
+  const counterEl  = document.getElementById('rm-author-count');
+  const addBtn     = document.getElementById('rm-add-author-btn');
+
+  if (counterEl) {
+    counterEl.textContent = `${count} / ${MAX_AUTHORS}`;
+    counterEl.className = count >= MAX_AUTHORS
+      ? 'text-[10px] font-semibold text-red-500 bg-red-50 border border-red-200 rounded-full px-2 py-0.5'
+      : 'text-[10px] font-semibold text-on-surface-variant bg-surface-container-highest rounded-full px-2 py-0.5';
+  }
+  if (addBtn) {
+    addBtn.disabled = count >= MAX_AUTHORS;
+    addBtn.className = count >= MAX_AUTHORS
+      ? 'flex items-center gap-1 text-[11px] font-semibold text-outline cursor-not-allowed opacity-50 transition-colors'
+      : 'flex items-center gap-1 text-[11px] font-semibold text-primary hover:text-blue-700 transition-colors';
+  }
+}
+
+function showAuthorError(msg) {
+  const errEl  = document.getElementById('rm-author-error');
+  const errTxt = document.getElementById('rm-author-error-text');
+  const hint   = document.getElementById('rm-author-hint');
+  if (errEl && errTxt) {
+    errTxt.textContent = msg;
+    errEl.classList.remove('hidden');
+    errEl.style.display = 'flex';
+    if (hint) hint.classList.add('hidden');
+    // Auto-dismiss after 4 s
+    clearTimeout(errEl._timer);
+    errEl._timer = setTimeout(() => {
+      errEl.classList.add('hidden');
+      errEl.style.display = '';
+      if (hint) hint.classList.remove('hidden');
+    }, 4000);
+  }
+}
+
+function clearAuthorError() {
+  const errEl = document.getElementById('rm-author-error');
+  const hint  = document.getElementById('rm-author-hint');
+  if (errEl) { errEl.classList.add('hidden'); errEl.style.display = ''; clearTimeout(errEl._timer); }
+  if (hint)  hint.classList.remove('hidden');
+}
+
+function addAuthorField(value='', skipFocus=false) {
+  if (currentAuthorCount() >= MAX_AUTHORS) {
+    showAuthorError(`Maximum ${MAX_AUTHORS} authors allowed. Remove an entry before adding more.`);
+    return false;
+  }
+
+  const container = document.getElementById('rm-authors');
+  const row = document.createElement('div');
+  row.className = 'author-row';
+
+  const input = document.createElement('input');
+  input.type='text'; input.value=value; input.placeholder='Author name';
+  input.className='flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline';
+
+  // Paste detection — split by newline into multiple rows
+  input.addEventListener('paste', (e) => {
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+
+    if (lines.length <= 1) return; // let browser handle single-line paste normally
+
+    e.preventDefault();
+    clearAuthorError();
+
+    const existingCount = currentAuthorCount();
+    const slotsLeft = MAX_AUTHORS - existingCount;
+
+    if (slotsLeft <= 0) {
+      showAuthorError(`Maximum ${MAX_AUTHORS} authors already reached. Cannot paste more names.`);
+      return;
+    }
+
+    const accepted = lines.slice(0, slotsLeft);
+    const rejected = lines.length - accepted.length;
+
+    // Fill current row with the first accepted name
+    input.value = accepted[0];
+    // Add remaining accepted names as new rows (skip auto-focus to avoid scroll chaos)
+    accepted.slice(1).forEach(name => addAuthorField(name, true));
+
+    updateAuthorUI();
+
+    if (rejected > 0) {
+      showAuthorError(
+        `Only ${accepted.length} of ${lines.length} names were added — the maximum is ${MAX_AUTHORS} authors.`
+      );
+    }
+  });
+
+  const removeBtn = document.createElement('button');
+  removeBtn.type='button'; removeBtn.className='remove-author';
+  removeBtn.innerHTML='<i class="ti ti-x"></i>'; removeBtn.title='Remove';
+  removeBtn.onclick = () => {
+    if (currentAuthorCount() > 1) {
+      row.remove();
+      clearAuthorError();
+      updateAuthorUI();
+    }
+  };
+
+  row.appendChild(input);
+  row.appendChild(removeBtn);
+  container.appendChild(row);
+  updateAuthorUI();
+  if (!skipFocus) input.focus();
+  return true;
+}
+
+function getAuthorValues() {
+  return Array.from(document.querySelectorAll('#rm-authors input')).map(i=>i.value.trim()).filter(Boolean);
+}
+
+/* ── Review modal & Clean Submission Flow ── */
+function reviewResearchEntry() {
+  const title = document.getElementById('rm-title').value.trim();
+  const id = document.getElementById('rm-id').value.trim();
+  const dept = document.getElementById('rm-dept').value;
+  const date = document.getElementById('rm-date').value;
+  const authors = getAuthorValues();
+  const errorEl = document.getElementById('rm-error');
+
+  if(!title || !id || !date || !authors.length){
+    errorEl.textContent='Please fill in all required fields and add at least one author.';
+    errorEl.classList.remove('hidden'); return;
+  }
+  if(authors.length > MAX_AUTHORS){
+    errorEl.textContent=`Too many authors — please remove entries until you have ${MAX_AUTHORS} or fewer.`;
+    errorEl.classList.remove('hidden'); return;
+  }
+  errorEl.classList.add('hidden');
+
+  // Save everything to a clean, isolated state object
+  pendingSubmission = {
+    title: title,
+    id: id,
+    department: dept,
+    date: date,
+    authors: authors, // the pure array of strings without any HTML included
+    category: selectedCategory,
+    status: 'Submitted to IPO'
+  };
+
+  // Populate UI purely for visual review
+  const cat = CATEGORIES.find(c => c.id === selectedCategory);
+  const rvCat = document.getElementById('rv-cat');
+  rvCat.innerHTML=`<span class="cat-badge" style="background:${cat.bg};color:${cat.color};border:1px solid ${cat.color}33;font-size:12px;"><i class="${cat.icon}" style="font-size:13px;"></i>${cat.label}</span>`;
+
+  document.getElementById('rv-title').textContent = title;
+  document.getElementById('rv-id').textContent = id;
+  document.getElementById('rv-dept').textContent = dept;
+  const [yr, mo, dy] = date.split('-');
+  document.getElementById('rv-date').textContent = new Date(yr, mo-1, dy).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+
+  const authorsEl = document.getElementById('rv-authors');
+  authorsEl.innerHTML = '';
+  authors.forEach(a => {
+    const chip = document.createElement('span');
+    chip.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:#f2f3fd;color:#191b23;border:1px solid #e1e2ec;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;margin-right:4px;margin-bottom:4px;';
+    chip.innerHTML = `<span class="material-symbols-outlined" style="font-size:12px;color:#6b38d4;font-variation-settings:'FILL' 1;">person</span>${a}`;
+    authorsEl.appendChild(chip);
+  });
+
+  closeResearchModal();
+  const rm = document.getElementById('review-modal');
+  rm.classList.remove('hidden'); rm.classList.add('flex');
+}
+
+function backToResearchModal() {
+  document.getElementById('review-modal').classList.add('hidden');
+  document.getElementById('review-modal').classList.remove('flex');
+  openResearchForm();
+}
+
+function confirmResearchEntry() {
+  // Use the clean object we created in reviewResearchEntry()
+  if (!pendingSubmission) return;
+
+  const stored = JSON.parse(sessionStorage.getItem('copyrightNewEntries') || '[]');
+  
+  // Push the perfectly clean pendingSubmission object
+  stored.push(pendingSubmission);
+  sessionStorage.setItem('copyrightNewEntries', JSON.stringify(stored));
+
+  document.getElementById('review-modal').classList.add('hidden');
+  document.getElementById('review-modal').classList.remove('flex');
+
+  const sm = document.getElementById('success-modal');
+  sm.classList.remove('hidden'); sm.classList.add('flex');
+  window._successTimer = setTimeout(closeSuccessModal, 4000);
+
+  // Clear state after successful submission
+  pendingSubmission = null;
+}
+
+function closeSuccessModal(){
+  clearTimeout(window._successTimer);
+  const sm=document.getElementById('success-modal');
+  sm.classList.add('hidden'); sm.classList.remove('flex');
+}
+function viewResearch(){
+  sessionStorage.setItem('copyrightJustAdded','true');
+  window.location.href='copyright.html';
+}
+</script>
+</body>
+</html>
