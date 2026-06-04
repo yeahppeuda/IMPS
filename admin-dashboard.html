@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin Dashboard | IP Management System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --sidebar-w: 260px;
+  --sidebar-collapsed: 72px;
+  --header-h: 64px;
+  --primary: #0058be;
+  --primary-dark: #004499;
+  --primary-light: #e8f0fd;
+  --surface: #f4f6fb;
+  --white: #ffffff;
+  --border: #e2e5ef;
+  --text: #191b23;
+  --text-2: #424754;
+  --text-3: #727785;
+  --text-4: #a0a6b8;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --purple: #6b38d4;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--surface); color: var(--text); }
+
+/* ── Sidebar ── */
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--sidebar-w); background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  transition: width 0.25s cubic-bezier(0.4,0,0.2,1);
+  z-index: 50; overflow: hidden;
+}
+.sidebar.collapsed { width: var(--sidebar-collapsed); }
+.sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 20px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.brand-icon { width: 36px; height: 36px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.brand-text { overflow: hidden; white-space: nowrap; }
+.brand-text h1 { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2; }
+.brand-text p  { font-size: 9px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 1px; }
+.sidebar-admin-badge { margin: 12px 14px; background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 8px; padding: 6px 10px; display: flex; align-items: center; gap: 8px; overflow: hidden; flex-shrink: 0; }
+.admin-badge-dot { width: 6px; height: 6px; background: #fff; border-radius: 50%; flex-shrink: 0; animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.admin-badge-text { font-size: 10px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.12em; white-space: nowrap; }
+.sidebar-nav { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 10px; }
+.nav-section-label { font-size: 9px; font-weight: 700; color: var(--text-4); text-transform: uppercase; letter-spacing: 0.14em; padding: 8px 8px 4px; white-space: nowrap; overflow: hidden; transition: opacity 0.2s; }
+.sidebar.collapsed .nav-section-label { opacity: 0; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 10px; border-radius: 10px; cursor: pointer; text-decoration: none; color: var(--text-2); font-size: 13px; font-weight: 500; transition: all 0.15s; white-space: nowrap; overflow: hidden; position: relative; }
+.nav-item:hover { background: #f1f5f9; color: var(--text); }
+.nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+.nav-item.active .nav-icon { color: var(--primary); }
+.nav-icon { font-size: 18px; width: 22px; text-align: center; flex-shrink: 0; }
+.nav-label { overflow: hidden; white-space: nowrap; }
+.nav-badge { margin-left: auto; background: var(--primary); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 20px; flex-shrink: 0; }
+.sidebar-footer { padding: 12px 10px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.collapse-btn { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; cursor: pointer; color: var(--text-3); font-size: 13px; font-weight: 500; transition: all 0.15s; border: none; background: none; width: 100%; overflow: hidden; white-space: nowrap; }
+.collapse-btn:hover { background: #f1f5f9; color: var(--text); }
+.collapse-icon { transition: transform 0.25s; font-size: 18px; flex-shrink: 0; }
+.sidebar.collapsed .collapse-icon { transform: rotate(180deg); }
+
+/* ── Main layout ── */
+.main-wrap { margin-left: var(--sidebar-w); transition: margin-left 0.25s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; min-height: 100vh; }
+.main-wrap.collapsed { margin-left: var(--sidebar-collapsed); }
+
+/* ── Header ── */
+.topbar { height: var(--header-h); background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; position: sticky; top: 0; z-index: 40; }
+.topbar-left { display: flex; flex-direction: column; }
+.topbar-title { font-size: 17px; font-weight: 700; color: var(--text); }
+.topbar-breadcrumb { font-size: 11px; color: var(--text-3); font-weight: 500; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.topbar-clock { display: flex; align-items: center; gap: 6px; background: #f8f9fc; border: 1px solid var(--border); border-radius: 10px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: var(--text-2); }
+.icon-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border); background: #f8f9fc; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-3); font-size: 17px; transition: all 0.15s; position: relative; }
+.icon-btn:hover { background: var(--primary-light); color: var(--primary); border-color: #c7d9f7; }
+.notif-dot { position: absolute; top: 6px; right: 7px; width: 7px; height: 7px; background: #dc2626; border-radius: 50%; border: 1.5px solid #fff; }
+.admin-profile { display: flex; align-items: center; gap: 8px; padding: 5px 10px 5px 5px; border-radius: 12px; border: 1px solid var(--border); background: #f8f9fc; cursor: pointer; transition: all 0.15s; }
+.admin-profile:hover { background: var(--primary-light); border-color: #c7d9f7; }
+.profile-avatar { width: 30px; height: 30px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.profile-info { text-align: left; }
+.profile-name { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.2; }
+.profile-role { font-size: 10px; font-weight: 600; color: #dc2626; text-transform: uppercase; letter-spacing: 0.10em; }
+
+/* ── Page content ── */
+.page-content { flex: 1; padding: 28px; }
+
+/* ── Stat cards ── */
+.stat-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px; transition: transform 0.2s, box-shadow 0.2s; overflow: hidden; position: relative; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.08); }
+.stat-card-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 16px 16px 0 0; }
+
+/* ── Section card ── */
+.section-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.section-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.section-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.section-subtitle { font-size: 12px; color: var(--text-3); margin-top: 1px; }
+
+/* ── Activity item ── */
+.activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 22px; border-bottom: 1px solid #f8f9fc; transition: background 0.12s; }
+.activity-item:hover { background: #fafbfd; }
+.activity-item:last-child { border-bottom: none; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+
+/* ── Chart containers ── */
+.chart-container { padding: 20px 22px; }
+
+/* ── Progress bar ── */
+.prog-bar { height: 6px; background: #f0f2f7; border-radius: 20px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 20px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+
+/* ── Badge ── */
+.badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* ── Page entrance ── */
+.page-content { animation: pageIn 0.4s ease both; }
+@keyframes pageIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+/* Tooltip on collapsed sidebar */
+.sidebar.collapsed .nav-item:hover::after {
+  content: attr(data-tooltip);
+  position: absolute; left: calc(var(--sidebar-collapsed) - 8px); top: 50%; transform: translateY(-50%);
+  background: #1e293b; color: #fff; font-size: 11px; font-weight: 600;
+  padding: 5px 10px; border-radius: 8px; white-space: nowrap; pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 100;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><i class="ti ti-building-bank text-white" style="font-size:17px;"></i></div>
+    <div class="brand-text">
+      <h1>IP Management</h1>
+      <p>Administration Panel</p>
+    </div>
+  </div>
+
+  <div class="sidebar-admin-badge">
+    <div class="admin-badge-dot"></div>
+    <span class="admin-badge-text">Admin Mode</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <a class="nav-item active" href="admin-dashboard.html" data-tooltip="Dashboard">
+      <i class="ti ti-layout-dashboard nav-icon"></i>
+      <span class="nav-label">Dashboard</span>
+    </a>
+
+    <div class="nav-section-label">Management</div>
+    <a class="nav-item" href="admin-users.html" data-tooltip="Users">
+      <i class="ti ti-users nav-icon"></i>
+      <span class="nav-label">User Management</span>
+      <span class="nav-badge">12</span>
+    </a>
+    <a class="nav-item" href="admin-logs.html" data-tooltip="Logs">
+      <i class="ti ti-clipboard-list nav-icon"></i>
+      <span class="nav-label">Activity Logs</span>
+    </a>
+
+    <div class="nav-section-label">User Side</div>
+    <a class="nav-item" href="dashboard.html" data-tooltip="User Side">
+      <i class="ti ti-arrow-back-up nav-icon"></i>
+      <span class="nav-label">Back to User Side</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="collapse-btn" onclick="toggleSidebar()">
+      <i class="ti ti-layout-sidebar-left-collapse collapse-icon nav-icon"></i>
+      <span class="nav-label" style="font-size:12px;">Collapse Sidebar</span>
+    </button>
+  </div>
+</aside>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main-wrap" id="mainWrap">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-title">Dashboard</span>
+      <span class="topbar-breadcrumb">Admin Panel &rsaquo; Overview</span>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-clock">
+        <i class="ti ti-clock" style="font-size:13px;"></i>
+        <span id="clock-time"></span>
+        <span id="clock-ampm" style="font-size:10px;font-weight:700;color:#a0a6b8;"></span>
+      </div>
+      <div class="topbar-clock" style="gap:5px;">
+        <i class="ti ti-calendar" style="font-size:13px;"></i>
+        <span id="clock-date"></span>
+      </div>
+      <div class="icon-btn" title="Notifications">
+        <i class="ti ti-bell"></i>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="icon-btn" title="Refresh" onclick="window.location.reload()">
+        <i class="ti ti-refresh"></i>
+      </div>
+      <div class="admin-profile" onclick="toggleProfileMenu()">
+        <div class="profile-avatar">SA</div>
+        <div class="profile-info">
+          <div class="profile-name">Super Admin</div>
+          <div class="profile-role">Administrator</div>
+        </div>
+        <i class="ti ti-chevron-down" style="font-size:13px;color:#a0a6b8;margin-left:4px;"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page content -->
+  <div class="page-content">
+
+    <!-- ── Summary KPIs ── -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;" id="kpi-grid">
+
+      <!-- Total Users -->
+      <div class="stat-card">
+        <div class="stat-card-accent" style="background:linear-gradient(90deg,#0058be,#3b82f6);"></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+          <div style="padding:8px;background:#e8f0fd;border-radius:10px;">
+            <i class="ti ti-users" style="font-size:18px;color:#0058be;"></i>
+          </div>
+          <span class="badge" style="background:#dcfce7;color:#15803d;">↑ 12%</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-bottom:4px;" id="kpi-total-users">—</div>
+        <div style="font-size:11px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;">Total Users</div>
+        <div style="margin-top:14px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:5px;"><span>Usage</span><span id="kpi-active-pct">—%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="background:#0058be;" id="kpi-active-bar"></div></div>
+        </div>
+      </div>
+
+      <!-- Active Users -->
+      <div class="stat-card">
+        <div class="stat-card-accent" style="background:linear-gradient(90deg,#059669,#10b981);"></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+          <div style="padding:8px;background:#d1fae5;border-radius:10px;">
+            <i class="ti ti-user-check" style="font-size:18px;color:#059669;"></i>
+          </div>
+          <span class="badge" style="background:#dcfce7;color:#15803d;">Online</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-bottom:4px;" id="kpi-active-users">—</div>
+        <div style="font-size:11px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;">Active Users</div>
+        <div style="margin-top:14px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:5px;"><span>Active rate</span><span id="kpi-active-rate">—%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="background:#059669;" id="kpi-active-rate-bar"></div></div>
+        </div>
+      </div>
+
+      <!-- Research Records -->
+      <div class="stat-card">
+        <div class="stat-card-accent" style="background:linear-gradient(90deg,#6b38d4,#8b5cf6);"></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+          <div style="padding:8px;background:#ede9fe;border-radius:10px;">
+            <i class="ti ti-database" style="font-size:18px;color:#6b38d4;"></i>
+          </div>
+          <span class="badge" style="background:#ede9fe;color:#6b38d4;">↑ 8%</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-bottom:4px;" id="kpi-research">—</div>
+        <div style="font-size:11px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;">Research Records</div>
+        <div style="margin-top:14px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:5px;"><span>Filed this month</span><span id="kpi-research-month">—</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="background:#6b38d4;" id="kpi-research-bar"></div></div>
+        </div>
+      </div>
+
+      <!-- IP Records Total -->
+      <div class="stat-card">
+        <div class="stat-card-accent" style="background:linear-gradient(90deg,#d97706,#f59e0b);"></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+          <div style="padding:8px;background:#fef3c7;border-radius:10px;">
+            <i class="ti ti-certificate" style="font-size:18px;color:#d97706;"></i>
+          </div>
+          <span class="badge" style="background:#fef3c7;color:#b45309;">↑ 15%</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-bottom:4px;" id="kpi-ip-total">—</div>
+        <div style="font-size:11px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;">Total IP Records</div>
+        <div style="margin-top:14px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:5px;"><span>Approved</span><span id="kpi-approved-pct">—%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="background:#d97706;" id="kpi-approved-bar"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── IP Category breakdown ── -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;">
+      <div class="stat-card" style="padding:16px;text-align:center;">
+        <div style="width:40px;height:40px;background:#e8f0fd;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+          <i class="ti ti-copyright" style="font-size:18px;color:#0058be;"></i>
+        </div>
+        <div style="font-size:22px;font-weight:800;color:var(--text);" id="cat-copyright">—</div>
+        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;">Copyright</div>
+      </div>
+      <div class="stat-card" style="padding:16px;text-align:center;">
+        <div style="width:40px;height:40px;background:#ede9fe;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+          <i class="ti ti-file-description" style="font-size:18px;color:#6b38d4;"></i>
+        </div>
+        <div style="font-size:22px;font-weight:800;color:var(--text);" id="cat-patent">—</div>
+        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;">Patent</div>
+      </div>
+      <div class="stat-card" style="padding:16px;text-align:center;">
+        <div style="width:40px;height:40px;background:#d1fae5;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+          <i class="ti ti-shield-check" style="font-size:18px;color:#059669;"></i>
+        </div>
+        <div style="font-size:22px;font-weight:800;color:var(--text);" id="cat-trademark">—</div>
+        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;">Trademark</div>
+      </div>
+      <div class="stat-card" style="padding:16px;text-align:center;">
+        <div style="width:40px;height:40px;background:#fff7ed;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+          <i class="ti ti-settings-2" style="font-size:18px;color:#d97706;"></i>
+        </div>
+        <div style="font-size:22px;font-weight:800;color:var(--text);" id="cat-utility">—</div>
+        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;">Utility Model</div>
+      </div>
+      <div class="stat-card" style="padding:16px;text-align:center;">
+        <div style="width:40px;height:40px;background:#fce7f3;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+          <i class="ti ti-vector-bezier-2" style="font-size:18px;color:#be185d;"></i>
+        </div>
+        <div style="font-size:22px;font-weight:800;color:var(--text);" id="cat-design">—</div>
+        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;">Ind. Design</div>
+      </div>
+    </div>
+
+    <!-- ── Charts + Activity ── -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 380px;gap:18px;margin-bottom:24px;">
+
+      <!-- Line chart -->
+      <div class="section-card" style="grid-column:span 2;">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Research Submissions Over Time</div>
+            <div class="section-subtitle">Monthly volume across all IP categories</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="chart-period-btn active" data-p="monthly" onclick="switchChartPeriod('monthly',this)">Monthly</button>
+            <button class="chart-period-btn" data-p="yearly"  onclick="switchChartPeriod('yearly',this)">Yearly</button>
+          </div>
+        </div>
+        <div class="chart-container" style="height:240px;padding:16px 20px;">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Pie chart -->
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">By Department</div>
+            <div class="section-subtitle">IP filings per college</div>
+          </div>
+        </div>
+        <div style="padding:16px 20px;display:flex;flex-direction:column;align-items:center;gap:16px;">
+          <div style="position:relative;width:160px;height:160px;">
+            <canvas id="pieChart"></canvas>
+          </div>
+          <div id="pie-legend" style="width:100%;display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Recent Activity + System Stats ── -->
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:18px;">
+
+      <!-- Recent activity -->
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Recent Activity</div>
+            <div class="section-subtitle">Latest admin actions and system events</div>
+          </div>
+          <a href="admin-logs.html" style="font-size:12px;font-weight:600;color:var(--primary);text-decoration:none;padding:5px 10px;background:var(--primary-light);border-radius:8px;">View All Logs →</a>
+        </div>
+        <div id="activity-feed"></div>
+      </div>
+
+      <!-- System stats -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">System Health</div>
+        </div>
+        <div style="padding:16px 20px;display:flex;flex-direction:column;gap:16px;">
+          <div id="sys-stats"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /page-content -->
+</div><!-- /main-wrap -->
+
+<style>
+.chart-period-btn { padding:5px 12px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid var(--border);background:#f8f9fc;color:var(--text-3);cursor:pointer;transition:all 0.15s;font-family:'Plus Jakarta Sans',sans-serif; }
+.chart-period-btn.active { background:var(--primary-light);color:var(--primary);border-color:#c7d9f7; }
+</style>
+
+<script>
+/* ── MOCK DATA ── */
+const MOCK = {
+  users: { total: 48, active: 35, inactive: 13 },
+  research: { total: 2847, thisMonth: 142, approved: 2310 },
+  categories: { copyright: 1245, patent: 892, trademark: 412, utility: 205, design: 93 },
+  departments: [
+    { label:'College of Computer Studies', count:1120, color:'#0058be' },
+    { label:'College of Engineering',      count: 780, color:'#6b38d4' },
+    { label:'College of Education',        count: 620, color:'#059669' },
+    { label:'College of Technology',       count: 327, color:'#d97706' },
+  ],
+  monthlyData: {
+    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    copyright: [45,60,72,68,85,90,78,95,102,110,95,120],
+    patent:    [30,42,55,50,65,70,58,75,80,88,76,92],
+    trademark: [15,20,18,22,28,30,26,33,36,40,35,44],
+    utility:   [8,10,9,11,14,16,13,17,19,22,18,24],
+  },
+  yearlyData: {
+    labels: ['2020','2021','2022','2023','2024','2025','2026'],
+    copyright: [320,410,480,540,620,780,420],
+    patent:    [230,300,360,420,490,570,310],
+    trademark: [110,150,180,210,250,310,165],
+    utility:   [55,70,85,100,120,155,82],
+  },
+  activity: [
+    { user:'Maria Santos', action:'Created Record', module:'Copyright', desc:'Added "AI-Based LMS" — CR-2026-041', time:'2 min ago', color:'#0058be' },
+    { user:'Admin',        action:'User Created',   module:'User Mgmt', desc:'New account for John Reyes (staff)',  time:'18 min ago', color:'#059669' },
+    { user:'Liza Gomez',   action:'Status Updated', module:'Patent',    desc:'CR-2024-003 moved to Approved',      time:'1 hr ago',   color:'#6b38d4' },
+    { user:'Admin',        action:'Deleted Record', module:'Trademark', desc:'Removed duplicate TM-2024-011',      time:'3 hrs ago',  color:'#dc2626' },
+    { user:'Admin',        action:'Export',         module:'Reports',   desc:'Exported Copyright records (CSV)',   time:'5 hrs ago',  color:'#d97706' },
+    { user:'Ryan Tan',     action:'Login',          module:'System',    desc:'Logged in from 192.168.1.45',        time:'6 hrs ago',  color:'#0369a1' },
+  ],
+  sysStats: [
+    { label:'Database Records', value:'2,847', pct:72, color:'#0058be' },
+    { label:'Storage Used',     value:'4.2 GB', pct:42, color:'#6b38d4' },
+    { label:'API Requests Today',value:'1,240', pct:62, color:'#059669' },
+    { label:'Active Sessions',  value:'12',     pct:25, color:'#d97706' },
+    { label:'Pending Approvals',value:'8',      pct:15, color:'#dc2626' },
+  ],
+};
+
+/* ── Clock ── */
+function updateClock() {
+  const now = new Date();
+  let h = now.getHours(); const m = String(now.getMinutes()).padStart(2,'0'); const s = String(now.getSeconds()).padStart(2,'0');
+  const ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+  document.getElementById('clock-time').textContent = `${String(h).padStart(2,'0')}:${m}:${s}`;
+  document.getElementById('clock-ampm').textContent  = ampm;
+  document.getElementById('clock-date').textContent  = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+updateClock(); setInterval(updateClock, 1000);
+
+/* ── Sidebar collapse ── */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+  document.getElementById('mainWrap').classList.toggle('collapsed');
+}
+
+/* ── KPIs ── */
+function loadKPIs() {
+  const d = MOCK;
+  const total = d.users.total, active = d.users.active;
+  const ipTotal = Object.values(d.categories).reduce((a,b)=>a+b,0);
+  const activePct = Math.round(active/total*100);
+  const approvedPct = Math.round(d.research.approved/d.research.total*100);
+  const monthPct = Math.round(d.research.thisMonth/d.research.total*100);
+
+  document.getElementById('kpi-total-users').textContent   = total;
+  document.getElementById('kpi-active-users').textContent  = active;
+  document.getElementById('kpi-research').textContent      = d.research.total.toLocaleString();
+  document.getElementById('kpi-ip-total').textContent      = ipTotal.toLocaleString();
+  document.getElementById('kpi-active-pct').textContent    = activePct+'%';
+  document.getElementById('kpi-active-bar').style.width    = activePct+'%';
+  document.getElementById('kpi-active-rate').textContent   = activePct+'%';
+  document.getElementById('kpi-active-rate-bar').style.width = activePct+'%';
+  document.getElementById('kpi-research-month').textContent = '+'+d.research.thisMonth;
+  document.getElementById('kpi-research-bar').style.width   = monthPct+'%';
+  document.getElementById('kpi-approved-pct').textContent  = approvedPct+'%';
+  document.getElementById('kpi-approved-bar').style.width  = approvedPct+'%';
+
+  document.getElementById('cat-copyright').textContent = d.categories.copyright.toLocaleString();
+  document.getElementById('cat-patent').textContent    = d.categories.patent.toLocaleString();
+  document.getElementById('cat-trademark').textContent = d.categories.trademark.toLocaleString();
+  document.getElementById('cat-utility').textContent   = d.categories.utility.toLocaleString();
+  document.getElementById('cat-design').textContent    = d.categories.design.toLocaleString();
+}
+
+/* ── Line chart ── */
+let lineChartInst = null;
+const LINE_SERIES = [
+  {label:'Copyright', color:'#0058be', dash:[]},
+  {label:'Patent',    color:'#6b38d4', dash:[6,3]},
+  {label:'Trademark', color:'#059669', dash:[3,3]},
+  {label:'Utility',   color:'#d97706', dash:[8,4]},
+];
+
+function switchChartPeriod(p, btn) {
+  document.querySelectorAll('.chart-period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildLineChart(p);
+}
+
+function buildLineChart(period) {
+  const d = period === 'monthly' ? MOCK.monthlyData : MOCK.yearlyData;
+  const keys = ['copyright','patent','trademark','utility'];
+  const datasets = LINE_SERIES.map((s,i) => ({
+    label: s.label, data: d[keys[i]],
+    borderColor: s.color, borderWidth: 2, borderDash: s.dash,
+    pointBackgroundColor: s.color, pointRadius: 3, pointHoverRadius: 6,
+    fill: false, tension: 0.38,
+  }));
+  if (lineChartInst) lineChartInst.destroy();
+  lineChartInst = new Chart(document.getElementById('lineChart'), {
+    type:'line', data:{ labels:d.labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label: c => ` ${c.dataset.label}: ${c.parsed.y}` }}},
+      scales:{
+        x:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ font:{ size:11, family:'Plus Jakarta Sans' }, maxRotation:0 }},
+        y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ font:{ size:11, family:'Plus Jakarta Sans' }}, beginAtZero:true }
+      }
+    }
+  });
+}
+
+/* ── Pie chart ── */
+function buildPieChart() {
+  const d = MOCK.departments;
+  const total = d.reduce((s,x)=>s+x.count,0);
+  new Chart(document.getElementById('pieChart'), {
+    type:'doughnut',
+    data:{ labels:d.map(x=>x.label), datasets:[{ data:d.map(x=>x.count), backgroundColor:d.map(x=>x.color), borderWidth:3, borderColor:'#fff', hoverOffset:6 }] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'62%', plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:c=>` ${c.label}: ${c.parsed}` }}}}
+  });
+  const leg = document.getElementById('pie-legend');
+  d.forEach(x => {
+    const row = document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;font-size:12px;';
+    row.innerHTML=`<span style="width:10px;height:10px;border-radius:3px;background:${x.color};flex-shrink:0;"></span><span style="flex:1;color:var(--text-2);">${x.label.replace('College of ','')}</span><span style="font-weight:700;color:var(--text-3);font-size:11px;">${Math.round(x.count/total*100)}%</span>`;
+    leg.appendChild(row);
+  });
+}
+
+/* ── Activity feed ── */
+function buildActivity() {
+  const el = document.getElementById('activity-feed');
+  MOCK.activity.forEach(a => {
+    const row = document.createElement('div');
+    row.className = 'activity-item';
+    row.innerHTML = `
+      <div class="activity-dot" style="background:${a.color};"></div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:13px;font-weight:600;color:var(--text);">${a.user}</span>
+          <span style="font-size:11px;font-weight:600;padding:1px 7px;border-radius:20px;background:${a.color}18;color:${a.color};">${a.action}</span>
+          <span style="font-size:11px;color:var(--text-4);">in ${a.module}</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.desc}</div>
+      </div>
+      <div style="font-size:11px;color:var(--text-4);white-space:nowrap;flex-shrink:0;">${a.time}</div>`;
+    el.appendChild(row);
+  });
+}
+
+/* ── System stats ── */
+function buildSysStats() {
+  const el = document.getElementById('sys-stats');
+  el.style.display = 'flex';
+  el.style.flexDirection = 'column';
+  el.style.gap = '14px';
+  MOCK.sysStats.forEach(s => {
+    const row = document.createElement('div');
+    row.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:12px;font-weight:600;color:var(--text-2);">${s.label}</span>
+        <span style="font-size:13px;font-weight:700;color:var(--text);">${s.value}</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="background:${s.color};width:${s.pct}%;"></div></div>`;
+    el.appendChild(row);
+  });
+}
+
+/* ── Profile dropdown (stub) ── */
+function toggleProfileMenu() {}
+
+/* ── Init ── */
+loadKPIs();
+buildLineChart('monthly');
+buildPieChart();
+buildActivity();
+buildSysStats();
+</script>
+</body>
+</html>

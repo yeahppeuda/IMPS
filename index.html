@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Login | ITSO IP Management System</title>
+<title>Login | IP Management & Monitoring System</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -33,74 +33,146 @@
   }
 </script>
 <style>
-  body { background-color: #f9f9ff; overflow-x: hidden; }
-  .ethereal-glow { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, rgba(99,102,241,0) 70%); border-radius: 50%; pointer-events: none; z-index: 0; }
-  .glass-panel { background: #ffffff; border: 1px solid #c2c6d6; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08); }
-  .brand-text-gradient { background: linear-gradient(to right, #191b23, #424754); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .floating-card-shadow { box-shadow: 0 40px 80px -20px rgba(0,0,0,0.1), 0 20px 40px -30px rgba(0,0,0,0.05); }
+  * { box-sizing: border-box; }
+  body { background-color: #f9f9ff; overflow-x: hidden; margin: 0; }
+
+  /* Subtle dot-grid background */
+  .dot-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background-image: radial-gradient(circle, rgba(99,102,241,0.12) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  /* Soft ambient orbs */
+  .orb {
+    position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+    filter: blur(80px);
+  }
+  .orb-1 { width: 500px; height: 500px; top: -180px; left: -120px; background: rgba(99,102,241,0.07); }
+  .orb-2 { width: 400px; height: 400px; bottom: -100px; right: -80px; background: rgba(124,58,237,0.06); }
+
+  /* Floating divider line on left panel */
+  .accent-rule { width: 40px; height: 3px; background: #6366f1; border-radius: 9999px; }
+
+  /* Card — original glass panel style */
+  .glass-panel {
+    background: #ffffff;
+    border: 1px solid #c2c6d6;
+    box-shadow: 0 40px 80px -20px rgba(0,0,0,0.1), 0 20px 40px -30px rgba(0,0,0,0.05);
+  }
   input:focus { box-shadow: 0 0 0 2px rgba(99,102,241,0.1); }
-  .error-shake { animation: shake 0.3s ease; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  /* IP type badges */
+  .ip-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 9999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    background: rgba(99,102,241,0.08); color: #6366f1;
+    border: 1px solid rgba(99,102,241,0.15);
+  }
+  .ip-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+
+  /* Error banner */
+  .error-banner {
+    display: none; padding: 12px 16px; border-radius: 12px;
+    background: #fff0f0; border: 1px solid #fecaca;
+    color: #dc2626; font-size: 13px; font-weight: 500;
+    align-items: center; gap: 8px;
+  }
+  .error-banner.show { display: flex; }
+
+  /* Shake */
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 60%{transform:translateX(6px)} 80%{transform:translateX(-3px)} }
+  .shake { animation: shake 0.4s ease; }
+
+  /* Spin */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin 0.8s linear infinite; }
+
+  /* Fade-in on load */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .fade-up { animation: fadeUp 0.55s ease both; }
+  .fade-up-1 { animation-delay: 0.05s; }
+  .fade-up-2 { animation-delay: 0.13s; }
+  .fade-up-3 { animation-delay: 0.21s; }
+  .fade-up-4 { animation-delay: 0.29s; }
 </style>
 </head>
-<body class="font-sans antialiased text-on-surface min-h-screen selection:bg-brand-accent/20 selection:text-brand-accent">
+<body class="font-sans antialiased min-h-screen">
 
-<div class="ethereal-glow -top-48 -left-48"></div>
-<div class="ethereal-glow bottom-0 -right-48" style="background: radial-gradient(circle, rgba(124,58,237,0.05) 0%, rgba(124,58,237,0) 70%);"></div>
+<!-- Background layers -->
+<div class="dot-bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
 
 <div class="relative z-10 min-h-screen flex flex-col">
-  <header class="w-full px-8 py-2 md:px-16 flex justify-center items-center"></header>
 
-  <main class="flex-grow flex items-center justify-center px-6 py-4 md:py-8 -mt-4 md:-mt-5">
-    <div class="relative w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-0">
+  <main class="flex-grow flex items-center justify-center px-6 py-10">
+    <div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
 
-      <!-- Left Branding -->
-      <div class="w-full lg:w-3/5 lg:pr-24 relative z-0 text-center lg:text-left">
-        <div class="space-y-8">
-          <div class="inline-block px-4 py-1.5 rounded-full bg-surface-container border border-outline-variant text-[10px] font-bold uppercase tracking-widest text-brand-accent mb-2">
-            ITSO · Technology Transfer Office
+      <!-- ── LEFT: Institutional Branding ── -->
+      <div class="w-full lg:w-[52%] text-center lg:text-left fade-up fade-up-1">
+
+        <!-- University branding -->
+        <div class="inline-flex items-center gap-3 mb-7">
+          <div class="w-8 h-8 rounded-full flex-shrink-0" style="background:linear-gradient(135deg,#6366f1,#818cf8);display:flex;align-items:center;justify-content:center;">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           </div>
-          <h1 class="text-5xl md:text-7xl font-bold leading-tight brand-text-gradient tracking-tight">
-            Protecting the<br/>
-            <span class="text-brand-accent">Power of Innovation.</span>
-          </h1>
-          <p class="text-lg md:text-xl text-on-surface-variant max-w-xl font-light leading-relaxed mx-auto lg:mx-0">
-            A centralized platform for managing the institution's intellectual property assets — from patent filings and trademark registrations to copyright records and technology disclosures.
-          </p>
-          <div class="flex items-center gap-6 justify-center lg:justify-start pt-4">
-            <div class="flex -space-x-3">
-              <div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container-high text-on-surface flex items-center justify-center text-[10px] font-bold">PAT</div>
-              <div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container-high text-on-surface flex items-center justify-center text-[10px] font-bold">TM</div>
-              <div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container-high text-on-surface flex items-center justify-center text-[10px] font-bold">©</div>
-            </div>
-            <span class="text-xs text-on-surface-variant/60 uppercase tracking-widest">Patents · Trademarks · Copyrights</span>
+          <div class="text-left">
+            <p class="text-[11px] font-bold uppercase tracking-[0.15em] text-[#6366f1] leading-none">Quezon City University</p>
           </div>
         </div>
+
+        <!-- Main headline -->
+        <h1 class="text-[2.8rem] md:text-[3.8rem] font-bold leading-[1.08] tracking-tight text-[#191b23] mb-6">
+          Intellectual Property<br/>
+          <span style="color:#6366f1">Management &amp;<br/>Monitoring System</span>
+        </h1>
+
+        <!-- Divider rule -->
+        <div class="accent-rule mb-6 mx-auto lg:mx-0"></div>
+
+        <!-- Description -->
+        <p class="text-[15px] md:text-base text-[#424754] max-w-md leading-relaxed font-normal mb-10 mx-auto lg:mx-0">
+          A unified institutional platform for tracking research outputs, IP disclosures, patent filings, trademarks, and copyright records across all academic departments.
+        </p>
+
+        <!-- IP type pills row -->
+        <div class="flex flex-wrap gap-2 justify-center lg:justify-start fade-up fade-up-2">
+          <span class="ip-badge"><span class="dot"></span>Patents</span>
+          <span class="ip-badge"><span class="dot"></span>Trademarks</span>
+          <span class="ip-badge"><span class="dot"></span>Copyrights</span>
+          <span class="ip-badge"><span class="dot"></span>Research Outputs</span>
+        </div>
+
       </div>
 
-      <!-- Right Login Card -->
-      <div class="w-full lg:w-2/5 relative lg:-ml-12">
+      <!-- ── RIGHT: Login Card (original style) ── -->
+      <div class="w-full lg:w-[48%] relative fade-up fade-up-4">
         <div class="absolute inset-0 bg-brand-accent/5 -rotate-2 rounded-[3rem] blur-xl"></div>
         <div class="absolute inset-0 bg-surface-container/60 rotate-1 translate-x-4 translate-y-4 rounded-[3rem]"></div>
-        <div class="relative glass-panel p-8 md:p-12 rounded-tr-[5rem] rounded-bl-[5rem] rounded-tl-4xl rounded-br-4xl floating-card-shadow overflow-hidden group">
+        <div class="relative glass-panel p-8 md:p-12 rounded-tr-[5rem] rounded-bl-[5rem] rounded-tl-4xl rounded-br-4xl overflow-hidden">
           <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-accent/5 blur-3xl rounded-full"></div>
           <div class="relative z-10">
+
             <div class="mb-10">
               <h2 class="text-3xl font-semibold text-on-surface mb-2">Sign In</h2>
               <div class="h-1 w-12 bg-brand-accent rounded-full mb-4"></div>
-              <p class="text-on-surface-variant text-sm">Access your ITSO account to manage institutional IP assets.</p>
+              <p class="text-on-surface-variant text-sm">Enter your institutional credentials to access the IP Management System.</p>
             </div>
 
-            <!-- Error banner (hidden by default) -->
-            <div id="loginError" class="hidden mb-6 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm flex items-center gap-2">
-              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            <!-- Error banner -->
+            <div id="loginError" class="hidden mb-6 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm flex items-start gap-2">
+              <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="loginErrorSvg"><path id="loginErrorIcon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
               <span id="loginErrorText">Invalid email or password. Please try again.</span>
             </div>
 
-            <form id="loginForm" class="space-y-8" method="POST" onsubmit="login(event)">
+            <form id="loginForm" class="space-y-8" onsubmit="login(event)">
               <!-- Email -->
               <div class="space-y-2">
-                <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70 ml-1" for="email">Institutional Email</label>
+                <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70 ml-1" for="email">Email</label>
                 <div class="relative">
                   <input class="w-full px-5 py-4 bg-surface-container-low border-0 border-b-2 border-outline-variant rounded-xl text-on-surface placeholder-on-surface-variant/40 focus:ring-0 focus:border-brand-accent focus:bg-white transition-all duration-300" id="email" name="email" placeholder="yourname@institution.edu.ph" type="email" value="admin@itso.edu.ph"/>
                   <div class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30">
@@ -111,15 +183,18 @@
 
               <!-- Password -->
               <div class="space-y-2">
-                <div class="flex justify-between items-center px-1">
+                <div class="flex items-center px-1">
                   <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70" for="password">Password</label>
-                  <a class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 hover:text-brand-accent transition-colors" href="#">Forgot Password?</a>
                 </div>
                 <div class="relative">
                   <input class="w-full px-5 py-4 bg-surface-container-low border-0 border-b-2 border-outline-variant rounded-xl text-on-surface placeholder-on-surface-variant/40 focus:ring-0 focus:border-brand-accent focus:bg-white transition-all duration-300" id="password" name="password" placeholder="••••••••" type="password"/>
-                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
-                  </div>
+                  <!-- Eye toggle button -->
+                  <button type="button" id="togglePassword" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40 hover:text-brand-accent transition-colors duration-200 focus:outline-none" aria-label="Toggle password visibility">
+                    <!-- Eye open (shown when password is hidden) -->
+                    <svg id="eyeOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+                    <!-- Eye closed (shown when password is visible) -->
+                    <svg id="eyeClosed" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><line x1="1" y1="1" x2="23" y2="23" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+                  </button>
                 </div>
               </div>
 
@@ -135,62 +210,64 @@
               <!-- Submit -->
               <button id="loginBtn" class="group relative w-full overflow-hidden rounded-2xl bg-brand-accent py-4 font-bold text-white shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all hover:shadow-[0_0_35px_rgba(99,102,241,0.5)] hover:-translate-y-1 active:translate-y-0" type="submit">
                 <span class="relative z-10 flex items-center justify-center gap-2" id="loginBtnLabel">
-                  Sign In to ITSO Portal
+                  Sign In
                   <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
                 </span>
                 <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full"></div>
               </button>
             </form>
 
-            <div class="mt-12 text-center">
-              <p class="text-xs text-on-surface-variant/60 flex items-center justify-center gap-2">
-                System Status: <span class="flex items-center gap-1.5 text-emerald-600 font-bold uppercase tracking-tighter"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Online</span>
-              </p>
-            </div>
           </div>
         </div>
-      </div>
+      </div><!-- /right col -->
 
     </div>
   </main>
 
-  <footer class="w-full px-8 py-8 border-t border-outline-variant/30 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">
-    <div class="flex gap-8">
-      <a class="hover:text-brand-accent transition-colors" href="#">Privacy Policy</a>
-      <a class="hover:text-brand-accent transition-colors" href="#">Security Policy</a>
-      <a class="hover:text-brand-accent transition-colors" href="#">ITSO Guidelines</a>
-    </div>
-    <div class="text-center">
-      © 2025 ITSO · Technology Transfer &amp; Business Development Office &nbsp;·&nbsp; Developed by Justine Kenneth L. Ibo &nbsp;·&nbsp; v4.2.1
-    </div>
+  <!-- Footer -->
+  <footer style="padding:20px 40px;border-top:1px solid rgba(194,198,214,0.4);display:flex;justify-content:center;align-items:center;">
+    <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:rgba(66,71,84,0.4);margin:0;">
+      Developed by Justine Kenneth L. Ibo
+    </p>
   </footer>
+
 </div>
 
 <script>
-  // ── Demo credentials ──────────────────────────────────────────────
-  // Change these to match your actual auth logic.
   const VALID_EMAIL    = 'admin@itso.edu.ph';
   const VALID_PASSWORD = 'admin123';
+  const MAX_ATTEMPTS   = 3;
+  let failedAttempts   = 0;
+  let isLocked         = false;
 
+  /* ── Password visibility toggle ── */
+  function togglePasswordVisibility() {
+    const input     = document.getElementById('password');
+    const eyeOpen   = document.getElementById('eyeOpen');
+    const eyeClosed = document.getElementById('eyeClosed');
+    const isHidden  = input.type === 'password';
+    input.type      = isHidden ? 'text' : 'password';
+    eyeOpen.classList.toggle('hidden', isHidden);
+    eyeClosed.classList.toggle('hidden', !isHidden);
+  }
+
+  /* ── Login handler ── */
   function login(e) {
     e.preventDefault();
+    if (isLocked) return;
 
-    const email    = document.getElementById('email').value.trim();
+    const email  = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
-    const errorEl  = document.getElementById('loginError');
-    const btn      = document.getElementById('loginBtn');
-    const label    = document.getElementById('loginBtnLabel');
+    const btn    = document.getElementById('loginBtn');
+    const label  = document.getElementById('loginBtnLabel');
 
-    // Hide any previous error
-    errorEl.classList.add('hidden');
+    document.getElementById('loginError').classList.add('hidden');
 
-    // Simple validation
     if (!email || !password) {
       showError('Please enter your email and password.');
       return;
     }
 
-    // Show loading state
     btn.disabled = true;
     label.innerHTML = `
       <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -199,32 +276,78 @@
       </svg>
       Signing in…`;
 
-    // Simulate brief auth check then redirect
     setTimeout(() => {
       if (email === VALID_EMAIL && password === VALID_PASSWORD) {
-        // Store session flag and redirect
         sessionStorage.setItem('itso_authenticated', 'true');
         sessionStorage.setItem('itso_user', email);
         window.location.href = 'dashboard.html';
       } else {
+        failedAttempts++;
         btn.disabled = false;
-        label.innerHTML = `
-          Sign In to ITSO Portal
-          <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-          </svg>`;
-        showError('Invalid email or password. Please try again.');
+
+        if (failedAttempts >= MAX_ATTEMPTS) {
+          lockAccount();
+        } else {
+          const remaining = MAX_ATTEMPTS - failedAttempts;
+          const noun = remaining === 1 ? 'attempt' : 'attempts';
+          label.innerHTML = `
+            Sign In
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            </svg>`;
+          showError(`Incorrect email or password. ${remaining} ${noun} remaining before your account is temporarily locked.`);
+        }
       }
-    }, 800);
+    }, 900);
   }
 
-  function showError(msg) {
+  /* ── Lock the form after MAX_ATTEMPTS ── */
+  function lockAccount() {
+    isLocked = true;
+    const btn   = document.getElementById('loginBtn');
+    const label = document.getElementById('loginBtnLabel');
+    const email = document.getElementById('email');
+    const pwd   = document.getElementById('password');
+    const toggle = document.getElementById('togglePassword');
+
+    email.disabled  = true;
+    pwd.disabled    = true;
+    if (toggle) toggle.disabled = true;
+    btn.disabled    = true;
+    btn.classList.add('opacity-60', 'cursor-not-allowed');
+
+    label.innerHTML = `
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </svg>
+      Account Locked`;
+
+    showError('Too many failed login attempts. Your account has been temporarily locked. Please contact your system administrator or try again later.', true);
+  }
+
+  /* ── Show error banner ── */
+  function showError(msg, isLockout = false) {
     const errorEl  = document.getElementById('loginError');
     const errorTxt = document.getElementById('loginErrorText');
+    const errorIcon = document.getElementById('loginErrorIcon');
+
     errorTxt.textContent = msg;
+
+    if (isLockout) {
+      errorEl.classList.remove('bg-red-50', 'border-red-200', 'text-red-600');
+      errorEl.classList.add('bg-amber-50', 'border-amber-300', 'text-amber-700');
+      errorIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>`;
+    } else {
+      errorEl.classList.remove('bg-amber-50', 'border-amber-300', 'text-amber-700');
+      errorEl.classList.add('bg-red-50', 'border-red-200', 'text-red-600');
+      errorIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>`;
+    }
+
     errorEl.classList.remove('hidden');
-    document.getElementById('loginForm').classList.add('error-shake');
-    setTimeout(() => document.getElementById('loginForm').classList.remove('error-shake'), 400);
+    if (!isLockout) {
+      document.getElementById('loginForm').classList.add('shake');
+      setTimeout(() => document.getElementById('loginForm').classList.remove('shake'), 350);
+    }
   }
 </script>
 </body></html>

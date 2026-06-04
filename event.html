@@ -57,39 +57,57 @@
   .page-btn.active { background: #0058be; color: #fff; font-weight: 700; }
   .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-  /* Event cards */
   .event-card { transition: transform 0.18s, box-shadow 0.18s; }
   .event-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.09); }
 
-  /* View toggle */
   .view-btn { padding: 6px 10px; border-radius: 8px; border: none; cursor: pointer; transition: background 0.12s, color 0.12s; color: #727785; background: transparent; display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; }
   .view-btn.active { background: #fff; color: #0058be; box-shadow: 0 1px 4px rgba(0,0,0,0.10); }
 
-  /* Category badge colours */
-  .cat-seminar       { background:#eff6ff; color:#1d4ed8; }
-  .cat-workshop      { background:#f0fdf4; color:#15803d; }
-  .cat-conference    { background:#faf5ff; color:#7e22ce; }
-  .cat-training      { background:#fff7ed; color:#c2410c; }
-  .cat-symposium     { background:#fefce8; color:#a16207; }
-  .cat-other         { background:#f8fafc; color:#475569; }
+  /* Activity type badge colours */
+  .cat-ipa        { background:#eff6ff; color:#1d4ed8; }
+  .cat-ps         { background:#f0fdf4; color:#15803d; }
+  .cat-pd         { background:#faf5ff; color:#7e22ce; }
+  .cat-ipa-ps     { background:#fff7ed; color:#c2410c; }
+  .cat-ipa-pd     { background:#fefce8; color:#a16207; }
+  .cat-ps-pd      { background:#f0f9ff; color:#0369a1; }
+  .cat-all        { background:#f1f5f9; color:#334155; }
 
-  /* Doc type badges */
-  .doc-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 9px; border-radius:20px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; }
-
-  /* Modal animation */
   @keyframes modalIn { from { opacity:0; transform:translateY(8px) scale(0.98); } to { opacity:1; transform:none; } }
   .modal-body { animation: modalIn 0.2s ease; }
 
-  /* Drop zone */
   .drop-zone { border: 2px dashed #c2c6d6; border-radius: 12px; transition: border-color 0.15s, background 0.15s; }
   .drop-zone.dragover { border-color: #0058be; background: #eff6ff; }
 
-  /* List view rows */
   .list-row { transition: background 0.10s; }
   .list-row:hover { background: #f8fafc; }
 
-  /* Confirm modal */
-  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  /* Checkbox custom style */
+  .check-item {
+    display: flex; align-items: center; gap: 8px; padding: 7px 11px;
+    border-radius: 8px; border: 1.5px solid #e2e5ef; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s; user-select: none;
+    font-size: 12.5px; font-weight: 500; color: #424754;
+  }
+  .check-item:hover { border-color: #93c5fd; background: #f8fafc; }
+  .check-item.checked { border-color: #0058be; background: #eff6ff; color: #1d4ed8; }
+  .check-item input[type=checkbox] { display: none; }
+
+  /* Age range pill buttons */
+  .age-pill {
+    padding: 6px 14px; border-radius: 20px; border: 1.5px solid #e2e5ef;
+    cursor: pointer; font-size: 12px; font-weight: 600; color: #424754;
+    transition: border-color 0.15s, background 0.15s, color 0.15s; user-select: none;
+  }
+  .age-pill:hover { border-color: #93c5fd; background: #f8fafc; }
+  .age-pill.selected { border-color: #0058be; background: #0058be; color: #fff; }
+
+  /* Summary section in detail modal */
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .summary-cell { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+  .summary-cell:nth-child(odd) { border-right: 1px solid #f1f5f9; }
+  .summary-cell-full { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; grid-column: 1 / -1; }
+
+  .doc-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 9px; border-radius:20px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; }
 </style>
 </head>
 <body class="bg-surface text-on-surface font-sans antialiased flex min-h-screen">
@@ -118,10 +136,10 @@
     <a class="nav-item active" href="event.html"><i class="ti ti-calendar-event"></i><span>Event</span></a>
   </nav>
   <div class="p-4 border-t border-outline-variant">
-  <button onclick="window.location.href='index.html'" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all duration-200">
-    <i class="ti ti-logout" style="font-size:16px;"></i><span>Log Out</span>
-  </button>
-</div>
+    <button onclick="window.location.href='index.html'" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all duration-200">
+      <i class="ti ti-logout" style="font-size:16px;"></i><span>Log Out</span>
+    </button>
+  </div>
 </aside>
 
 <!-- ── Main ── -->
@@ -202,14 +220,14 @@
       <!-- Toolbar -->
       <div class="px-6 py-4 border-b border-outline-variant flex items-center gap-3 flex-wrap">
         <!-- Search -->
-        <div class="relative flex-1 min-w-[200px]">
+        <div class="relative flex-1 min-w-[180px]">
           <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-outline" style="font-size:15px;"></i>
           <input id="event-search" type="text" oninput="filterAndRender()"
             class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-[13px] focus:ring-1 focus:ring-primary focus:bg-white focus:border-primary transition-all outline-none placeholder:text-outline"
-            placeholder="Search events by name, type, venue, organizer…"/>
+            placeholder="Search events…"/>
         </div>
 
-        <!-- Date filter -->
+        <!-- Date filter (Month + Year dropdowns) -->
         <div class="relative shrink-0" id="date-filter-wrapper">
           <button onclick="toggleDateFilter()" id="date-filter-btn"
             class="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 text-on-surface-variant rounded-lg text-[13px] font-medium hover:bg-slate-100 transition-colors whitespace-nowrap">
@@ -217,18 +235,41 @@
             <span id="date-filter-label">All Dates</span>
             <i class="ti ti-chevron-down text-outline" id="date-filter-chevron" style="font-size:12px;transition:transform 0.15s;"></i>
           </button>
-          <div id="date-filter-menu" class="hidden absolute right-0 mt-1 w-52 bg-white rounded-xl border border-slate-200 shadow-lg z-50 py-1.5 overflow-hidden">
-            <div class="px-3 py-1.5 text-[10px] font-bold text-outline uppercase tracking-widest">Filter by Date</div>
-            <button class="date-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="all"    onclick="applyDateFilter('all')">All Dates       <i class="ti ti-check text-primary" style="font-size:13px;"></i></button>
-            <button class="date-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="today"   onclick="applyDateFilter('today')">Today          <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button class="date-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="week"    onclick="applyDateFilter('week')">This Week      <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button class="date-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="month"   onclick="applyDateFilter('month')">This Month     <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button class="date-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="upcoming" onclick="applyDateFilter('upcoming')">Upcoming       <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button class="date-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="past"     onclick="applyDateFilter('past')">Past Events    <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+          <div id="date-filter-menu" class="hidden absolute left-0 mt-1 w-64 bg-white rounded-xl border border-slate-200 shadow-lg z-50 p-4 space-y-3">
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Filter by Date</p>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] font-semibold text-outline block mb-1">Month</label>
+                <select id="filter-month" onchange="applyDateFilter()"
+                  class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-[12px] text-on-surface outline-none focus:border-primary appearance-none">
+                  <option value="">All Months</option>
+                  <option value="1">January</option>
+                  <option value="2">February</option>
+                  <option value="3">March</option>
+                  <option value="4">April</option>
+                  <option value="5">May</option>
+                  <option value="6">June</option>
+                  <option value="7">July</option>
+                  <option value="8">August</option>
+                  <option value="9">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold text-outline block mb-1">Year</label>
+                <select id="filter-year" onchange="applyDateFilter()"
+                  class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-[12px] text-on-surface outline-none focus:border-primary appearance-none">
+                  <option value="">All Years</option>
+                </select>
+              </div>
+            </div>
+            <button onclick="clearDateFilter()" class="w-full py-1.5 text-[11px] font-semibold text-on-surface-variant bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">Clear Date Filter</button>
           </div>
         </div>
 
-        <!-- Type filter -->
+        <!-- Type of Activity filter -->
         <div class="relative shrink-0" id="type-filter-wrapper">
           <button onclick="toggleTypeFilter()" id="type-filter-btn"
             class="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 text-on-surface-variant rounded-lg text-[13px] font-medium hover:bg-slate-100 transition-colors whitespace-nowrap">
@@ -236,20 +277,18 @@
             <span id="type-filter-label">All Types</span>
             <i class="ti ti-chevron-down text-outline" id="type-filter-chevron" style="font-size:12px;transition:transform 0.15s;"></i>
           </button>
-          <div id="type-filter-menu" class="hidden absolute right-0 mt-1 w-44 bg-white rounded-xl border border-slate-200 shadow-lg z-50 py-1.5 overflow-hidden">
-            <div class="px-3 py-1.5 text-[10px] font-bold text-outline uppercase tracking-widest">Filter by Type</div>
-            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="all"         onclick="applyTypeFilter('all')">All Types    <i class="ti ti-check text-primary" style="font-size:13px;"></i></button>
-            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="Seminar"      onclick="applyTypeFilter('Seminar')">Seminar      <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="Workshop"     onclick="applyTypeFilter('Workshop')">Workshop     <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="Conference"   onclick="applyTypeFilter('Conference')">Conference   <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="Training"     onclick="applyTypeFilter('Training')">Training     <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="Symposium"    onclick="applyTypeFilter('Symposium')">Symposium    <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="Other"        onclick="applyTypeFilter('Other')">Other        <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+          <div id="type-filter-menu" class="hidden absolute right-0 mt-1 w-56 bg-white rounded-xl border border-slate-200 shadow-lg z-50 py-1.5 overflow-hidden">
+            <div class="px-3 py-1.5 text-[10px] font-bold text-outline uppercase tracking-widest">Type of Activity</div>
+            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="" onclick="applyTypeFilter('')">All Types <i class="ti ti-check text-primary" style="font-size:13px;"></i></button>
+            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="IP Awareness (IPA)" onclick="applyTypeFilter('IP Awareness (IPA)')">IP Awareness (IPA) <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="Patent Search (PS)" onclick="applyTypeFilter('Patent Search (PS)')">Patent Search (PS) <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="Patent Drafting (PD)" onclick="applyTypeFilter('Patent Drafting (PD)')">Patent Drafting (PD) <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="IPA and PS" onclick="applyTypeFilter('IPA and PS')">IPA and PS <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="IPA and PD" onclick="applyTypeFilter('IPA and PD')">IPA and PD <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="PS and PD" onclick="applyTypeFilter('PS and PD')">PS and PD <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+            <button class="type-opt w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between" data-val="IPA, PS, and PD" onclick="applyTypeFilter('IPA, PS, and PD')">IPA, PS, and PD <i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
           </div>
         </div>
-
-        <!-- Spacer -->
-        <div class="flex-1 hidden sm:block"></div>
 
         <!-- View toggle -->
         <div class="flex bg-slate-100 rounded-lg p-1 shrink-0">
@@ -270,21 +309,21 @@
             <i class="ti ti-calendar-off text-slate-300" style="font-size:32px;"></i>
           </div>
           <p class="text-[15px] font-semibold text-on-surface">No events found</p>
-          <p class="text-[13px] text-outline mt-1">Try adjusting your search or filters, or add a new event.</p>
+          <p class="text-[13px] text-outline mt-1">Try adjusting your search or add a new event.</p>
         </div>
       </div>
 
-      <!-- List view (hidden by default) -->
+      <!-- List view -->
       <div id="list-view" class="hidden overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-slate-50">
-              <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Event Name</th>
-              <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Type</th>
+              <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Event Title</th>
+              <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Type of Activity</th>
               <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Date</th>
-              <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Venue</th>
+              <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Mode</th>
               <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Participants</th>
-              <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Organizer</th>
+              <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Hours</th>
               <th class="px-5 py-3 text-[10px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant text-center">Action</th>
             </tr>
           </thead>
@@ -320,88 +359,140 @@
         <i class="ti ti-x" style="font-size:20px;"></i>
       </button>
     </div>
-    <div class="p-7 overflow-y-auto flex-1 space-y-5">
 
-      <!-- Event Name -->
+    <div class="p-7 overflow-y-auto flex-1 space-y-6">
+
+      <!-- Event Title -->
       <div>
-        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Event Name <span class="text-red-400">*</span></label>
-        <input id="fm-name" type="text" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="e.g. IP Awareness Seminar 2026"/>
+        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Event Title <span class="text-red-400">*</span></label>
+        <input id="fm-name" type="text"
+          class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline"
+          placeholder="e.g. IP Awareness Seminar 2026"/>
       </div>
 
-      <!-- Type + Date -->
+      <!-- Type of Activity + Mode of Delivery -->
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Event Type <span class="text-red-400">*</span></label>
-          <select id="fm-type" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all appearance-none">
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Type of Activity <span class="text-red-400">*</span></label>
+          <select id="fm-type"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all appearance-none">
             <option value="">Select type…</option>
-            <option>Seminar</option>
-            <option>Workshop</option>
-            <option>Conference</option>
-            <option>Training</option>
-            <option>Symposium</option>
-            <option>Other</option>
+            <option value="IP Awareness (IPA)">IP Awareness (IPA)</option>
+            <option value="Patent Search (PS)">Patent Search (PS)</option>
+            <option value="Patent Drafting (PD)">Patent Drafting (PD)</option>
+            <option value="IPA and PS">IPA and PS</option>
+            <option value="IPA and PD">IPA and PD</option>
+            <option value="PS and PD">PS and PD</option>
+            <option value="IPA, PS, and PD">IPA, PS, and PD</option>
           </select>
         </div>
         <div>
-          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Date <span class="text-red-400">*</span></label>
-          <input id="fm-date" type="date" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all"/>
-        </div>
-      </div>
-
-      <!-- Venue + Participants -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Venue</label>
-          <input id="fm-venue" type="text" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="e.g. Main Auditorium"/>
-        </div>
-        <div>
-          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">No. of Participants</label>
-          <input id="fm-participants" type="number" min="0" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="0"/>
-        </div>
-      </div>
-
-      <!-- Organizer + Co-organizer -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Organizer <span class="text-red-400">*</span></label>
-          <input id="fm-organizer" type="text" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="Department or person"/>
-        </div>
-        <div>
-          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Co-organizer</label>
-          <input id="fm-coorganizer" type="text" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="Optional"/>
-        </div>
-      </div>
-
-      <!-- Budget + Status -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Budget (₱)</label>
-          <input id="fm-budget" type="number" min="0" step="0.01" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="0.00"/>
-        </div>
-        <div>
-          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Status</label>
-          <select id="fm-status" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all appearance-none">
-            <option>Planned</option>
-            <option>Ongoing</option>
-            <option>Completed</option>
-            <option>Cancelled</option>
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Mode of Delivery <span class="text-red-400">*</span></label>
+          <select id="fm-mode"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all appearance-none">
+            <option value="">Select mode…</option>
+            <option value="Onsite">Onsite</option>
+            <option value="Online">Online</option>
           </select>
         </div>
       </div>
 
-      <!-- Description -->
-      <div>
-        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Event Description</label>
-        <textarea id="fm-description" rows="3" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[13px] text-on-surface resize-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="Brief description of the event objectives and activities…"></textarea>
+      <!-- Event Date + Duration + Number of Hours -->
+      <div class="grid grid-cols-3 gap-4">
+        <div>
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Event Date <span class="text-red-400">*</span></label>
+          <input id="fm-date" type="date"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all"/>
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Duration (Days) <span class="text-red-400">*</span></label>
+          <input id="fm-duration" type="number" min="1" step="1"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline"
+            placeholder="e.g. 1"/>
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Number of Hours <span class="text-red-400">*</span></label>
+          <input id="fm-hours" type="number" min="0" step="0.5"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline"
+            placeholder="e.g. 4"/>
+        </div>
       </div>
 
-      <!-- Objectives -->
+      <!-- Profile / Background -->
       <div>
-        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Objectives</label>
-        <textarea id="fm-objectives" rows="2" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[13px] text-on-surface resize-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="What are the goals of this event?"></textarea>
+        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2.5">Profile / Background <span class="text-red-400">*</span></label>
+        <div class="flex flex-wrap gap-2" id="fm-profile-group">
+          <div class="check-item" data-group="profile" data-value="Student" onclick="toggleCheckItem(this)">
+            <i class="ti ti-school" style="font-size:14px;"></i> Student
+          </div>
+          <div class="check-item" data-group="profile" data-value="Researcher" onclick="toggleCheckItem(this)">
+            <i class="ti ti-microscope" style="font-size:14px;"></i> Researcher
+          </div>
+          <div class="check-item" data-group="profile" data-value="Academic/Faculty" onclick="toggleCheckItem(this)">
+            <i class="ti ti-chalkboard" style="font-size:14px;"></i> Academic / Faculty
+          </div>
+          <div class="check-item" data-group="profile" data-value="Entrepreneur/Business Person" onclick="toggleCheckItem(this)">
+            <i class="ti ti-briefcase" style="font-size:14px;"></i> Entrepreneur / Business Person
+          </div>
+        </div>
+      </div>
+
+      <!-- Sector -->
+      <div>
+        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2.5">Sector <span class="text-red-400">*</span></label>
+        <div class="flex flex-wrap gap-2" id="fm-sector-group">
+          <div class="check-item" data-group="sector" data-value="Local Government Unit (LGU)" onclick="toggleCheckItem(this)">
+            <i class="ti ti-building-community" style="font-size:14px;"></i> Local Government Unit (LGU)
+          </div>
+          <div class="check-item" data-group="sector" data-value="Government Agency" onclick="toggleCheckItem(this)">
+            <i class="ti ti-building-bank" style="font-size:14px;"></i> Government Agency
+          </div>
+          <div class="check-item" data-group="sector" data-value="Academic Institution" onclick="toggleCheckItem(this)">
+            <i class="ti ti-school" style="font-size:14px;"></i> Academic Institution
+          </div>
+          <div class="check-item" data-group="sector" data-value="MSME" onclick="toggleCheckItem(this)">
+            <i class="ti ti-store" style="font-size:14px;"></i> MSME
+          </div>
+        </div>
+      </div>
+
+      <!-- Participants (Male + Female + Auto Total) -->
+      <div>
+        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2.5">Number of Participants <span class="text-red-400">*</span></label>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="text-[11px] font-semibold text-on-surface-variant block mb-1.5">Male</label>
+            <input id="fm-male" type="number" min="0" oninput="calcTotal()"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline"
+              placeholder="0"/>
+          </div>
+          <div>
+            <label class="text-[11px] font-semibold text-on-surface-variant block mb-1.5">Female</label>
+            <input id="fm-female" type="number" min="0" oninput="calcTotal()"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline"
+              placeholder="0"/>
+          </div>
+          <div>
+            <label class="text-[11px] font-semibold text-on-surface-variant block mb-1.5">Total</label>
+            <div class="w-full rounded-xl border border-outline-variant bg-slate-100 px-4 py-2.5 text-[13px] font-bold text-primary" id="fm-total-display">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Age Range -->
+      <div>
+        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2.5">Age Range <span class="text-red-400">*</span></label>
+        <div class="flex flex-wrap gap-2" id="fm-age-group">
+          <button type="button" class="age-pill" data-age="13–20" onclick="toggleAge(this)">13 – 20</button>
+          <button type="button" class="age-pill" data-age="21–30" onclick="toggleAge(this)">21 – 30</button>
+          <button type="button" class="age-pill" data-age="31–45" onclick="toggleAge(this)">31 – 45</button>
+          <button type="button" class="age-pill" data-age="46–59" onclick="toggleAge(this)">46 – 59</button>
+          <button type="button" class="age-pill" data-age="60 Above" onclick="toggleAge(this)">60 Above</button>
+        </div>
       </div>
 
     </div>
+
     <div class="px-7 py-5 bg-slate-50 border-t border-outline-variant flex items-center justify-between gap-3">
       <p id="form-error" class="text-[12px] text-red-500 hidden"></p>
       <div class="flex gap-3 ml-auto">
@@ -439,61 +530,111 @@
 
     <!-- Tabs -->
     <div class="border-b border-outline-variant px-7 flex gap-0">
-      <button onclick="switchTab('info')" id="tab-info" class="tab-btn px-1 py-3.5 text-[13px] font-semibold text-primary border-b-2 border-primary mr-6">Event Info</button>
+      <button onclick="switchTab('info')" id="tab-info" class="tab-btn px-1 py-3.5 text-[13px] font-semibold text-primary border-b-2 border-primary mr-6">Event Summary</button>
       <button onclick="switchTab('docs')" id="tab-docs" class="tab-btn px-1 py-3.5 text-[13px] font-medium text-outline border-b-2 border-transparent hover:text-on-surface transition-colors">Documents <span id="doc-count-badge" class="ml-1 bg-slate-100 text-outline text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span></button>
     </div>
 
-    <!-- Info tab -->
-    <div id="tab-info-content" class="p-7 overflow-y-auto flex-1 space-y-5">
+    <!-- ── Event Summary Tab ── -->
+    <div id="tab-info-content" class="p-7 overflow-y-auto flex-1">
 
-      <!-- Status hero -->
-      <div id="det-status-wrap" class="rounded-xl py-3 px-4 border-2 font-bold text-[15px]"></div>
+      <div class="rounded-2xl border border-outline-variant overflow-hidden">
 
-      <div class="border-t border-slate-100"></div>
+        <!-- Section header -->
+        <div class="px-5 py-3.5 bg-slate-50 border-b border-outline-variant flex items-center gap-2">
+          <i class="ti ti-clipboard-text text-primary" style="font-size:15px;"></i>
+          <span class="text-[11px] font-bold text-on-surface uppercase tracking-widest">Event Information</span>
+        </div>
 
-      <div class="grid grid-cols-2 gap-5">
-        <div>
-          <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">Date</p>
-          <p class="text-[14px] font-medium text-on-surface" id="det-date">—</p>
-        </div>
-        <div>
-          <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">Venue</p>
-          <p class="text-[14px] font-medium text-on-surface" id="det-venue">—</p>
-        </div>
-        <div>
-          <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">Participants</p>
-          <p class="text-[14px] font-medium text-on-surface" id="det-participants">—</p>
-        </div>
-        <div>
-          <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">Budget</p>
-          <p class="text-[14px] font-medium text-on-surface" id="det-budget">—</p>
-        </div>
-        <div>
-          <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">Organizer</p>
-          <p class="text-[14px] font-medium text-on-surface" id="det-organizer">—</p>
-        </div>
-        <div>
-          <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">Co-organizer</p>
-          <p class="text-[14px] font-medium text-on-surface" id="det-coorganizer">—</p>
+        <!-- Grid table -->
+        <div class="summary-grid">
+
+          <!-- Title (full width) -->
+          <div class="summary-cell-full">
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">Event Title</p>
+            <p class="text-[14px] font-semibold text-on-surface leading-snug" id="det-name-body">—</p>
+          </div>
+
+          <!-- Type + Mode -->
+          <div class="summary-cell">
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">Type of Activity</p>
+            <p class="text-[13px] font-medium text-on-surface" id="det-type-body">—</p>
+          </div>
+          <div class="summary-cell">
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">Mode of Delivery</p>
+            <p class="text-[13px] font-medium text-on-surface" id="det-mode-body">—</p>
+          </div>
+
+          <!-- Date + Hours -->
+          <div class="summary-cell">
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">Date</p>
+            <p class="text-[13px] font-medium text-on-surface" id="det-date">—</p>
+          </div>
+          <div class="summary-cell">
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">Number of Hours</p>
+            <p class="text-[13px] font-medium text-on-surface" id="det-hours">—</p>
+          </div>
+
+          <!-- Profile/Background (full width) -->
+          <div class="summary-cell-full">
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-2">Profile / Background</p>
+            <div id="det-profile" class="flex flex-wrap gap-1.5"></div>
+          </div>
+
+          <!-- Sector (full width) -->
+          <div class="summary-cell-full">
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-2">Sector</p>
+            <div id="det-sector" class="flex flex-wrap gap-1.5"></div>
+          </div>
+
+          <!-- Participants section header -->
+          <div class="summary-cell-full" style="background:#f8fafc; border-bottom:1px solid #f1f5f9;">
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Number of Participants</p>
+          </div>
+
+          <!-- Male + Female + Total -->
+          <div class="summary-cell" style="border-right:1px solid #f1f5f9;">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center">
+                <i class="ti ti-gender-male text-blue-600" style="font-size:11px;"></i>
+              </div>
+              <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Male</p>
+            </div>
+            <p class="text-[22px] font-bold text-on-surface tabular-nums" id="det-male">0</p>
+          </div>
+          <div class="summary-cell">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-5 h-5 rounded-full bg-pink-100 flex items-center justify-center">
+                <i class="ti ti-gender-female text-pink-500" style="font-size:11px;"></i>
+              </div>
+              <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Female</p>
+            </div>
+            <p class="text-[22px] font-bold text-on-surface tabular-nums" id="det-female">0</p>
+          </div>
+          <!-- Total (full width) -->
+          <div class="summary-cell-full" style="background:#eff6ff;">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                  <i class="ti ti-users text-primary" style="font-size:13px;"></i>
+                </div>
+                <p class="text-[10px] font-bold text-primary uppercase tracking-widest">Total Participants</p>
+              </div>
+              <p class="text-[26px] font-bold text-primary tabular-nums" id="det-total">0</p>
+            </div>
+          </div>
+
+          <!-- Age Range (full width) -->
+          <div class="summary-cell-full" style="border-bottom:none;">
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-2">Age Range</p>
+            <div id="det-age" class="flex flex-wrap gap-1.5"></div>
+          </div>
+
         </div>
       </div>
-
-      <div>
-        <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">Description</p>
-        <p class="text-[13px] text-on-surface-variant leading-relaxed" id="det-description">—</p>
-      </div>
-
-      <div id="det-objectives-wrap">
-        <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">Objectives</p>
-        <p class="text-[13px] text-on-surface-variant leading-relaxed" id="det-objectives">—</p>
-      </div>
-
     </div>
 
-    <!-- Docs tab (hidden by default) -->
+    <!-- ── Documents Tab ── -->
     <div id="tab-docs-content" class="p-7 overflow-y-auto flex-1 hidden space-y-5">
-
-      <!-- Upload area -->
       <div>
         <p class="text-[13px] font-semibold text-on-surface mb-3">Upload Documents</p>
         <div id="drop-zone" class="drop-zone p-6 text-center cursor-pointer" onclick="document.getElementById('file-input').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
@@ -506,21 +647,17 @@
         </div>
       </div>
 
-      <!-- Document type quick filter -->
       <div class="flex flex-wrap gap-2" id="doc-type-filters">
         <button onclick="filterDocs('all')" class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-primary bg-primary text-white transition-all" data-type="all">All</button>
-        <button onclick="filterDocs('Activity Report')"   class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Activity Report">Activity Report</button>
-        <button onclick="filterDocs('Attendance Sheet')"  class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Attendance Sheet">Attendance Sheet</button>
-        <button onclick="filterDocs('Photo')"             class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Photo">Photo</button>
-        <button onclick="filterDocs('Certificate')"       class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Certificate">Certificate</button>
-        <button onclick="filterDocs('Accomplishment Report')" class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Accomplishment Report">Accomplishment Report</button>
-        <button onclick="filterDocs('Other')"             class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Other">Other</button>
+        <button onclick="filterDocs('Activity Report')"        class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Activity Report">Activity Report</button>
+        <button onclick="filterDocs('Attendance Sheet')"       class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Attendance Sheet">Attendance Sheet</button>
+        <button onclick="filterDocs('Photo')"                  class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Photo">Photo</button>
+        <button onclick="filterDocs('Certificate')"            class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Certificate">Certificate</button>
+        <button onclick="filterDocs('Accomplishment Report')"  class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Accomplishment Report">Accomplishment Report</button>
+        <button onclick="filterDocs('Other')"                  class="doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all" data-type="Other">Other</button>
       </div>
 
-      <!-- Document list -->
       <div id="doc-list" class="space-y-2"></div>
-
-      <!-- Doc empty state -->
       <div id="doc-empty" class="hidden flex flex-col items-center justify-center py-10 text-center">
         <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-3">
           <i class="ti ti-file-off text-slate-300" style="font-size:24px;"></i>
@@ -528,7 +665,6 @@
         <p class="text-[13px] font-medium text-on-surface">No documents yet</p>
         <p class="text-[12px] text-outline mt-0.5">Upload files using the area above.</p>
       </div>
-
     </div>
 
     <!-- Footer -->
@@ -552,6 +688,74 @@
     <div class="flex items-center gap-3">
       <button onclick="closeConfirm()" class="flex-1 py-2.5 text-[13px] font-bold text-on-surface-variant bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Cancel</button>
       <button onclick="confirmDelete()" class="flex-1 py-2.5 text-[13px] font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SAVE CONFIRMATION MODAL ════ -->
+<div id="save-confirm-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-on-surface/50 backdrop-blur-sm">
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden modal-body">
+    <div class="px-7 py-5 border-b border-outline-variant flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+        <i class="ti ti-clipboard-check text-primary" style="font-size:20px;"></i>
+      </div>
+      <div>
+        <h3 class="text-[15px] font-bold text-on-surface" id="sc-title">Confirm Event Details</h3>
+        <p class="text-[11px] text-outline mt-0.5">Please review the information before saving.</p>
+      </div>
+    </div>
+    <div class="px-7 py-5 max-h-[55vh] overflow-y-auto">
+      <div class="rounded-xl border border-outline-variant overflow-hidden text-[13px]">
+        <div class="flex border-b border-slate-100">
+          <span class="w-[40%] px-4 py-2.5 text-[10px] font-bold text-outline uppercase tracking-widest bg-slate-50 flex-shrink-0">Event Title</span>
+          <span class="px-4 py-2.5 font-semibold text-on-surface leading-snug" id="sc-name">—</span>
+        </div>
+        <div class="flex border-b border-slate-100">
+          <span class="w-[40%] px-4 py-2.5 text-[10px] font-bold text-outline uppercase tracking-widest bg-slate-50 flex-shrink-0">Type of Activity</span>
+          <span class="px-4 py-2.5 text-on-surface" id="sc-type">—</span>
+        </div>
+        <div class="flex border-b border-slate-100">
+          <span class="w-[40%] px-4 py-2.5 text-[10px] font-bold text-outline uppercase tracking-widest bg-slate-50 flex-shrink-0">Mode of Delivery</span>
+          <span class="px-4 py-2.5 text-on-surface" id="sc-mode">—</span>
+        </div>
+        <div class="flex border-b border-slate-100">
+          <span class="w-[40%] px-4 py-2.5 text-[10px] font-bold text-outline uppercase tracking-widest bg-slate-50 flex-shrink-0">Date</span>
+          <span class="px-4 py-2.5 text-on-surface" id="sc-date">—</span>
+        </div>
+        <div class="flex border-b border-slate-100">
+          <span class="w-[40%] px-4 py-2.5 text-[10px] font-bold text-outline uppercase tracking-widest bg-slate-50 flex-shrink-0">Duration</span>
+          <span class="px-4 py-2.5 text-on-surface" id="sc-duration">—</span>
+        </div>
+        <div class="flex border-b border-slate-100">
+          <span class="w-[40%] px-4 py-2.5 text-[10px] font-bold text-outline uppercase tracking-widest bg-slate-50 flex-shrink-0">Number of Hours</span>
+          <span class="px-4 py-2.5 text-on-surface" id="sc-hours">—</span>
+        </div>
+        <div class="flex border-b border-slate-100">
+          <span class="w-[40%] px-4 py-2.5 text-[10px] font-bold text-outline uppercase tracking-widest bg-slate-50 flex-shrink-0">Participants</span>
+          <span class="px-4 py-2.5 text-on-surface" id="sc-participants">—</span>
+        </div>
+        <div class="flex border-b border-slate-100">
+          <span class="w-[40%] px-4 py-2.5 text-[10px] font-bold text-outline uppercase tracking-widest bg-slate-50 flex-shrink-0">Profile / BG</span>
+          <span class="px-4 py-2.5 text-on-surface leading-relaxed" id="sc-profile">—</span>
+        </div>
+        <div class="flex border-b border-slate-100">
+          <span class="w-[40%] px-4 py-2.5 text-[10px] font-bold text-outline uppercase tracking-widest bg-slate-50 flex-shrink-0">Sector</span>
+          <span class="px-4 py-2.5 text-on-surface leading-relaxed" id="sc-sector">—</span>
+        </div>
+        <div class="flex">
+          <span class="w-[40%] px-4 py-2.5 text-[10px] font-bold text-outline uppercase tracking-widest bg-slate-50 flex-shrink-0">Age Range</span>
+          <span class="px-4 py-2.5 text-on-surface" id="sc-age">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="px-7 py-5 bg-slate-50 border-t border-outline-variant flex items-center gap-3 justify-end">
+      <button onclick="closeSaveConfirm()" class="px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant border border-slate-200 rounded-xl hover:bg-slate-100 transition-all flex items-center gap-2">
+        <i class="ti ti-arrow-left" style="font-size:13px;"></i> Go Back &amp; Edit
+      </button>
+      <button onclick="confirmSaveEvent()" class="px-6 py-2.5 text-[13px] font-bold text-white bg-primary rounded-xl hover:opacity-90 hover:-translate-y-0.5 transition-all flex items-center gap-2">
+        <i class="ti ti-device-floppy" style="font-size:15px;"></i>
+        <span id="sc-save-label">Save Event</span>
+      </button>
     </div>
   </div>
 </div>
@@ -593,9 +797,7 @@
 </div>
 
 <script>
-/* ═════════════════════════════════════════════════════════════════════════════
-   CLOCK
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ CLOCK ═══════════════════════ */
 function updateClock() {
   const now  = new Date();
   let h      = now.getHours();
@@ -606,59 +808,97 @@ function updateClock() {
   document.getElementById('live-time').textContent = `${String(h).padStart(2,'0')}:${m}:${s}`;
   document.getElementById('live-ampm').textContent  = ampm;
 }
-updateClock();
-setInterval(updateClock, 1000);
+updateClock(); setInterval(updateClock, 1000);
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   DATA  (in-memory store — replace with API calls in production)
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ DATA ═══════════════════════ */
 let EVENTS = [
-  { id:1, name:'IP Awareness Seminar 2026', type:'Seminar', date:'2026-06-15', venue:'Main Auditorium, CCS Building', participants:120, organizer:'Office of the IP Coordinator', coorganizer:'College of Computer Studies', budget:15000, status:'Upcoming', description:'A half-day seminar introducing faculty and students to the basics of intellectual property rights, filing procedures, and the importance of protecting creative works.', objectives:'Increase IP awareness among faculty and students; Explain the IPO filing process; Showcase recent college IP filings.', docs:[ {id:'d1',name:'Event Program.pdf',type:'Activity Report',size:'245 KB',date:'2026-05-10',url:'#'}, {id:'d2',name:'Attendance_Sheet.xlsx',type:'Attendance Sheet',size:'88 KB',date:'2026-05-10',url:'#'} ] },
-  { id:2, name:'Patent Writing Workshop', type:'Workshop', date:'2026-07-03', venue:'Innovation Hub, Room 201', participants:45, organizer:'RPCO – IP Unit', coorganizer:'', budget:8500, status:'Planned', description:'Hands-on workshop guiding participants through the structure and requirements of a patent application, including claims drafting and prior-art searching.', objectives:'Teach participants to draft strong patent claims; Conduct mock prior-art searches; Produce at least 5 draft patent outlines.', docs:[ {id:'d3',name:'Workshop_Slides.pptx',type:'Activity Report',size:'4.2 MB',date:'2026-06-01',url:'#'} ] },
-  { id:3, name:'Copyright Orientation for Faculty', type:'Seminar', date:'2026-05-20', venue:'Conference Room A', participants:60, organizer:'IP Office', coorganizer:'HRMD', budget:5000, status:'Completed', description:'An orientation session covering copyright ownership of academic works, fair use, and institutional policy on intellectual property.', objectives:'Clarify copyright ownership rules; Address common misconceptions; Distribute updated IP policy handbook.', docs:[ {id:'d4',name:'Accomplishment_Report.docx',type:'Accomplishment Report',size:'320 KB',date:'2026-05-22',url:'#'}, {id:'d5',name:'Group_Photo.jpg',type:'Photo',size:'1.8 MB',date:'2026-05-20',url:'#'}, {id:'d6',name:'Certificates.pdf',type:'Certificate',size:'980 KB',date:'2026-05-21',url:'#'} ] },
-  { id:4, name:'Regional IP Conference 2026', type:'Conference', date:'2026-08-22', venue:'SMX Convention Center', participants:350, organizer:'IPOPHL', coorganizer:'University IP Office', budget:120000, status:'Planned', description:'Regional gathering of IP professionals, academics, and government officials to discuss trends in IP protection and commercialization across the Visayas region.', objectives:'Network with regional IP stakeholders; Present institutional IP achievements; Identify collaboration opportunities.', docs:[] },
-  { id:5, name:'Trademark Filing Training', type:'Training', date:'2026-04-10', venue:'Online via Zoom', participants:80, organizer:'IPOPHL Academy', coorganizer:'CCS IP Club', budget:0, status:'Completed', description:'Virtual training session on how to search the trademark database, classify goods and services, and submit a trademark application through the IPOPHL e-filing portal.', objectives:'Enable participants to file trademarks independently; Demonstrate e-filing portal usage; Provide practice exercises.', docs:[ {id:'d7',name:'Attendance_Sheet_v2.pdf',type:'Attendance Sheet',size:'156 KB',date:'2026-04-11',url:'#'} ] },
-  { id:6, name:'Industrial Design Symposium', type:'Symposium', date:'2026-09-05', venue:'Design Center, 3rd Floor', participants:95, organizer:'College of Engineering', coorganizer:'Industrial Design Program', budget:22000, status:'Upcoming', description:'Symposium showcasing student and faculty industrial design projects with IP potential, featuring keynote talks from IPOPHL examiners and practicing designers.', objectives:'Showcase IP-ready design projects; Connect students with industry mentors; Explore commercialization pathways.', docs:[] },
+  {
+    id:1, name:'IP Awareness Seminar 2026',
+    type:'IP Awareness (IPA)', mode:'Onsite',
+    date:'2026-06-15', hours:4, duration:1,
+    profile:['Academic/Faculty','Researcher'],
+    sector:['Academic Institution'],
+    male:72, female:48,
+    ageRange:['21–30','31–45'],
+    docs:[
+      {id:'d1',name:'Event Program.pdf',type:'Activity Report',size:'245 KB',date:'2026-05-10',url:'#'},
+      {id:'d2',name:'Attendance_Sheet.xlsx',type:'Attendance Sheet',size:'88 KB',date:'2026-05-10',url:'#'}
+    ]
+  },
+  {
+    id:2, name:'Patent Writing Workshop',
+    type:'Patent Drafting (PD)', mode:'Onsite',
+    date:'2026-07-03', hours:8, duration:2,
+    profile:['Researcher','Academic/Faculty'],
+    sector:['Academic Institution','Government Agency'],
+    male:20, female:25,
+    ageRange:['21–30','31–45','46–59'],
+    docs:[{id:'d3',name:'Workshop_Slides.pptx',type:'Activity Report',size:'4.2 MB',date:'2026-06-01',url:'#'}]
+  },
+  {
+    id:3, name:'Patent Search Training for MSMEs',
+    type:'Patent Search (PS)', mode:'Online',
+    date:'2026-05-20', hours:3, duration:1,
+    profile:['Entrepreneur/Business Person'],
+    sector:['MSME','Local Government Unit (LGU)'],
+    male:30, female:30,
+    ageRange:['31–45','46–59'],
+    docs:[
+      {id:'d4',name:'Accomplishment_Report.docx',type:'Accomplishment Report',size:'320 KB',date:'2026-05-22',url:'#'},
+      {id:'d5',name:'Group_Photo.jpg',type:'Photo',size:'1.8 MB',date:'2026-05-20',url:'#'}
+    ]
+  },
+  {
+    id:4, name:'IPA and Patent Search Combo Session',
+    type:'IPA and PS', mode:'Online',
+    date:'2026-08-22', hours:6, duration:3,
+    profile:['Student','Researcher'],
+    sector:['Academic Institution'],
+    male:180, female:170,
+    ageRange:['13–20','21–30'],
+    docs:[]
+  },
+  {
+    id:5, name:'Comprehensive IP Training Program',
+    type:'IPA, PS, and PD', mode:'Onsite',
+    date:'2026-09-05', hours:16, duration:5,
+    profile:['Student','Academic/Faculty','Researcher','Entrepreneur/Business Person'],
+    sector:['Academic Institution','MSME','Government Agency'],
+    male:50, female:45,
+    ageRange:['21–30','31–45'],
+    docs:[]
+  },
 ];
-let nextEventId = 7;
+let nextEventId = 6;
 let nextDocId   = 8;
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   STATE
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ STATE ═══════════════════════ */
 const ROWS_PER_PAGE = 6;
-let currentPage      = 1;
-let currentView      = 'card';   // 'card' | 'list'
-let searchQuery      = '';
-let dateFilter       = 'all';
-let typeFilter       = 'all';
-let editingEventId   = null;
-let viewingEventId   = null;
-let deleteTargetId   = null;
-let activeDocFilter  = 'all';
-let pendingDocFile   = null;     // file awaiting doctype classification
+let currentPage     = 1;
+let currentView     = 'card';
+let searchQuery     = '';
+let filterMonth     = '';
+let filterYear      = '';
+let filterType      = '';
+let editingEventId  = null;
+let viewingEventId  = null;
+let deleteTargetId  = null;
+let activeDocFilter = 'all';
+let pendingDocFile  = null;
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   FILTERING & RENDERING
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ FILTER + RENDER ═══════════════════════ */
 function getFiltered() {
-  const now   = new Date();
-  const today = now.toISOString().split('T')[0];
-  const wkEnd = new Date(now); wkEnd.setDate(wkEnd.getDate() + 7);
-  const moEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
-  const moSta = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-
   return EVENTS.filter(e => {
     const q = searchQuery.toLowerCase();
-    const matchSearch = !q || e.name.toLowerCase().includes(q) || e.type.toLowerCase().includes(q) || (e.venue||'').toLowerCase().includes(q) || (e.organizer||'').toLowerCase().includes(q) || (e.description||'').toLowerCase().includes(q);
-    const matchType   = typeFilter === 'all' || e.type === typeFilter;
-    let   matchDate   = true;
-    if (dateFilter === 'today')    matchDate = e.date === today;
-    else if (dateFilter === 'week')   matchDate = e.date >= today && e.date <= wkEnd.toISOString().split('T')[0];
-    else if (dateFilter === 'month')  matchDate = e.date >= moSta && e.date <= moEnd;
-    else if (dateFilter === 'upcoming') matchDate = e.date >= today;
-    else if (dateFilter === 'past')   matchDate = e.date < today;
-    return matchSearch && matchType && matchDate;
+    const matchSearch = !q || e.name.toLowerCase().includes(q) || e.type.toLowerCase().includes(q) || (e.mode||'').toLowerCase().includes(q);
+    let matchDate = true;
+    if (filterMonth || filterYear) {
+      const [y, m] = (e.date||'').split('-');
+      if (filterMonth && parseInt(m) !== parseInt(filterMonth)) matchDate = false;
+      if (filterYear  && y !== filterYear) matchDate = false;
+    }
+    const matchType = !filterType || e.type === filterType;
+    return matchSearch && matchDate && matchType;
   });
 }
 
@@ -668,29 +908,124 @@ function filterAndRender() {
   render();
 }
 
-function render() {
-  const filtered = getFiltered();
-  const total    = filtered.length;
-  updateStats();
-  updateStatCards();
+/* ── Date filter ── */
+function toggleDateFilter() {
+  const m = document.getElementById('date-filter-menu');
+  const isHidden = m.classList.contains('hidden');
+  closeAllDropdowns();
+  if (isHidden) {
+    populateYears();
+    m.classList.remove('hidden');
+    document.getElementById('date-filter-chevron').style.transform = 'rotate(180deg)';
+  }
+}
 
-  // Pagination
+function populateYears() {
+  const sel = document.getElementById('filter-year');
+  const existing = Array.from(sel.options).map(o => o.value);
+  const years = [...new Set(EVENTS.map(e => (e.date||'').split('-')[0]).filter(Boolean))].sort((a,b)=>b-a);
+  years.forEach(y => { if (!existing.includes(y)) { const o = document.createElement('option'); o.value=y; o.textContent=y; sel.appendChild(o); } });
+}
+
+function applyDateFilter() {
+  filterMonth = document.getElementById('filter-month').value;
+  filterYear  = document.getElementById('filter-year').value;
+  updateDateFilterLabel();
+  updateDateFilterStyle();
+  currentPage = 1;
+  render();
+}
+
+function clearDateFilter() {
+  filterMonth = ''; filterYear = '';
+  document.getElementById('filter-month').value = '';
+  document.getElementById('filter-year').value  = '';
+  updateDateFilterLabel();
+  updateDateFilterStyle();
+  currentPage = 1;
+  render();
+}
+
+function updateDateFilterLabel() {
+  const MONTHS = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+  const m = filterMonth ? MONTHS[parseInt(filterMonth)] : '';
+  const y = filterYear  || '';
+  let label = 'All Dates';
+  if (m && y) label = `${m} ${y}`;
+  else if (m)  label = m;
+  else if (y)  label = y;
+  document.getElementById('date-filter-label').textContent = label;
+}
+
+function updateDateFilterStyle() {
+  const btn    = document.getElementById('date-filter-btn');
+  const active = !!(filterMonth || filterYear);
+  btn.classList.toggle('border-primary', active);
+  btn.classList.toggle('text-primary',   active);
+  btn.classList.toggle('bg-blue-50',     active);
+}
+
+/* ── Type filter ── */
+function toggleTypeFilter() {
+  const m = document.getElementById('type-filter-menu');
+  const isHidden = m.classList.contains('hidden');
+  closeAllDropdowns();
+  if (isHidden) {
+    m.classList.remove('hidden');
+    document.getElementById('type-filter-chevron').style.transform = 'rotate(180deg)';
+  }
+}
+
+function applyTypeFilter(val) {
+  filterType = val;
+  document.getElementById('type-filter-label').textContent = val || 'All Types';
+  document.querySelectorAll('.type-opt').forEach(b => {
+    b.querySelector('i').classList.toggle('hidden', b.dataset.val !== val);
+  });
+  const btn    = document.getElementById('type-filter-btn');
+  const active = !!val;
+  btn.classList.toggle('border-primary', active);
+  btn.classList.toggle('text-primary',   active);
+  btn.classList.toggle('bg-blue-50',     active);
+  closeAllDropdowns();
+  currentPage = 1;
+  render();
+}
+
+function closeAllDropdowns() {
+  ['date-filter-menu','type-filter-menu'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+  const dc = document.getElementById('date-filter-chevron');
+  const tc = document.getElementById('type-filter-chevron');
+  if (dc) dc.style.transform = '';
+  if (tc) tc.style.transform = '';
+}
+
+document.addEventListener('click', e => {
+  const dw = document.getElementById('date-filter-wrapper');
+  const tw = document.getElementById('type-filter-wrapper');
+  if (dw && !dw.contains(e.target) && tw && !tw.contains(e.target)) closeAllDropdowns();
+});
+
+function render() {
+  const filtered   = getFiltered();
+  const total      = filtered.length;
+  updateStats();
   const totalPages = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
   if (currentPage > totalPages) currentPage = totalPages;
   const start = (currentPage - 1) * ROWS_PER_PAGE;
   const page  = filtered.slice(start, start + ROWS_PER_PAGE);
-
   if (currentView === 'card') renderCards(page, total, start);
   else                        renderList(page, total, start);
-
   renderPagination(total, totalPages);
 }
 
-function renderCards(page, total, start) {
+function renderCards(page, total) {
   const grid    = document.getElementById('event-cards');
   const emptyEl = document.getElementById('card-empty');
   grid.innerHTML = '';
-
   if (total === 0) { emptyEl.classList.remove('hidden'); return; }
   emptyEl.classList.add('hidden');
 
@@ -698,28 +1033,30 @@ function renderCards(page, total, start) {
     const card = document.createElement('div');
     card.className = 'event-card bg-white rounded-2xl border border-outline-variant shadow-sm overflow-hidden flex flex-col cursor-pointer';
     card.onclick   = () => openDetailModal(ev.id);
-
     const catCls   = catClass(ev.type);
-    const statusCls = statusClass(ev.status);
-    const dateStr  = fmtDate(ev.date);
-    const desc     = (ev.description||'').slice(0,90) + ((ev.description||'').length > 90 ? '…' : '');
+    const modeCls  = ev.mode === 'Online' ? 'bg-violet-50 text-violet-700' : 'bg-teal-50 text-teal-700';
+    const total    = (ev.male||0) + (ev.female||0);
     const docCount = (ev.docs||[]).length;
+    const ageStr   = (ev.ageRange||[]).join(', ') || '—';
 
     card.innerHTML = `
       <div class="p-5 flex-1 flex flex-col gap-3">
         <div class="flex items-start justify-between gap-2">
           <div class="flex-1 min-w-0">
             <h3 class="text-[14px] font-bold text-on-surface leading-snug line-clamp-2">${ev.name}</h3>
-            <p class="text-[11px] text-outline mt-0.5">${dateStr} · ${ev.venue || 'No venue'}</p>
+            <p class="text-[11px] text-outline mt-0.5">${fmtDate(ev.date)} · ${ev.hours || 0} hr${ev.hours !== 1 ? 's' : ''}</p>
           </div>
-          <span class="text-[10px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 ${statusCls.bg} ${statusCls.text}">${ev.status}</span>
+          <span class="text-[10px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 ${modeCls}">${ev.mode}</span>
         </div>
-        <p class="text-[12px] text-on-surface-variant leading-relaxed flex-1">${desc || 'No description.'}</p>
-        <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-2 flex-wrap">
           <span class="text-[10px] font-bold px-2 py-1 rounded-full ${catCls}">${ev.type}</span>
-          <span class="flex items-center gap-1 text-[11px] text-outline"><i class="ti ti-users" style="font-size:12px;"></i>${ev.participants||0}</span>
-          ${docCount > 0 ? `<span class="flex items-center gap-1 text-[11px] text-outline"><i class="ti ti-paperclip" style="font-size:12px;"></i>${docCount}</span>` : ''}
         </div>
+        <div class="flex items-center gap-3 flex-wrap border-t border-slate-100 pt-3 mt-1">
+          <span class="flex items-center gap-1 text-[11px] text-outline"><i class="ti ti-users" style="font-size:12px;"></i>${total.toLocaleString()} participants</span>
+          ${docCount > 0 ? `<span class="flex items-center gap-1 text-[11px] text-outline"><i class="ti ti-paperclip" style="font-size:12px;"></i>${docCount}</span>` : ''}
+          <span class="text-[11px] text-outline truncate max-w-[140px]"><i class="ti ti-clock" style="font-size:12px;"></i> ${ev.hours||0}h</span>
+        </div>
+        ${(ev.profile||[]).length ? `<div class="flex flex-wrap gap-1">${(ev.profile||[]).map(p=>`<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-on-surface-variant">${p}</span>`).join('')}</div>` : ''}
       </div>
       <div class="px-5 py-3 border-t border-outline-variant flex items-center gap-2" onclick="event.stopPropagation()">
         <button onclick="openDetailModal(${ev.id})" class="flex items-center gap-1 px-3 py-1.5 text-[11px] font-semibold text-primary bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
@@ -736,26 +1073,18 @@ function renderCards(page, total, start) {
   });
 }
 
-function renderList(page, total, start) {
+function renderList(page, total) {
   const tbody   = document.getElementById('event-list');
   const emptyEl = document.getElementById('list-empty');
   tbody.innerHTML = '';
-
   if (total === 0) { emptyEl.classList.remove('hidden'); return; }
   emptyEl.classList.add('hidden');
 
-  const statusStyle = {
-    Planned:   { bg:'bg-blue-50',   text:'text-blue-700' },
-    Upcoming:  { bg:'bg-indigo-50', text:'text-indigo-700' },
-    Ongoing:   { bg:'bg-amber-50',  text:'text-amber-700' },
-    Completed: { bg:'bg-emerald-50',text:'text-emerald-700' },
-    Cancelled: { bg:'bg-red-50',    text:'text-red-600' },
-  };
-
   page.forEach(ev => {
-    const s   = statusStyle[ev.status] || { bg:'bg-slate-100', text:'text-slate-600' };
-    const cat = catClass(ev.type);
-    const tr  = document.createElement('tr');
+    const cat   = catClass(ev.type);
+    const total = (ev.male||0) + (ev.female||0);
+    const modeCls = ev.mode === 'Online' ? 'bg-violet-50 text-violet-700' : 'bg-teal-50 text-teal-700';
+    const tr    = document.createElement('tr');
     tr.className = 'list-row';
     tr.innerHTML = `
       <td class="px-5 py-4 text-[13px] font-semibold text-on-surface max-w-[220px]">
@@ -765,13 +1094,11 @@ function renderList(page, total, start) {
         <span class="text-[10px] font-bold px-2 py-1 rounded-full ${cat}">${ev.type}</span>
       </td>
       <td class="px-5 py-4 text-[12px] text-on-surface-variant whitespace-nowrap">${fmtDate(ev.date)}</td>
-      <td class="px-5 py-4 text-[12px] text-on-surface-variant max-w-[160px]">
-        <span class="line-clamp-1">${ev.venue||'—'}</span>
+      <td class="px-5 py-4 whitespace-nowrap">
+        <span class="text-[10px] font-bold px-2 py-1 rounded-full ${modeCls}">${ev.mode||'—'}</span>
       </td>
-      <td class="px-5 py-4 text-[12px] text-on-surface-variant whitespace-nowrap text-center">${ev.participants||0}</td>
-      <td class="px-5 py-4 text-[12px] text-on-surface-variant max-w-[140px]">
-        <span class="line-clamp-1">${ev.organizer||'—'}</span>
-      </td>
+      <td class="px-5 py-4 text-[12px] text-on-surface-variant whitespace-nowrap text-center">${total.toLocaleString()}</td>
+      <td class="px-5 py-4 text-[12px] text-on-surface-variant whitespace-nowrap">${ev.hours ? ev.hours + 'h' : '—'}</td>
       <td class="px-5 py-4 text-center whitespace-nowrap">
         <div class="flex items-center justify-center gap-1.5">
           <button onclick="openDetailModal(${ev.id})" class="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-primary bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><i class="ti ti-eye" style="font-size:12px;"></i> View</button>
@@ -790,7 +1117,6 @@ function renderPagination(total, totalPages) {
 
   const ctrl = document.getElementById('pagination-controls');
   ctrl.innerHTML = '';
-
   const mkBtn = (label, pg, isActive, isDisabled, isIcon) => {
     const btn = document.createElement('button');
     btn.className = `page-btn${isActive ? ' active' : ''}`;
@@ -799,7 +1125,6 @@ function renderPagination(total, totalPages) {
     if (!isDisabled && !isActive) btn.onclick = () => { currentPage = pg; render(); };
     ctrl.appendChild(btn);
   };
-
   mkBtn('chevron_left', currentPage - 1, false, currentPage === 1, true);
   const pages = [];
   if (totalPages <= 7) { for (let i = 1; i <= totalPages; i++) pages.push(i); }
@@ -817,20 +1142,15 @@ function renderPagination(total, totalPages) {
   mkBtn('chevron_right', currentPage + 1, false, currentPage === totalPages, true);
 }
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   STAT CARDS
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ STATS ═══════════════════════ */
 function updateStats() {
-  const now     = new Date().toISOString().split('T')[0];
+  const now = new Date().toISOString().split('T')[0];
   document.getElementById('stat-total').textContent        = EVENTS.length;
   document.getElementById('stat-upcoming').textContent     = EVENTS.filter(e => e.date >= now).length;
-  document.getElementById('stat-participants').textContent = EVENTS.reduce((s, e) => s + (e.participants || 0), 0).toLocaleString();
+  document.getElementById('stat-participants').textContent = EVENTS.reduce((s,e) => s + (e.male||0) + (e.female||0), 0).toLocaleString();
 }
-function updateStatCards() { updateStats(); }
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   VIEW TOGGLE
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ VIEW TOGGLE ═══════════════════════ */
 function setView(v) {
   currentView = v;
   document.getElementById('card-view').classList.toggle('hidden', v !== 'card');
@@ -840,61 +1160,31 @@ function setView(v) {
   render();
 }
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   FILTERS
-═════════════════════════════════════════════════════════════════════════════ */
-function toggleDateFilter() {
-  const m = document.getElementById('date-filter-menu');
-  const isHidden = m.classList.contains('hidden');
-  closeAllDropdowns();
-  if (isHidden) { m.classList.remove('hidden'); document.getElementById('date-filter-chevron').style.transform='rotate(180deg)'; }
-}
-function toggleTypeFilter() {
-  const m = document.getElementById('type-filter-menu');
-  const isHidden = m.classList.contains('hidden');
-  closeAllDropdowns();
-  if (isHidden) { m.classList.remove('hidden'); document.getElementById('type-filter-chevron').style.transform='rotate(180deg)'; }
-}
-function closeAllDropdowns() {
-  ['date-filter-menu','type-filter-menu'].forEach(id => document.getElementById(id).classList.add('hidden'));
-  document.getElementById('date-filter-chevron').style.transform='';
-  document.getElementById('type-filter-chevron').style.transform='';
-}
-document.addEventListener('click', e => {
-  if (!document.getElementById('date-filter-wrapper').contains(e.target) &&
-      !document.getElementById('type-filter-wrapper').contains(e.target)) closeAllDropdowns();
-});
-
-function applyDateFilter(val) {
-  dateFilter = val;
-  const labels = { all:'All Dates', today:'Today', week:'This Week', month:'This Month', upcoming:'Upcoming', past:'Past Events' };
-  document.getElementById('date-filter-label').textContent = labels[val];
-  document.querySelectorAll('.date-opt').forEach(b => { b.querySelector('i').classList.toggle('hidden', b.dataset.val !== val); });
-  const btn = document.getElementById('date-filter-btn');
-  const active = val !== 'all';
-  btn.classList.toggle('border-primary', active);
-  btn.classList.toggle('text-primary', active);
-  btn.classList.toggle('bg-blue-50', active);
-  closeAllDropdowns();
-  filterAndRender();
+/* ═══════════════════════ FORM HELPERS ═══════════════════════ */
+function calcTotal() {
+  const m = parseInt(document.getElementById('fm-male').value) || 0;
+  const f = parseInt(document.getElementById('fm-female').value) || 0;
+  document.getElementById('fm-total-display').textContent = (m + f).toLocaleString();
 }
 
-function applyTypeFilter(val) {
-  typeFilter = val;
-  document.getElementById('type-filter-label').textContent = val === 'all' ? 'All Types' : val;
-  document.querySelectorAll('.type-opt').forEach(b => { b.querySelector('i').classList.toggle('hidden', b.dataset.val !== val); });
-  const btn = document.getElementById('type-filter-btn');
-  const active = val !== 'all';
-  btn.classList.toggle('border-primary', active);
-  btn.classList.toggle('text-primary', active);
-  btn.classList.toggle('bg-blue-50', active);
-  closeAllDropdowns();
-  filterAndRender();
+function toggleAge(btn) {
+  btn.classList.toggle('selected');
 }
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   ADD / EDIT EVENT FORM
-═════════════════════════════════════════════════════════════════════════════ */
+function getCheckedValues(groupId) {
+  return Array.from(document.querySelectorAll(`#${groupId} .check-item.checked`)).map(el => el.dataset.value);
+}
+
+function getSelectedAges() {
+  return Array.from(document.querySelectorAll('#fm-age-group .age-pill.selected')).map(el => el.dataset.age);
+}
+
+// Toggle a check-item div directly
+function toggleCheckItem(el) {
+  el.classList.toggle('checked');
+}
+
+/* ═══════════════════════ ADD / EDIT MODAL ═══════════════════════ */
 function openAddEventModal() {
   editingEventId = null;
   clearForm();
@@ -907,18 +1197,35 @@ function openEditModal(id) {
   const ev = EVENTS.find(e => e.id === id);
   if (!ev) return;
   editingEventId = id;
+  clearForm();
 
-  document.getElementById('fm-name').value         = ev.name;
-  document.getElementById('fm-type').value         = ev.type;
-  document.getElementById('fm-date').value         = ev.date;
-  document.getElementById('fm-venue').value        = ev.venue || '';
-  document.getElementById('fm-participants').value = ev.participants || 0;
-  document.getElementById('fm-organizer').value    = ev.organizer || '';
-  document.getElementById('fm-coorganizer').value  = ev.coorganizer || '';
-  document.getElementById('fm-budget').value       = ev.budget || 0;
-  document.getElementById('fm-status').value       = ev.status || 'Planned';
-  document.getElementById('fm-description').value  = ev.description || '';
-  document.getElementById('fm-objectives').value   = ev.objectives || '';
+  document.getElementById('fm-name').value   = ev.name;
+  document.getElementById('fm-type').value   = ev.type;
+  document.getElementById('fm-mode').value   = ev.mode || '';
+  document.getElementById('fm-date').value   = ev.date;
+  document.getElementById('fm-duration').value = ev.duration || '';
+  document.getElementById('fm-hours').value  = ev.hours || '';
+  document.getElementById('fm-male').value   = ev.male || 0;
+  document.getElementById('fm-female').value = ev.female || 0;
+  calcTotal();
+
+  // Profile checkboxes
+  (ev.profile||[]).forEach(val => {
+    const el = document.querySelector(`#fm-profile-group [data-value="${val}"]`);
+    if (el) el.classList.add('checked');
+  });
+
+  // Sector checkboxes
+  (ev.sector||[]).forEach(val => {
+    const el = document.querySelector(`#fm-sector-group [data-value="${val}"]`);
+    if (el) el.classList.add('checked');
+  });
+
+  // Age pills
+  (ev.ageRange||[]).forEach(age => {
+    const pill = document.querySelector(`#fm-age-group [data-age="${age}"]`);
+    if (pill) pill.classList.add('selected');
+  });
 
   document.getElementById('form-modal-title').textContent = 'Edit Event';
   document.getElementById('form-save-label').textContent  = 'Update Event';
@@ -929,113 +1236,171 @@ function openEditModal(id) {
 function closeFormModal() { hide('event-form-modal'); }
 
 function clearForm() {
-  ['fm-name','fm-type','fm-date','fm-venue','fm-participants','fm-organizer','fm-coorganizer','fm-budget','fm-description','fm-objectives'].forEach(id => { document.getElementById(id).value = ''; });
-  document.getElementById('fm-status').value = 'Planned';
+  document.getElementById('fm-name').value   = '';
+  document.getElementById('fm-type').value   = '';
+  document.getElementById('fm-mode').value   = '';
+  document.getElementById('fm-date').value   = '';
+  document.getElementById('fm-duration').value = '';
+  document.getElementById('fm-hours').value  = '';
+  document.getElementById('fm-male').value   = '';
+  document.getElementById('fm-female').value = '';
+  document.getElementById('fm-total-display').textContent = '0';
+  // Uncheck all
+  document.querySelectorAll('#fm-profile-group .check-item, #fm-sector-group .check-item').forEach(el => {
+    el.classList.remove('checked');
+  });
+  document.querySelectorAll('#fm-age-group .age-pill').forEach(el => el.classList.remove('selected'));
   document.getElementById('form-error').classList.add('hidden');
 }
 
-function saveEvent() {
-  const name = document.getElementById('fm-name').value.trim();
-  const type = document.getElementById('fm-type').value;
-  const date = document.getElementById('fm-date').value;
-  const org  = document.getElementById('fm-organizer').value.trim();
-  const err  = document.getElementById('form-error');
+// Holds validated payload while user reviews in confirm modal
+let _pendingPayload = null;
 
-  if (!name || !type || !date || !org) {
-    err.textContent = 'Please fill in all required fields (Name, Type, Date, Organizer).';
-    err.classList.remove('hidden');
-    return;
+function saveEvent() {
+  const name     = document.getElementById('fm-name').value.trim();
+  const type     = document.getElementById('fm-type').value;
+  const mode     = document.getElementById('fm-mode').value;
+  const date     = document.getElementById('fm-date').value;
+  const duration = parseInt(document.getElementById('fm-duration').value) || 0;
+  const hours    = parseFloat(document.getElementById('fm-hours').value) || 0;
+  const male     = parseInt(document.getElementById('fm-male').value) || 0;
+  const female   = parseInt(document.getElementById('fm-female').value) || 0;
+  const profile  = getCheckedValues('fm-profile-group');
+  const sector   = getCheckedValues('fm-sector-group');
+  const ageRange = getSelectedAges();
+  const err      = document.getElementById('form-error');
+
+  if (!name || !type || !mode || !date) {
+    err.textContent = 'Please fill in all required fields: Title, Type of Activity, Mode of Delivery, and Date.';
+    err.classList.remove('hidden'); return;
+  }
+  if (duration <= 0) {
+    err.textContent = 'Please enter a valid Duration (number of days).';
+    err.classList.remove('hidden'); return;
+  }
+  if (hours <= 0) {
+    err.textContent = 'Please enter a valid Number of Hours.';
+    err.classList.remove('hidden'); return;
+  }
+  if (male === 0 && female === 0) {
+    err.textContent = 'Please enter at least one participant (Male or Female).';
+    err.classList.remove('hidden'); return;
+  }
+  if (profile.length === 0) {
+    err.textContent = 'Please select at least one Profile / Background.';
+    err.classList.remove('hidden'); return;
+  }
+  if (sector.length === 0) {
+    err.textContent = 'Please select at least one Sector.';
+    err.classList.remove('hidden'); return;
+  }
+  if (ageRange.length === 0) {
+    err.textContent = 'Please select at least one Age Range.';
+    err.classList.remove('hidden'); return;
   }
   err.classList.add('hidden');
 
-  const payload = {
-    name, type, date,
-    venue:        document.getElementById('fm-venue').value.trim(),
-    participants: parseInt(document.getElementById('fm-participants').value) || 0,
-    organizer:    org,
-    coorganizer:  document.getElementById('fm-coorganizer').value.trim(),
-    budget:       parseFloat(document.getElementById('fm-budget').value) || 0,
-    status:       document.getElementById('fm-status').value,
-    description:  document.getElementById('fm-description').value.trim(),
-    objectives:   document.getElementById('fm-objectives').value.trim(),
-  };
+  // Store payload and show confirmation modal
+  _pendingPayload = { name, type, mode, date, duration, hours, male, female, profile, sector, ageRange };
+
+  const MONTHS = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+  const [y, m, d] = date.split('-');
+  const fmtD = new Date(+y, +m-1, +d).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  document.getElementById('sc-title').textContent        = editingEventId ? 'Confirm Updated Details' : 'Confirm Event Details';
+  document.getElementById('sc-save-label').textContent   = editingEventId ? 'Update Event' : 'Save Event';
+  document.getElementById('sc-name').textContent         = name;
+  document.getElementById('sc-type').textContent         = type;
+  document.getElementById('sc-mode').textContent         = mode;
+  document.getElementById('sc-date').textContent         = fmtD;
+  document.getElementById('sc-duration').textContent     = `${duration} day${duration !== 1 ? 's' : ''}`;
+  document.getElementById('sc-hours').textContent        = `${hours} hour${hours !== 1 ? 's' : ''}`;
+  document.getElementById('sc-participants').textContent = `${male} Male · ${female} Female · ${male+female} Total`;
+  document.getElementById('sc-profile').textContent      = profile.join(', ');
+  document.getElementById('sc-sector').textContent       = sector.join(', ');
+  document.getElementById('sc-age').textContent          = ageRange.join(', ');
+
+  show('save-confirm-modal');
+}
+
+function closeSaveConfirm() {
+  hide('save-confirm-modal');
+  _pendingPayload = null;
+}
+
+function confirmSaveEvent() {
+  if (!_pendingPayload) return;
+  const { name } = _pendingPayload;
 
   if (editingEventId) {
     const idx = EVENTS.findIndex(e => e.id === editingEventId);
-    if (idx !== -1) EVENTS[idx] = { ...EVENTS[idx], ...payload };
+    if (idx !== -1) EVENTS[idx] = { ...EVENTS[idx], ..._pendingPayload };
     showToast('Event Updated', `"${name}" has been updated successfully.`);
   } else {
-    EVENTS.unshift({ id: nextEventId++, docs: [], ...payload });
+    EVENTS.unshift({ id: nextEventId++, docs: [], ..._pendingPayload });
     showToast('Event Added', `"${name}" has been added successfully.`);
   }
 
+  _pendingPayload = null;
+  hide('save-confirm-modal');
   closeFormModal();
   render();
 }
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   DETAIL MODAL
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ DETAIL MODAL ═══════════════════════ */
 function openDetailModal(id) {
   const ev = EVENTS.find(e => e.id === id);
   if (!ev) return;
   viewingEventId = id;
   activeDocFilter = 'all';
 
-  // Type icon mapping
-  const typeIcons = { Seminar:'ti-chalkboard', Workshop:'ti-tools', Conference:'ti-microphone-2', Training:'ti-certificate', Symposium:'ti-presentation', Other:'ti-calendar-event' };
-  const typeColors = { Seminar:'#1d4ed8', Workshop:'#15803d', Conference:'#7e22ce', Training:'#c2410c', Symposium:'#a16207', Other:'#475569' };
-  const typeBgs    = { Seminar:'#eff6ff', Workshop:'#f0fdf4', Conference:'#faf5ff', Training:'#fff7ed', Symposium:'#fefce8', Other:'#f8fafc' };
+  document.getElementById('det-name').textContent      = ev.name;
+  document.getElementById('det-subtitle').textContent  = `${ev.type} · ${fmtDate(ev.date)}`;
+  document.getElementById('det-name-body').textContent = ev.name;
+  document.getElementById('det-type-body').textContent = ev.type;
+  document.getElementById('det-mode-body').textContent = ev.mode || '—';
+  document.getElementById('det-date').textContent      = fmtDate(ev.date);
+  document.getElementById('det-hours').textContent     = ev.hours ? `${ev.hours} hour${ev.hours !== 1 ? 's' : ''}` : '—';
+  document.getElementById('det-male').textContent      = (ev.male||0).toLocaleString();
+  document.getElementById('det-female').textContent    = (ev.female||0).toLocaleString();
+  document.getElementById('det-total').textContent     = ((ev.male||0)+(ev.female||0)).toLocaleString();
 
-  document.getElementById('det-name').textContent       = ev.name;
-  document.getElementById('det-subtitle').textContent   = `${ev.type} · ${fmtDate(ev.date)}`;
-  document.getElementById('det-date').textContent       = fmtDate(ev.date);
-  document.getElementById('det-venue').textContent      = ev.venue || '—';
-  document.getElementById('det-participants').textContent = (ev.participants||0).toLocaleString() + ' participants';
-  document.getElementById('det-budget').textContent     = ev.budget ? `₱${Number(ev.budget).toLocaleString('en-PH', {minimumFractionDigits:2})}` : '—';
-  document.getElementById('det-organizer').textContent  = ev.organizer || '—';
-  document.getElementById('det-coorganizer').textContent= ev.coorganizer || '—';
-  document.getElementById('det-description').textContent= ev.description || 'No description provided.';
-  document.getElementById('det-objectives').textContent = ev.objectives || '—';
-
-  const badge  = document.getElementById('det-type-badge-wrap');
-  const icon   = document.getElementById('det-type-icon');
-  badge.style.background = typeBgs[ev.type]    || '#f8fafc';
-  icon.className         = `ti ${typeIcons[ev.type]||'ti-calendar-event'}`;
-  icon.style.color       = typeColors[ev.type] || '#475569';
+  // Type icon
+  const typeIconMap = { 'IP Awareness (IPA)':'ti-bulb','Patent Search (PS)':'ti-search','Patent Drafting (PD)':'ti-file-pencil','IPA and PS':'ti-bulb','IPA and PD':'ti-bulb','PS and PD':'ti-file-search','IPA, PS, and PD':'ti-certificate' };
+  const badge = document.getElementById('det-type-badge-wrap');
+  const icon  = document.getElementById('det-type-icon');
+  badge.style.background = '#eff6ff';
+  icon.className         = `ti ${typeIconMap[ev.type]||'ti-calendar-event'}`;
+  icon.style.color       = '#0058be';
   icon.style.fontSize    = '18px';
 
-  // Status hero
-  const statusStyles = {
-    Planned:   { border:'#93c5fd', bg:'#eff6ff', color:'#1d4ed8' },
-    Upcoming:  { border:'#a5b4fc', bg:'#eef2ff', color:'#4338ca' },
-    Ongoing:   { border:'#fcd34d', bg:'#fffbeb', color:'#92400e' },
-    Completed: { border:'#6ee7b7', bg:'#ecfdf5', color:'#065f46' },
-    Cancelled: { border:'#fca5a5', bg:'#fef2f2', color:'#dc2626' },
-  };
-  const ss = statusStyles[ev.status] || statusStyles.Planned;
-  const sw = document.getElementById('det-status-wrap');
-  sw.style.borderColor     = ss.border;
-  sw.style.backgroundColor = ss.bg;
-  sw.style.color           = ss.color;
-  sw.textContent           = ev.status;
+  // Profile tags
+  const profileEl = document.getElementById('det-profile');
+  profileEl.innerHTML = (ev.profile||[]).length
+    ? (ev.profile||[]).map(p=>`<span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700">${p}</span>`).join('')
+    : '<span class="text-[13px] text-outline">—</span>';
+
+  // Sector tags
+  const sectorEl = document.getElementById('det-sector');
+  sectorEl.innerHTML = (ev.sector||[]).length
+    ? (ev.sector||[]).map(s=>`<span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">${s}</span>`).join('')
+    : '<span class="text-[13px] text-outline">—</span>';
+
+  // Age range tags
+  const ageEl = document.getElementById('det-age');
+  ageEl.innerHTML = (ev.ageRange||[]).length
+    ? (ev.ageRange||[]).map(a=>`<span class="inline-flex items-center text-[11px] font-bold px-3 py-1 rounded-full bg-orange-50 text-orange-700">${a}</span>`).join('')
+    : '<span class="text-[13px] text-outline">—</span>';
 
   // Doc count badge
   document.getElementById('doc-count-badge').textContent = (ev.docs||[]).length;
-
-  // Switch to info tab
   switchTab('info');
   renderDocs(ev.docs||[], 'all');
-
   show('event-detail-modal');
 }
 
 function closeDetailModal() { hide('event-detail-modal'); }
-
-function editCurrentEvent() {
-  closeDetailModal();
-  openEditModal(viewingEventId);
-}
+function editCurrentEvent() { closeDetailModal(); openEditModal(viewingEventId); }
 
 function switchTab(tab) {
   const isInfo = tab === 'info';
@@ -1045,33 +1410,22 @@ function switchTab(tab) {
   document.getElementById('tab-docs').className = `tab-btn px-1 py-3.5 text-[13px] border-b-2 transition-colors ${!isInfo ? 'font-semibold text-primary border-primary' : 'font-medium text-outline border-transparent hover:text-on-surface'}`;
 }
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   DOCUMENTS
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ DOCUMENTS ═══════════════════════ */
 function renderDocs(docs, filterType) {
   const list    = document.getElementById('doc-list');
   const emptyEl = document.getElementById('doc-empty');
   const display = filterType === 'all' ? docs : docs.filter(d => d.type === filterType);
-
-  // Sync filter button styles
   document.querySelectorAll('.doc-type-btn').forEach(b => {
     const isActive = b.dataset.type === filterType;
     b.className = isActive
       ? 'doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-primary bg-primary text-white transition-all'
       : 'doc-type-btn px-3 py-1.5 rounded-lg text-[12px] font-semibold border border-slate-200 text-on-surface-variant hover:bg-slate-50 transition-all';
   });
-
-  if (display.length === 0) {
-    list.innerHTML = '';
-    emptyEl.classList.remove('hidden');
-    return;
-  }
+  if (display.length === 0) { list.innerHTML = ''; emptyEl.classList.remove('hidden'); return; }
   emptyEl.classList.add('hidden');
-
-  const docIcons = { 'Activity Report':'ti-report','Attendance Sheet':'ti-clipboard-list','Photo':'ti-photo','Certificate':'ti-award','Accomplishment Report':'ti-file-check','Other':'ti-paperclip' };
-  const docColors= { 'Activity Report':'#1d4ed8','Attendance Sheet':'#15803d','Photo':'#7e22ce','Certificate':'#d97706','Accomplishment Report':'#0369a1','Other':'#475569' };
-  const docBgs   = { 'Activity Report':'#eff6ff','Attendance Sheet':'#f0fdf4','Photo':'#faf5ff','Certificate':'#fffbeb','Accomplishment Report':'#f0f9ff','Other':'#f8fafc' };
-
+  const docIcons  = { 'Activity Report':'ti-report','Attendance Sheet':'ti-clipboard-list','Photo':'ti-photo','Certificate':'ti-award','Accomplishment Report':'ti-file-check','Other':'ti-paperclip' };
+  const docColors = { 'Activity Report':'#1d4ed8','Attendance Sheet':'#15803d','Photo':'#7e22ce','Certificate':'#d97706','Accomplishment Report':'#0369a1','Other':'#475569' };
+  const docBgs    = { 'Activity Report':'#eff6ff','Attendance Sheet':'#f0fdf4','Photo':'#faf5ff','Certificate':'#fffbeb','Accomplishment Report':'#f0f9ff','Other':'#f8fafc' };
   list.innerHTML = display.map(doc => `
     <div class="flex items-center gap-3 p-3.5 rounded-xl border border-outline-variant hover:bg-slate-50 transition-colors group">
       <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:${docBgs[doc.type]||'#f8fafc'};">
@@ -1082,12 +1436,8 @@ function renderDocs(docs, filterType) {
         <p class="text-[11px] text-outline mt-0.5">${doc.type} · ${doc.size} · ${doc.date}</p>
       </div>
       <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        <a href="${doc.url}" download class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-blue-50 rounded-lg transition-colors" title="Download">
-          <i class="ti ti-download" style="font-size:14px;"></i>
-        </a>
-        <button onclick="removeDoc('${doc.id}')" class="p-1.5 text-on-surface-variant hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
-          <i class="ti ti-trash" style="font-size:14px;"></i>
-        </button>
+        <a href="${doc.url}" download class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-blue-50 rounded-lg transition-colors"><i class="ti ti-download" style="font-size:14px;"></i></a>
+        <button onclick="removeDoc('${doc.id}')" class="p-1.5 text-on-surface-variant hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><i class="ti ti-trash" style="font-size:14px;"></i></button>
       </div>
     </div>`).join('');
 }
@@ -1107,7 +1457,6 @@ function removeDoc(docId) {
   showToast('Document Removed', 'The document has been deleted.');
 }
 
-/* ── File upload ── */
 function onDragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('dragover'); }
 function onDragLeave()  { document.getElementById('drop-zone').classList.remove('dragover'); }
 function onDrop(e) {
@@ -1134,14 +1483,7 @@ function confirmDocType() {
   const size = pendingDocFile.size < 1024*1024
     ? `${(pendingDocFile.size/1024).toFixed(0)} KB`
     : `${(pendingDocFile.size/1024/1024).toFixed(1)} MB`;
-  const doc  = {
-    id:   'd' + nextDocId++,
-    name: pendingDocFile.name,
-    type,
-    size,
-    date: new Date().toISOString().split('T')[0],
-    url:  URL.createObjectURL(pendingDocFile),
-  };
+  const doc  = { id:'d'+nextDocId++, name:pendingDocFile.name, type, size, date:new Date().toISOString().split('T')[0], url:URL.createObjectURL(pendingDocFile) };
   ev.docs.push(doc);
   document.getElementById('doc-count-badge').textContent = ev.docs.length;
   renderDocs(ev.docs, activeDocFilter);
@@ -1149,44 +1491,31 @@ function confirmDocType() {
   showToast('Document Uploaded', `"${doc.name}" added as ${type}.`);
 }
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   DELETE
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ DELETE ═══════════════════════ */
 function askDelete(id) { deleteTargetId = id; show('confirm-modal'); }
 function closeConfirm() { hide('confirm-modal'); deleteTargetId = null; }
 function confirmDelete() {
   const ev = EVENTS.find(e => e.id === deleteTargetId);
-  if (ev) {
-    EVENTS = EVENTS.filter(e => e.id !== deleteTargetId);
-    showToast('Event Deleted', `"${ev.name}" has been removed.`);
-  }
-  closeConfirm();
-  render();
+  if (ev) { EVENTS = EVENTS.filter(e => e.id !== deleteTargetId); showToast('Event Deleted', `"${ev.name}" has been removed.`); }
+  closeConfirm(); render();
 }
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   TOAST
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ TOAST ═══════════════════════ */
 function showToast(title, msg, duration = 3200) {
   const toast = document.getElementById('success-toast');
   const bar   = document.getElementById('toast-bar');
   document.getElementById('toast-title').textContent = title;
   document.getElementById('toast-msg').textContent   = msg;
-  bar.style.transition = 'none';
-  bar.style.width      = '100%';
+  bar.style.transition = 'none'; bar.style.width = '100%';
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    toast.style.opacity   = '1';
-    toast.style.transform = 'translateY(0)';
-    bar.style.transition  = `width ${duration}ms linear`;
-    bar.style.width       = '0%';
+    toast.style.opacity = '1'; toast.style.transform = 'translateY(0)';
+    bar.style.transition = `width ${duration}ms linear`; bar.style.width = '0%';
   }));
   clearTimeout(window._toast);
   window._toast = setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(12px)'; }, duration);
 }
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   HELPERS
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ HELPERS ═══════════════════════ */
 function show(id) { const m = document.getElementById(id); m.classList.remove('hidden'); m.classList.add('flex'); }
 function hide(id) { const m = document.getElementById(id); m.classList.add('hidden'); m.classList.remove('flex'); }
 
@@ -1197,24 +1526,19 @@ function fmtDate(d) {
 }
 
 function catClass(type) {
-  const map = { Seminar:'cat-seminar', Workshop:'cat-workshop', Conference:'cat-conference', Training:'cat-training', Symposium:'cat-symposium' };
+  const map = {
+    'IP Awareness (IPA)':'cat-ipa',
+    'Patent Search (PS)':'cat-ps',
+    'Patent Drafting (PD)':'cat-pd',
+    'IPA and PS':'cat-ipa-ps',
+    'IPA and PD':'cat-ipa-pd',
+    'PS and PD':'cat-ps-pd',
+    'IPA, PS, and PD':'cat-all',
+  };
   return map[type] || 'cat-other';
 }
 
-function statusClass(status) {
-  const map = {
-    Planned:   { bg:'bg-blue-50',   text:'text-blue-700' },
-    Upcoming:  { bg:'bg-indigo-50', text:'text-indigo-700' },
-    Ongoing:   { bg:'bg-amber-50',  text:'text-amber-700' },
-    Completed: { bg:'bg-emerald-50',text:'text-emerald-700' },
-    Cancelled: { bg:'bg-red-50',    text:'text-red-600' },
-  };
-  return map[status] || { bg:'bg-slate-100', text:'text-slate-600' };
-}
-
-/* ═════════════════════════════════════════════════════════════════════════════
-   INIT
-═════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════ INIT ═══════════════════════ */
 render();
 </script>
 </body>

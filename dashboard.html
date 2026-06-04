@@ -52,44 +52,43 @@
   .nav-item i { font-size:18px; width:20px; text-align:center; flex-shrink:0; }
   .nav-section-label { font-size:10px; font-weight:600; color:#727785; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin:12px 0 4px; }
 
-  /* ── Calendar ── */
+  /* ── Calendar (White) ── */
   .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-  .cal-nav-btn { background:none; border:1px solid rgba(255,255,255,0.15); border-radius:8px; width:28px; height:28px; cursor:pointer; font-size:16px; color:#e1e2ec; display:flex; align-items:center; justify-content:center; transition:background 0.15s; background:rgba(255,255,255,0.08); flex-shrink:0; }
-  .cal-nav-btn:hover { background:rgba(255,255,255,0.16); }
+  .cal-nav-btn { background:#f2f3fd; border:1px solid #e1e2ec; border-radius:8px; width:28px; height:28px; cursor:pointer; font-size:16px; color:#424754; display:flex; align-items:center; justify-content:center; transition:background 0.15s; flex-shrink:0; }
+  .cal-nav-btn:hover { background:#e6e7f2; }
 
-  /* Month/year label — clickable */
-  .cal-month-label { font-size:13px; font-weight:600; color:#e1e2ec; cursor:pointer; display:flex; align-items:center; gap:4px; padding:3px 7px; border-radius:8px; transition:background 0.12s; user-select:none; }
-  .cal-month-label:hover { background:rgba(255,255,255,0.1); }
-  .cal-month-label .cal-chevron { font-size:14px; color:#8d95ab; transition:transform 0.2s; }
+  .cal-month-label { font-size:13px; font-weight:600; color:#191b23; cursor:pointer; display:flex; align-items:center; gap:4px; padding:3px 7px; border-radius:8px; transition:background 0.12s; user-select:none; }
+  .cal-month-label:hover { background:#f2f3fd; }
+  .cal-month-label .cal-chevron { font-size:14px; color:#727785; transition:transform 0.2s; }
   .cal-month-label.open .cal-chevron { transform:rotate(180deg); }
 
   /* Month picker dropdown */
   .cal-month-picker {
     display:none; position:absolute; top:40px; left:50%; transform:translateX(-50%); z-index:20;
     width:220px;
-    background:#2e3038; border:1px solid rgba(255,255,255,0.14); border-radius:14px;
-    padding:12px; box-shadow:0 10px 36px rgba(0,0,0,0.40); animation:mpIn 0.15s ease;
+    background:#ffffff; border:1px solid #e1e2ec; border-radius:14px;
+    padding:12px; box-shadow:0 10px 36px rgba(0,0,0,0.12); animation:mpIn 0.15s ease;
   }
   .cal-month-picker.open { display:block; }
   @keyframes mpIn { from { opacity:0; transform:translateX(-50%) translateY(-6px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
-  .mp-year-row { display:flex; align-items:center; justify-content:space-between; padding:2px 2px 10px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1); }
-  .mp-year-btn { background:none; border:1px solid rgba(255,255,255,0.18); border-radius:8px; width:28px; height:28px; cursor:pointer; color:#c2c6d6; display:flex; align-items:center; justify-content:center; font-size:15px; transition:background 0.12s; }
-  .mp-year-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
-  .mp-year-val { font-size:14px; font-weight:700; color:#e1e2ec; }
+  .mp-year-row { display:flex; align-items:center; justify-content:space-between; padding:2px 2px 10px; margin-bottom:8px; border-bottom:1px solid #e1e2ec; }
+  .mp-year-btn { background:none; border:1px solid #e1e2ec; border-radius:8px; width:28px; height:28px; cursor:pointer; color:#424754; display:flex; align-items:center; justify-content:center; font-size:15px; transition:background 0.12s; }
+  .mp-year-btn:hover { background:#f2f3fd; color:#191b23; }
+  .mp-year-val { font-size:14px; font-weight:700; color:#191b23; }
   .mp-months { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
-  .mp-month-btn { background:none; border:none; border-radius:9px; padding:8px 4px; font-size:12px; cursor:pointer; color:#c2c6d6; font-family:'Inter',sans-serif; font-weight:500; transition:background 0.12s,color 0.12s; text-align:center; }
-  .mp-month-btn:hover { background:rgba(255,255,255,0.1); color:#e1e2ec; }
+  .mp-month-btn { background:none; border:none; border-radius:9px; padding:8px 4px; font-size:12px; cursor:pointer; color:#424754; font-family:'Inter',sans-serif; font-weight:500; transition:background 0.12s,color 0.12s; text-align:center; }
+  .mp-month-btn:hover { background:#f2f3fd; color:#191b23; }
   .mp-month-btn.active { background:#0058be; color:#fff; font-weight:700; }
 
-  /* Calendar grid — fixed 6-row height so it never shifts */
+  /* Calendar grid */
   .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
-  .cal-day-label { font-size:9.5px; color:#8d95ab; text-align:center; padding:3px 0 4px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
-  .cal-day { font-size:11px; text-align:center; padding:5px 2px; border-radius:6px; cursor:pointer; color:#e1e2ec; position:relative; transition:background 0.12s; line-height:1.2; }
-  .cal-day:hover:not(.today) { background:rgba(255,255,255,0.1); }
-  .cal-day.other-month { color:#4a5060; cursor:default; }
+  .cal-day-label { font-size:9.5px; color:#727785; text-align:center; padding:3px 0 4px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
+  .cal-day { font-size:11px; text-align:center; padding:5px 2px; border-radius:6px; cursor:pointer; color:#191b23; position:relative; transition:background 0.12s; line-height:1.2; }
+  .cal-day:hover:not(.today) { background:#f2f3fd; }
+  .cal-day.other-month { color:#c2c6d6; cursor:default; }
   .cal-day.other-month:hover { background:none; }
   .cal-day.today { background:#0058be; color:#fff; font-weight:700; border-radius:7px; }
-  .cal-day.has-note::after { content:''; position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#d0bcff; }
+  .cal-day.has-note::after { content:''; position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#6b38d4; }
   .cal-day.today.has-note::after { background:#fff; }
 
   /* ── Note Modal ── */
@@ -178,10 +177,10 @@
     <a class="nav-item" href="event.html"><i class="ti ti-calendar-event"></i><span>Event</span></a>
   </nav>
   <div class="p-4 border-t border-outline-variant">
-  <button onclick="window.location.href='index.html'" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all duration-200">
-    <i class="ti ti-logout" style="font-size:16px;"></i><span>Log Out</span>
-  </button>
-</div>
+    <button onclick="window.location.href='index.html'" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all duration-200">
+      <i class="ti ti-logout" style="font-size:16px;"></i><span>Log Out</span>
+    </button>
+  </div>
 </aside>
 
 <header class="fixed top-0 left-0 right-0 pl-[260px] z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
@@ -222,6 +221,7 @@
     </div>
 
     <div class="grid grid-cols-12 gap-6">
+      <!-- Copyright -->
       <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col" style="border-left:3px solid #0058be;">
         <div class="flex flex-col justify-between h-full p-4 gap-2">
           <div class="flex justify-between items-center">
@@ -234,6 +234,7 @@
           <div><p class="text-[28px] font-bold leading-none text-on-surface tracking-tight">1,245</p><p class="text-[11px] text-on-surface-variant mt-1">Applications filed</p></div>
         </div>
       </div>
+      <!-- Patent -->
       <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col" style="border-left:3px solid #6b38d4;">
         <div class="flex flex-col justify-between h-full p-4 gap-2">
           <div class="flex justify-between items-center">
@@ -246,6 +247,7 @@
           <div><p class="text-[28px] font-bold leading-none text-on-surface tracking-tight">892</p><p class="text-[11px] text-on-surface-variant mt-1">Applications filed</p></div>
         </div>
       </div>
+      <!-- Small stat cards -->
       <div class="col-span-12 md:col-span-6 lg:col-span-3 flex flex-col gap-2.5">
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant flex items-center gap-3 px-4 py-3 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 cursor-pointer flex-1">
           <div class="p-1.5 rounded-lg flex-shrink-0" style="background:#d1fae5;"><span class="material-symbols-outlined text-[16px]" style="color:#059669;font-variation-settings:'FILL' 1;">verified_user</span></div>
@@ -264,7 +266,8 @@
         </div>
       </div>
 
-      <div class="col-span-12 lg:col-span-3 bg-inverse-surface p-4 rounded-xl text-inverse-on-surface flex flex-col relative overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+      <!-- ── WHITE CALENDAR CARD ── -->
+      <div class="col-span-12 lg:col-span-3 bg-surface-container-lowest border-2 border-outline-variant p-4 rounded-xl flex flex-col relative overflow-visible hover:-translate-y-1 hover:shadow-lg transition-all duration-300 shadow-sm">
         <div class="relative z-10 flex flex-col h-full">
           <div class="cal-header">
             <button class="cal-nav-btn" id="calPrev" aria-label="Previous month">‹</button>
@@ -284,6 +287,8 @@
             </div>
             <button class="cal-nav-btn" id="calNext" aria-label="Next month">›</button>
           </div>
+          <!-- Divider below header -->
+          <div class="border-t border-outline-variant mb-2"></div>
           <div class="cal-grid" id="calGrid">
             <div class="cal-day-label">Su</div><div class="cal-day-label">Mo</div><div class="cal-day-label">Tu</div>
             <div class="cal-day-label">We</div><div class="cal-day-label">Th</div><div class="cal-day-label">Fr</div><div class="cal-day-label">Sa</div>
@@ -292,6 +297,7 @@
         </div>
       </div>
 
+      <!-- Line chart -->
       <div class="col-span-12 glass-panel rounded-2xl p-6 shadow-sm lg:col-span-6 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
         <div class="flex justify-between items-start mb-3">
           <div>
@@ -308,6 +314,7 @@
         <div style="position:relative;width:100%;height:200px;"><canvas id="lineChart"></canvas></div>
       </div>
 
+      <!-- Pie chart -->
       <div class="col-span-12 lg:col-span-6 glass-panel rounded-2xl p-6 shadow-sm flex flex-col hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
         <div class="flex justify-between items-center mb-5">
           <div>
@@ -325,6 +332,7 @@
   </div>
 </main>
 
+<!-- Note Modal -->
 <div class="note-overlay" id="noteOverlay" role="dialog" aria-modal="true">
   <div class="note-modal">
     <div class="note-modal-header">
@@ -348,6 +356,7 @@
   </div>
 </div>
 
+<!-- Category Modal -->
 <div id="category-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
   <div class="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col" style="animation:modalIn 0.22s ease;">
     <div class="px-8 py-6 border-b border-slate-100 flex items-start justify-between gap-4">
@@ -360,8 +369,7 @@
       </button>
     </div>
     <div class="px-8 py-7">
-      <div class="grid grid-cols-5 gap-4" id="catGrid">
-        </div>
+      <div class="grid grid-cols-5 gap-4" id="catGrid"></div>
     </div>
     <div class="px-8 pb-7 flex gap-3 justify-end">
       <button onclick="closeCategoryModal()" class="px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant border border-slate-200 rounded-xl hover:bg-slate-100 transition-all">Cancel</button>
@@ -372,6 +380,7 @@
   </div>
 </div>
 
+<!-- Research Modal -->
 <div id="research-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
   <div class="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
     <div class="px-7 py-5 border-b border-slate-200 flex items-start justify-between gap-4">
@@ -446,6 +455,7 @@
   </div>
 </div>
 
+<!-- Review Modal -->
 <div id="review-modal" class="fixed inset-0 z-[65] hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-sm">
   <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col" style="animation:modalIn 0.22s ease;">
     <div class="px-6 pt-6 pb-4 border-b border-slate-100">
@@ -483,6 +493,7 @@
   </div>
 </div>
 
+<!-- Success Modal -->
 <div id="success-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
   <div class="w-full max-w-sm rounded-2xl bg-white shadow-2xl p-8 text-center" style="animation:modalIn 0.22s ease;">
     <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
@@ -514,8 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ══════════════════════════════════
    CALENDAR
 ══════════════════════════════════ */
-// Empty object to start fresh without dummy data
-const calNotes = {}; 
+const calNotes = {};
 const today = new Date();
 let calYear  = today.getFullYear();
 let calMonth = today.getMonth();
@@ -532,31 +542,18 @@ function dateKey(y, m, d) {
 function buildCalendar() {
   const grid = document.getElementById('calGrid');
   document.getElementById('calMonthText').textContent = MONTH_NAMES[calMonth] + ' ' + calYear;
-
-  // Remove only day cells (not the 7 header labels)
   grid.querySelectorAll('.cal-day').forEach(d => d.remove());
 
-  const firstDay     = new Date(calYear, calMonth, 1).getDay();
-  const daysInMonth  = new Date(calYear, calMonth + 1, 0).getDate();
-  const prevDays     = new Date(calYear, calMonth, 0).getDate();
-
-  // Always render exactly 42 cells (6 rows)
+  const firstDay    = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const prevDays    = new Date(calYear, calMonth, 0).getDate();
   const TOTAL_CELLS = 42;
   const cells = [];
 
-  // Leading overflow (previous month)
-  for (let i = 0; i < firstDay; i++) {
-    cells.push({ day: prevDays - firstDay + 1 + i, type: 'prev' });
-  }
-  // Current month
-  for (let d = 1; d <= daysInMonth; d++) {
-    cells.push({ day: d, type: 'current' });
-  }
-  // Trailing overflow (next month) — pad to 42
+  for (let i = 0; i < firstDay; i++) cells.push({ day: prevDays - firstDay + 1 + i, type: 'prev' });
+  for (let d = 1; d <= daysInMonth; d++) cells.push({ day: d, type: 'current' });
   let next = 1;
-  while (cells.length < TOTAL_CELLS) {
-    cells.push({ day: next++, type: 'next' });
-  }
+  while (cells.length < TOTAL_CELLS) cells.push({ day: next++, type: 'next' });
 
   cells.forEach(({ day, type }) => {
     const el = document.createElement('div');
@@ -568,16 +565,10 @@ function buildCalendar() {
     } else {
       const key = dateKey(calYear, calMonth, day);
       const isToday = today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === day;
-      if (isToday) {
-        el.classList.add('today');
-      } else {
-        el.addEventListener('mouseenter', () => { el.style.background='rgba(255,255,255,0.1)'; });
-        el.addEventListener('mouseleave', () => { el.style.background=''; });
-      }
+      if (isToday) el.classList.add('today');
       if (calNotes[key]) el.classList.add('has-note');
       el.addEventListener('click', () => openNoteModal(calYear, calMonth, day));
     }
-
     grid.appendChild(el);
   });
 
@@ -592,28 +583,21 @@ function renderUpcoming() {
     .sort(([a],[b]) => a.localeCompare(b))[0];
   if (upcoming) {
     const [,note] = upcoming;
-    el.innerHTML = `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:rgba(255,255,255,0.07);border-radius:10px;border:1px solid rgba(255,255,255,0.1);">
-      <div style="width:5px;height:5px;border-radius:50%;background:#d0bcff;flex-shrink:0;margin-top:4px;"></div>
-      <div style="font-size:11px;color:#c2c6d6;line-height:1.4;">${note.length>55?note.slice(0,52)+'…':note}</div>
+    el.innerHTML = `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#f2f3fd;border-radius:10px;border:1px solid #e1e2ec;">
+      <div style="width:5px;height:5px;border-radius:50%;background:#6b38d4;flex-shrink:0;margin-top:4px;"></div>
+      <div style="font-size:11px;color:#424754;line-height:1.4;">${note.length>55?note.slice(0,52)+'…':note}</div>
     </div>`;
   } else { el.innerHTML=''; }
 }
 
-/* Month/year picker */
 function toggleMonthPicker(e) {
   e.stopPropagation();
   pickerOpen = !pickerOpen;
   if (pickerOpen) pickerYear = calYear;
   const picker = document.getElementById('calMonthPicker');
   const label  = document.getElementById('calMonthLabel');
-  if (pickerOpen) {
-    picker.classList.add('open');
-    label.classList.add('open');
-    renderMonthPicker();
-  } else {
-    picker.classList.remove('open');
-    label.classList.remove('open');
-  }
+  if (pickerOpen) { picker.classList.add('open'); label.classList.add('open'); renderMonthPicker(); }
+  else { picker.classList.remove('open'); label.classList.remove('open'); }
 }
 function closeMonthPicker() {
   pickerOpen = false;
@@ -629,18 +613,13 @@ function renderMonthPicker() {
     btn.className = 'mp-month-btn';
     btn.textContent = m;
     if (i === calMonth && pickerYear === calYear) btn.classList.add('active');
-    btn.onclick = () => {
-      calMonth = i; calYear = pickerYear;
-      closeMonthPicker();
-      buildCalendar();
-    };
+    btn.onclick = () => { calMonth = i; calYear = pickerYear; closeMonthPicker(); buildCalendar(); };
     container.appendChild(btn);
   });
 }
 document.getElementById('mpPrevYear').addEventListener('click', (e) => { e.stopPropagation(); pickerYear--; renderMonthPicker(); });
 document.getElementById('mpNextYear').addEventListener('click', (e) => { e.stopPropagation(); pickerYear++; renderMonthPicker(); });
 document.addEventListener('click', (e) => { if (pickerOpen && !document.getElementById('calMonthPicker').contains(e.target)) closeMonthPicker(); });
-
 document.getElementById('calPrev').addEventListener('click', () => { calMonth--; if (calMonth<0){calMonth=11;calYear--;} buildCalendar(); });
 document.getElementById('calNext').addEventListener('click', () => { calMonth++; if (calMonth>11){calMonth=0;calYear++;} buildCalendar(); });
 
@@ -694,7 +673,7 @@ function deleteNote() { delete calNotes[activeNoteKey]; closeNoteModal(); buildC
 document.getElementById('noteOverlay').addEventListener('click',function(e){if(e.target===this)closeNoteModal();});
 
 /* ══════════════════════════════════
-   PIE CHART (Kept default data so dashboard isn't blank)
+   PIE CHART
 ══════════════════════════════════ */
 const PIE_DATA=[{label:'BSIT',pct:38,color:'#0058be'},{label:'BSCS',pct:22,color:'#6b38d4'},{label:'BS Engineering',pct:18,color:'#924700'},{label:'BS Education',pct:12,color:'#10b981'},{label:'Others',pct:10,color:'#e24b4a'}];
 function buildPieChart(){
@@ -704,7 +683,7 @@ function buildPieChart(){
 }
 
 /* ══════════════════════════════════
-   LINE CHART (Kept default data so dashboard isn't blank)
+   LINE CHART
 ══════════════════════════════════ */
 const LINE_SERIES=[{label:'Copyright',color:'#0058be',dash:[]},{label:'Patent',color:'#6b38d4',dash:[6,3]},{label:'Trademark',color:'#10b981',dash:[3,3]},{label:'Utility Model',color:'#924700',dash:[8,4]}];
 const LINE_DATA={
@@ -727,11 +706,11 @@ document.querySelectorAll('.chart-filter-btn').forEach(btn=>{btn.addEventListene
    CATEGORY SELECTION
 ══════════════════════════════════ */
 const CATEGORIES = [
-  { id:'copyright',       label:'Copyright',       icon:'ti ti-copyright',       color:'#0058be', bg:'#e8f0fd' },
-  { id:'patent',          label:'Patent',          icon:'ti ti-file-description', color:'#6b38d4', bg:'#f2edfd' },
-  { id:'trademark',       label:'Trademark',       icon:'ti ti-shield-check',     color:'#059669', bg:'#d1fae5' },
-  { id:'utility-model',   label:'Utility Model',   icon:'ti ti-settings-2',       color:'#924700', bg:'#fef3c7' },
-  { id:'industrial-design',label:'Industrial Design',icon:'ti ti-vector-bezier-2',color:'#dc2626', bg:'#fee2e2' },
+  { id:'copyright',        label:'Copyright',        icon:'ti ti-copyright',        color:'#0058be', bg:'#e8f0fd' },
+  { id:'patent',           label:'Patent',           icon:'ti ti-file-description', color:'#6b38d4', bg:'#f2edfd' },
+  { id:'trademark',        label:'Trademark',        icon:'ti ti-shield-check',     color:'#059669', bg:'#d1fae5' },
+  { id:'utility-model',    label:'Utility Model',    icon:'ti ti-settings-2',       color:'#924700', bg:'#fef3c7' },
+  { id:'industrial-design',label:'Industrial Design',icon:'ti ti-vector-bezier-2',  color:'#dc2626', bg:'#fee2e2' },
 ];
 let selectedCategory = null;
 
@@ -782,19 +761,16 @@ function backToCategory() {
 }
 
 /* ══════════════════════════════════
-   RESEARCH FORM & CLEAN STATE
+   RESEARCH FORM
 ══════════════════════════════════ */
-// This state object avoids DOM scraping and prevents the "person" text bug
-let pendingSubmission = null; 
+let pendingSubmission = null;
 
 function openResearchForm() {
-  // Set category badge in form header
   const cat = CATEGORIES.find(c => c.id === selectedCategory);
   const badge = document.getElementById('rm-cat-badge');
   badge.style.cssText = `background:${cat.bg};color:${cat.color};border:1px solid ${cat.color}33;`;
   badge.innerHTML = `<i class="${cat.icon}" style="font-size:12px;"></i>${cat.label}`;
 
-  // Reset form
   document.getElementById('rm-title').value='';
   document.getElementById('rm-id').value='';
   document.getElementById('rm-date').value='';
@@ -803,8 +779,6 @@ function openResearchForm() {
   document.getElementById('rm-authors').innerHTML='';
   clearAuthorError();
   addAuthorField();
-
-  // Clear any existing pending submissions
   pendingSubmission = null;
 
   const m = document.getElementById('research-modal');
@@ -821,18 +795,12 @@ function closeAllResearchModals() {
   pendingSubmission = null;
 }
 
-/* ── Author field with paste-split and 15-author limit ── */
 const MAX_AUTHORS = 15;
-
-function currentAuthorCount() {
-  return document.getElementById('rm-authors').querySelectorAll('.author-row').length;
-}
-
+function currentAuthorCount() { return document.getElementById('rm-authors').querySelectorAll('.author-row').length; }
 function updateAuthorUI() {
   const count = currentAuthorCount();
-  const counterEl  = document.getElementById('rm-author-count');
-  const addBtn     = document.getElementById('rm-add-author-btn');
-
+  const counterEl = document.getElementById('rm-author-count');
+  const addBtn    = document.getElementById('rm-add-author-btn');
   if (counterEl) {
     counterEl.textContent = `${count} / ${MAX_AUTHORS}`;
     counterEl.className = count >= MAX_AUTHORS
@@ -846,152 +814,86 @@ function updateAuthorUI() {
       : 'flex items-center gap-1 text-[11px] font-semibold text-primary hover:text-blue-700 transition-colors';
   }
 }
-
 function showAuthorError(msg) {
   const errEl  = document.getElementById('rm-author-error');
   const errTxt = document.getElementById('rm-author-error-text');
   const hint   = document.getElementById('rm-author-hint');
   if (errEl && errTxt) {
     errTxt.textContent = msg;
-    errEl.classList.remove('hidden');
-    errEl.style.display = 'flex';
+    errEl.classList.remove('hidden'); errEl.style.display='flex';
     if (hint) hint.classList.add('hidden');
-    // Auto-dismiss after 4 s
     clearTimeout(errEl._timer);
-    errEl._timer = setTimeout(() => {
-      errEl.classList.add('hidden');
-      errEl.style.display = '';
-      if (hint) hint.classList.remove('hidden');
-    }, 4000);
+    errEl._timer = setTimeout(() => { errEl.classList.add('hidden'); errEl.style.display=''; if(hint)hint.classList.remove('hidden'); }, 4000);
   }
 }
-
 function clearAuthorError() {
   const errEl = document.getElementById('rm-author-error');
   const hint  = document.getElementById('rm-author-hint');
-  if (errEl) { errEl.classList.add('hidden'); errEl.style.display = ''; clearTimeout(errEl._timer); }
+  if (errEl) { errEl.classList.add('hidden'); errEl.style.display=''; clearTimeout(errEl._timer); }
   if (hint)  hint.classList.remove('hidden');
 }
-
 function addAuthorField(value='', skipFocus=false) {
-  if (currentAuthorCount() >= MAX_AUTHORS) {
-    showAuthorError(`Maximum ${MAX_AUTHORS} authors allowed. Remove an entry before adding more.`);
-    return false;
-  }
-
+  if (currentAuthorCount() >= MAX_AUTHORS) { showAuthorError(`Maximum ${MAX_AUTHORS} authors allowed.`); return false; }
   const container = document.getElementById('rm-authors');
   const row = document.createElement('div');
   row.className = 'author-row';
-
   const input = document.createElement('input');
   input.type='text'; input.value=value; input.placeholder='Author name';
   input.className='flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline';
-
-  // Paste detection — split by newline into multiple rows
   input.addEventListener('paste', (e) => {
     const text = (e.clipboardData || window.clipboardData).getData('text');
     const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-
-    if (lines.length <= 1) return; // let browser handle single-line paste normally
-
-    e.preventDefault();
-    clearAuthorError();
-
-    const existingCount = currentAuthorCount();
-    const slotsLeft = MAX_AUTHORS - existingCount;
-
-    if (slotsLeft <= 0) {
-      showAuthorError(`Maximum ${MAX_AUTHORS} authors already reached. Cannot paste more names.`);
-      return;
-    }
-
+    if (lines.length <= 1) return;
+    e.preventDefault(); clearAuthorError();
+    const slotsLeft = MAX_AUTHORS - currentAuthorCount();
+    if (slotsLeft <= 0) { showAuthorError(`Maximum ${MAX_AUTHORS} authors already reached.`); return; }
     const accepted = lines.slice(0, slotsLeft);
     const rejected = lines.length - accepted.length;
-
-    // Fill current row with the first accepted name
     input.value = accepted[0];
-    // Add remaining accepted names as new rows (skip auto-focus to avoid scroll chaos)
     accepted.slice(1).forEach(name => addAuthorField(name, true));
-
     updateAuthorUI();
-
-    if (rejected > 0) {
-      showAuthorError(
-        `Only ${accepted.length} of ${lines.length} names were added — the maximum is ${MAX_AUTHORS} authors.`
-      );
-    }
+    if (rejected > 0) showAuthorError(`Only ${accepted.length} of ${lines.length} names were added — max is ${MAX_AUTHORS}.`);
   });
-
   const removeBtn = document.createElement('button');
   removeBtn.type='button'; removeBtn.className='remove-author';
   removeBtn.innerHTML='<i class="ti ti-x"></i>'; removeBtn.title='Remove';
-  removeBtn.onclick = () => {
-    if (currentAuthorCount() > 1) {
-      row.remove();
-      clearAuthorError();
-      updateAuthorUI();
-    }
-  };
-
-  row.appendChild(input);
-  row.appendChild(removeBtn);
+  removeBtn.onclick = () => { if(currentAuthorCount()>1){row.remove();clearAuthorError();updateAuthorUI();} };
+  row.appendChild(input); row.appendChild(removeBtn);
   container.appendChild(row);
   updateAuthorUI();
   if (!skipFocus) input.focus();
   return true;
 }
-
 function getAuthorValues() {
   return Array.from(document.querySelectorAll('#rm-authors input')).map(i=>i.value.trim()).filter(Boolean);
 }
 
-/* ── Review modal & Clean Submission Flow ── */
 function reviewResearchEntry() {
-  const title = document.getElementById('rm-title').value.trim();
-  const id = document.getElementById('rm-id').value.trim();
-  const dept = document.getElementById('rm-dept').value;
-  const date = document.getElementById('rm-date').value;
+  const title   = document.getElementById('rm-title').value.trim();
+  const id      = document.getElementById('rm-id').value.trim();
+  const dept    = document.getElementById('rm-dept').value;
+  const date    = document.getElementById('rm-date').value;
   const authors = getAuthorValues();
   const errorEl = document.getElementById('rm-error');
-
-  if(!title || !id || !date || !authors.length){
-    errorEl.textContent='Please fill in all required fields and add at least one author.';
-    errorEl.classList.remove('hidden'); return;
-  }
-  if(authors.length > MAX_AUTHORS){
-    errorEl.textContent=`Too many authors — please remove entries until you have ${MAX_AUTHORS} or fewer.`;
-    errorEl.classList.remove('hidden'); return;
-  }
+  if(!title||!id||!date||!authors.length){ errorEl.textContent='Please fill in all required fields and add at least one author.'; errorEl.classList.remove('hidden'); return; }
+  if(authors.length>MAX_AUTHORS){ errorEl.textContent=`Too many authors.`; errorEl.classList.remove('hidden'); return; }
   errorEl.classList.add('hidden');
 
-  // Save everything to a clean, isolated state object
-  pendingSubmission = {
-    title: title,
-    id: id,
-    department: dept,
-    date: date,
-    authors: authors, // the pure array of strings without any HTML included
-    category: selectedCategory,
-    status: 'Submitted to IPO'
-  };
+  pendingSubmission = { title, id, department:dept, date, authors, category:selectedCategory, status:'Submitted to IPO' };
 
-  // Populate UI purely for visual review
   const cat = CATEGORIES.find(c => c.id === selectedCategory);
-  const rvCat = document.getElementById('rv-cat');
-  rvCat.innerHTML=`<span class="cat-badge" style="background:${cat.bg};color:${cat.color};border:1px solid ${cat.color}33;font-size:12px;"><i class="${cat.icon}" style="font-size:13px;"></i>${cat.label}</span>`;
-
+  document.getElementById('rv-cat').innerHTML=`<span class="cat-badge" style="background:${cat.bg};color:${cat.color};border:1px solid ${cat.color}33;font-size:12px;"><i class="${cat.icon}" style="font-size:13px;"></i>${cat.label}</span>`;
   document.getElementById('rv-title').textContent = title;
   document.getElementById('rv-id').textContent = id;
   document.getElementById('rv-dept').textContent = dept;
-  const [yr, mo, dy] = date.split('-');
-  document.getElementById('rv-date').textContent = new Date(yr, mo-1, dy).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
-
+  const [yr,mo,dy] = date.split('-');
+  document.getElementById('rv-date').textContent = new Date(yr,mo-1,dy).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
   const authorsEl = document.getElementById('rv-authors');
-  authorsEl.innerHTML = '';
+  authorsEl.innerHTML='';
   authors.forEach(a => {
-    const chip = document.createElement('span');
-    chip.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:#f2f3fd;color:#191b23;border:1px solid #e1e2ec;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;margin-right:4px;margin-bottom:4px;';
-    chip.innerHTML = `<span class="material-symbols-outlined" style="font-size:12px;color:#6b38d4;font-variation-settings:'FILL' 1;">person</span>${a}`;
+    const chip=document.createElement('span');
+    chip.style.cssText='display:inline-flex;align-items:center;gap:4px;background:#f2f3fd;color:#191b23;border:1px solid #e1e2ec;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;margin-right:4px;margin-bottom:4px;';
+    chip.innerHTML=`<span class="material-symbols-outlined" style="font-size:12px;color:#6b38d4;font-variation-settings:'FILL' 1;">person</span>${a}`;
     authorsEl.appendChild(chip);
   });
 
@@ -999,43 +901,25 @@ function reviewResearchEntry() {
   const rm = document.getElementById('review-modal');
   rm.classList.remove('hidden'); rm.classList.add('flex');
 }
-
 function backToResearchModal() {
   document.getElementById('review-modal').classList.add('hidden');
   document.getElementById('review-modal').classList.remove('flex');
   openResearchForm();
 }
-
 function confirmResearchEntry() {
-  // Use the clean object we created in reviewResearchEntry()
   if (!pendingSubmission) return;
-
-  const stored = JSON.parse(sessionStorage.getItem('copyrightNewEntries') || '[]');
-  
-  // Push the perfectly clean pendingSubmission object
+  const stored = JSON.parse(sessionStorage.getItem('copyrightNewEntries')||'[]');
   stored.push(pendingSubmission);
   sessionStorage.setItem('copyrightNewEntries', JSON.stringify(stored));
-
   document.getElementById('review-modal').classList.add('hidden');
   document.getElementById('review-modal').classList.remove('flex');
-
   const sm = document.getElementById('success-modal');
   sm.classList.remove('hidden'); sm.classList.add('flex');
   window._successTimer = setTimeout(closeSuccessModal, 4000);
-
-  // Clear state after successful submission
   pendingSubmission = null;
 }
-
-function closeSuccessModal(){
-  clearTimeout(window._successTimer);
-  const sm=document.getElementById('success-modal');
-  sm.classList.add('hidden'); sm.classList.remove('flex');
-}
-function viewResearch(){
-  sessionStorage.setItem('copyrightJustAdded','true');
-  window.location.href='copyright.html';
-}
+function closeSuccessModal(){ clearTimeout(window._successTimer); const sm=document.getElementById('success-modal'); sm.classList.add('hidden'); sm.classList.remove('flex'); }
+function viewResearch(){ sessionStorage.setItem('copyrightJustAdded','true'); window.location.href='copyright.html'; }
 </script>
 </body>
 </html>
