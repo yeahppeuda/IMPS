@@ -92,15 +92,6 @@
   .check-item.checked { border-color: #0058be; background: #eff6ff; color: #1d4ed8; }
   .check-item input[type=checkbox] { display: none; }
 
-  /* Age range pill buttons */
-  .age-pill {
-    padding: 6px 14px; border-radius: 20px; border: 1.5px solid #e2e5ef;
-    cursor: pointer; font-size: 12px; font-weight: 600; color: #424754;
-    transition: border-color 0.15s, background 0.15s, color 0.15s; user-select: none;
-  }
-  .age-pill:hover { border-color: #93c5fd; background: #f8fafc; }
-  .age-pill.selected { border-color: #0058be; background: #0058be; color: #fff; }
-
   /* Summary section in detail modal */
   .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
   .summary-cell { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
@@ -108,6 +99,57 @@
   .summary-cell-full { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; grid-column: 1 / -1; }
 
   .doc-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 9px; border-radius:20px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; }
+
+    /* ── Page entrance animation ── */
+  @keyframes pageFadeSlideIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .page-enter {
+    animation: pageFadeSlideIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .page-enter > * { opacity: 0; animation: pageFadeSlideIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .page-enter > *:nth-child(1) { animation-delay: 0.04s; }
+  .page-enter > *:nth-child(2) { animation-delay: 0.10s; }
+  .page-enter > *:nth-child(3) { animation-delay: 0.16s; }
+  .page-enter > *:nth-child(4) { animation-delay: 0.22s; }
+  .page-enter > *:nth-child(5) { animation-delay: 0.28s; }
+
+  @keyframes navActivePulse {
+    0%   { box-shadow: 0 0 0 0 rgba(0,88,190,0.18); }
+    70%  { box-shadow: 0 0 0 6px rgba(0,88,190,0); }
+    100% { box-shadow: 0 0 0 0 rgba(0,88,190,0); }
+  }
+  .nav-item.active { animation: navActivePulse 0.55s ease 0.2s both; }
+
+  /* ── VIEW TRANSITION ── */
+  @keyframes viewFadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes viewFadeSlideOut {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-8px); }
+  }
+  .view-entering {
+    animation: viewFadeSlideIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .view-leaving {
+    animation: viewFadeSlideOut 0.15s ease forwards;
+    pointer-events: none;
+  }
+
+  /* ── TAB TRANSITION ── */
+  @keyframes tabSlideIn {
+    from { opacity: 0; transform: translateX(12px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes tabSlideInLeft {
+    from { opacity: 0; transform: translateX(-12px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .tab-entering-right { animation: tabSlideIn 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .tab-entering-left  { animation: tabSlideInLeft 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 </style>
 </head>
 <body class="bg-surface text-on-surface font-sans antialiased flex min-h-screen">
@@ -167,7 +209,7 @@
   </header>
 
   <!-- Page Content -->
-  <div class="p-8 space-y-7 flex-1">
+  <div class="p-8 space-y-7 flex-1 page-enter">
 
     <!-- Page heading -->
     <div class="flex items-center justify-between">
@@ -227,7 +269,7 @@
             placeholder="Search events…"/>
         </div>
 
-        <!-- Date filter (Month + Year dropdowns) -->
+        <!-- Date filter -->
         <div class="relative shrink-0" id="date-filter-wrapper">
           <button onclick="toggleDateFilter()" id="date-filter-btn"
             class="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 text-on-surface-variant rounded-lg text-[13px] font-medium hover:bg-slate-100 transition-colors whitespace-nowrap">
@@ -243,18 +285,10 @@
                 <select id="filter-month" onchange="applyDateFilter()"
                   class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-[12px] text-on-surface outline-none focus:border-primary appearance-none">
                   <option value="">All Months</option>
-                  <option value="1">January</option>
-                  <option value="2">February</option>
-                  <option value="3">March</option>
-                  <option value="4">April</option>
-                  <option value="5">May</option>
-                  <option value="6">June</option>
-                  <option value="7">July</option>
-                  <option value="8">August</option>
-                  <option value="9">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
+                  <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+                  <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+                  <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+                  <option value="10">October</option><option value="11">November</option><option value="12">December</option>
                 </select>
               </div>
               <div>
@@ -269,7 +303,7 @@
           </div>
         </div>
 
-        <!-- Type of Activity filter -->
+        <!-- Type filter -->
         <div class="relative shrink-0" id="type-filter-wrapper">
           <button onclick="toggleTypeFilter()" id="type-filter-btn"
             class="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 text-on-surface-variant rounded-lg text-[13px] font-medium hover:bg-slate-100 transition-colors whitespace-nowrap">
@@ -479,15 +513,25 @@
         </div>
       </div>
 
-      <!-- Age Range -->
+      <!-- Age Range — now check-item style, multi-select -->
       <div>
         <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2.5">Age Range <span class="text-red-400">*</span></label>
         <div class="flex flex-wrap gap-2" id="fm-age-group">
-          <button type="button" class="age-pill" data-age="13–20" onclick="toggleAge(this)">13 – 20</button>
-          <button type="button" class="age-pill" data-age="21–30" onclick="toggleAge(this)">21 – 30</button>
-          <button type="button" class="age-pill" data-age="31–45" onclick="toggleAge(this)">31 – 45</button>
-          <button type="button" class="age-pill" data-age="46–59" onclick="toggleAge(this)">46 – 59</button>
-          <button type="button" class="age-pill" data-age="60 Above" onclick="toggleAge(this)">60 Above</button>
+          <div class="check-item" data-group="age" data-value="13–20" onclick="toggleCheckItem(this)">
+            <i class="ti ti-user" style="font-size:14px;"></i> 13 – 20
+          </div>
+          <div class="check-item" data-group="age" data-value="21–30" onclick="toggleCheckItem(this)">
+            <i class="ti ti-user" style="font-size:14px;"></i> 21 – 30
+          </div>
+          <div class="check-item" data-group="age" data-value="31–45" onclick="toggleCheckItem(this)">
+            <i class="ti ti-user" style="font-size:14px;"></i> 31 – 45
+          </div>
+          <div class="check-item" data-group="age" data-value="46–59" onclick="toggleCheckItem(this)">
+            <i class="ti ti-user" style="font-size:14px;"></i> 46 – 59
+          </div>
+          <div class="check-item" data-group="age" data-value="60 Above" onclick="toggleCheckItem(this)">
+            <i class="ti ti-user" style="font-size:14px;"></i> 60 Above
+          </div>
         </div>
       </div>
 
@@ -539,22 +583,18 @@
 
       <div class="rounded-2xl border border-outline-variant overflow-hidden">
 
-        <!-- Section header -->
         <div class="px-5 py-3.5 bg-slate-50 border-b border-outline-variant flex items-center gap-2">
           <i class="ti ti-clipboard-text text-primary" style="font-size:15px;"></i>
           <span class="text-[11px] font-bold text-on-surface uppercase tracking-widest">Event Information</span>
         </div>
 
-        <!-- Grid table -->
         <div class="summary-grid">
 
-          <!-- Title (full width) -->
           <div class="summary-cell-full">
             <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">Event Title</p>
             <p class="text-[14px] font-semibold text-on-surface leading-snug" id="det-name-body">—</p>
           </div>
 
-          <!-- Type + Mode -->
           <div class="summary-cell">
             <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">Type of Activity</p>
             <p class="text-[13px] font-medium text-on-surface" id="det-type-body">—</p>
@@ -564,7 +604,6 @@
             <p class="text-[13px] font-medium text-on-surface" id="det-mode-body">—</p>
           </div>
 
-          <!-- Date + Hours -->
           <div class="summary-cell">
             <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">Date</p>
             <p class="text-[13px] font-medium text-on-surface" id="det-date">—</p>
@@ -574,24 +613,20 @@
             <p class="text-[13px] font-medium text-on-surface" id="det-hours">—</p>
           </div>
 
-          <!-- Profile/Background (full width) -->
           <div class="summary-cell-full">
             <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-2">Profile / Background</p>
             <div id="det-profile" class="flex flex-wrap gap-1.5"></div>
           </div>
 
-          <!-- Sector (full width) -->
           <div class="summary-cell-full">
             <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-2">Sector</p>
             <div id="det-sector" class="flex flex-wrap gap-1.5"></div>
           </div>
 
-          <!-- Participants section header -->
           <div class="summary-cell-full" style="background:#f8fafc; border-bottom:1px solid #f1f5f9;">
             <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Number of Participants</p>
           </div>
 
-          <!-- Male + Female + Total -->
           <div class="summary-cell" style="border-right:1px solid #f1f5f9;">
             <div class="flex items-center gap-2 mb-1">
               <div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center">
@@ -610,7 +645,6 @@
             </div>
             <p class="text-[22px] font-bold text-on-surface tabular-nums" id="det-female">0</p>
           </div>
-          <!-- Total (full width) -->
           <div class="summary-cell-full" style="background:#eff6ff;">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
@@ -623,7 +657,6 @@
             </div>
           </div>
 
-          <!-- Age Range (full width) -->
           <div class="summary-cell-full" style="border-bottom:none;">
             <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-2">Age Range</p>
             <div id="det-age" class="flex flex-wrap gap-1.5"></div>
@@ -885,6 +918,7 @@ let viewingEventId  = null;
 let deleteTargetId  = null;
 let activeDocFilter = 'all';
 let pendingDocFile  = null;
+let _activeTab      = 'info'; // track current tab direction
 
 /* ═══════════════════════ FILTER + RENDER ═══════════════════════ */
 function getFiltered() {
@@ -919,44 +953,33 @@ function toggleDateFilter() {
     document.getElementById('date-filter-chevron').style.transform = 'rotate(180deg)';
   }
 }
-
 function populateYears() {
   const sel = document.getElementById('filter-year');
   const existing = Array.from(sel.options).map(o => o.value);
   const years = [...new Set(EVENTS.map(e => (e.date||'').split('-')[0]).filter(Boolean))].sort((a,b)=>b-a);
   years.forEach(y => { if (!existing.includes(y)) { const o = document.createElement('option'); o.value=y; o.textContent=y; sel.appendChild(o); } });
 }
-
 function applyDateFilter() {
   filterMonth = document.getElementById('filter-month').value;
   filterYear  = document.getElementById('filter-year').value;
-  updateDateFilterLabel();
-  updateDateFilterStyle();
-  currentPage = 1;
-  render();
+  updateDateFilterLabel(); updateDateFilterStyle();
+  currentPage = 1; render();
 }
-
 function clearDateFilter() {
   filterMonth = ''; filterYear = '';
   document.getElementById('filter-month').value = '';
   document.getElementById('filter-year').value  = '';
-  updateDateFilterLabel();
-  updateDateFilterStyle();
-  currentPage = 1;
-  render();
+  updateDateFilterLabel(); updateDateFilterStyle();
+  currentPage = 1; render();
 }
-
 function updateDateFilterLabel() {
   const MONTHS = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
   const m = filterMonth ? MONTHS[parseInt(filterMonth)] : '';
   const y = filterYear  || '';
   let label = 'All Dates';
-  if (m && y) label = `${m} ${y}`;
-  else if (m)  label = m;
-  else if (y)  label = y;
+  if (m && y) label = `${m} ${y}`; else if (m) label = m; else if (y) label = y;
   document.getElementById('date-filter-label').textContent = label;
 }
-
 function updateDateFilterStyle() {
   const btn    = document.getElementById('date-filter-btn');
   const active = !!(filterMonth || filterYear);
@@ -975,7 +998,6 @@ function toggleTypeFilter() {
     document.getElementById('type-filter-chevron').style.transform = 'rotate(180deg)';
   }
 }
-
 function applyTypeFilter(val) {
   filterType = val;
   document.getElementById('type-filter-label').textContent = val || 'All Types';
@@ -987,11 +1009,8 @@ function applyTypeFilter(val) {
   btn.classList.toggle('border-primary', active);
   btn.classList.toggle('text-primary',   active);
   btn.classList.toggle('bg-blue-50',     active);
-  closeAllDropdowns();
-  currentPage = 1;
-  render();
+  closeAllDropdowns(); currentPage = 1; render();
 }
-
 function closeAllDropdowns() {
   ['date-filter-menu','type-filter-menu'].forEach(id => {
     const el = document.getElementById(id);
@@ -1002,12 +1021,43 @@ function closeAllDropdowns() {
   if (dc) dc.style.transform = '';
   if (tc) tc.style.transform = '';
 }
-
 document.addEventListener('click', e => {
   const dw = document.getElementById('date-filter-wrapper');
   const tw = document.getElementById('type-filter-wrapper');
   if (dw && !dw.contains(e.target) && tw && !tw.contains(e.target)) closeAllDropdowns();
 });
+
+/* ═══════════════════════ ANIMATED VIEW SWITCH ═══════════════════════ */
+function setView(v) {
+  if (v === currentView) return;
+  const outEl = currentView === 'card'
+    ? document.getElementById('card-view')
+    : document.getElementById('list-view');
+  const inEl  = v === 'card'
+    ? document.getElementById('card-view')
+    : document.getElementById('list-view');
+
+  // Animate out
+  outEl.classList.add('view-leaving');
+  outEl.addEventListener('animationend', function onOut() {
+    outEl.removeEventListener('animationend', onOut);
+    outEl.classList.add('hidden');
+    outEl.classList.remove('view-leaving');
+
+    // Show & animate in
+    inEl.classList.remove('hidden');
+    inEl.classList.add('view-entering');
+    inEl.addEventListener('animationend', function onIn() {
+      inEl.removeEventListener('animationend', onIn);
+      inEl.classList.remove('view-entering');
+    }, { once: true });
+  }, { once: true });
+
+  currentView = v;
+  document.getElementById('view-card-btn').classList.toggle('active', v === 'card');
+  document.getElementById('view-list-btn').classList.toggle('active', v === 'list');
+  render();
+}
 
 function render() {
   const filtered   = getFiltered();
@@ -1035,9 +1085,8 @@ function renderCards(page, total) {
     card.onclick   = () => openDetailModal(ev.id);
     const catCls   = catClass(ev.type);
     const modeCls  = ev.mode === 'Online' ? 'bg-violet-50 text-violet-700' : 'bg-teal-50 text-teal-700';
-    const total    = (ev.male||0) + (ev.female||0);
+    const ttl      = (ev.male||0) + (ev.female||0);
     const docCount = (ev.docs||[]).length;
-    const ageStr   = (ev.ageRange||[]).join(', ') || '—';
 
     card.innerHTML = `
       <div class="p-5 flex-1 flex flex-col gap-3">
@@ -1052,7 +1101,7 @@ function renderCards(page, total) {
           <span class="text-[10px] font-bold px-2 py-1 rounded-full ${catCls}">${ev.type}</span>
         </div>
         <div class="flex items-center gap-3 flex-wrap border-t border-slate-100 pt-3 mt-1">
-          <span class="flex items-center gap-1 text-[11px] text-outline"><i class="ti ti-users" style="font-size:12px;"></i>${total.toLocaleString()} participants</span>
+          <span class="flex items-center gap-1 text-[11px] text-outline"><i class="ti ti-users" style="font-size:12px;"></i>${ttl.toLocaleString()} participants</span>
           ${docCount > 0 ? `<span class="flex items-center gap-1 text-[11px] text-outline"><i class="ti ti-paperclip" style="font-size:12px;"></i>${docCount}</span>` : ''}
           <span class="text-[11px] text-outline truncate max-w-[140px]"><i class="ti ti-clock" style="font-size:12px;"></i> ${ev.hours||0}h</span>
         </div>
@@ -1082,7 +1131,7 @@ function renderList(page, total) {
 
   page.forEach(ev => {
     const cat   = catClass(ev.type);
-    const total = (ev.male||0) + (ev.female||0);
+    const ttl   = (ev.male||0) + (ev.female||0);
     const modeCls = ev.mode === 'Online' ? 'bg-violet-50 text-violet-700' : 'bg-teal-50 text-teal-700';
     const tr    = document.createElement('tr');
     tr.className = 'list-row';
@@ -1097,7 +1146,7 @@ function renderList(page, total) {
       <td class="px-5 py-4 whitespace-nowrap">
         <span class="text-[10px] font-bold px-2 py-1 rounded-full ${modeCls}">${ev.mode||'—'}</span>
       </td>
-      <td class="px-5 py-4 text-[12px] text-on-surface-variant whitespace-nowrap text-center">${total.toLocaleString()}</td>
+      <td class="px-5 py-4 text-[12px] text-on-surface-variant whitespace-nowrap text-center">${ttl.toLocaleString()}</td>
       <td class="px-5 py-4 text-[12px] text-on-surface-variant whitespace-nowrap">${ev.hours ? ev.hours + 'h' : '—'}</td>
       <td class="px-5 py-4 text-center whitespace-nowrap">
         <div class="flex items-center justify-center gap-1.5">
@@ -1150,16 +1199,6 @@ function updateStats() {
   document.getElementById('stat-participants').textContent = EVENTS.reduce((s,e) => s + (e.male||0) + (e.female||0), 0).toLocaleString();
 }
 
-/* ═══════════════════════ VIEW TOGGLE ═══════════════════════ */
-function setView(v) {
-  currentView = v;
-  document.getElementById('card-view').classList.toggle('hidden', v !== 'card');
-  document.getElementById('list-view').classList.toggle('hidden', v !== 'list');
-  document.getElementById('view-card-btn').classList.toggle('active', v === 'card');
-  document.getElementById('view-list-btn').classList.toggle('active', v === 'list');
-  render();
-}
-
 /* ═══════════════════════ FORM HELPERS ═══════════════════════ */
 function calcTotal() {
   const m = parseInt(document.getElementById('fm-male').value) || 0;
@@ -1167,19 +1206,10 @@ function calcTotal() {
   document.getElementById('fm-total-display').textContent = (m + f).toLocaleString();
 }
 
-function toggleAge(btn) {
-  btn.classList.toggle('selected');
-}
-
 function getCheckedValues(groupId) {
   return Array.from(document.querySelectorAll(`#${groupId} .check-item.checked`)).map(el => el.dataset.value);
 }
 
-function getSelectedAges() {
-  return Array.from(document.querySelectorAll('#fm-age-group .age-pill.selected')).map(el => el.dataset.age);
-}
-
-// Toggle a check-item div directly
 function toggleCheckItem(el) {
   el.classList.toggle('checked');
 }
@@ -1199,32 +1229,28 @@ function openEditModal(id) {
   editingEventId = id;
   clearForm();
 
-  document.getElementById('fm-name').value   = ev.name;
-  document.getElementById('fm-type').value   = ev.type;
-  document.getElementById('fm-mode').value   = ev.mode || '';
-  document.getElementById('fm-date').value   = ev.date;
+  document.getElementById('fm-name').value     = ev.name;
+  document.getElementById('fm-type').value     = ev.type;
+  document.getElementById('fm-mode').value     = ev.mode || '';
+  document.getElementById('fm-date').value     = ev.date;
   document.getElementById('fm-duration').value = ev.duration || '';
-  document.getElementById('fm-hours').value  = ev.hours || '';
-  document.getElementById('fm-male').value   = ev.male || 0;
-  document.getElementById('fm-female').value = ev.female || 0;
+  document.getElementById('fm-hours').value    = ev.hours || '';
+  document.getElementById('fm-male').value     = ev.male || 0;
+  document.getElementById('fm-female').value   = ev.female || 0;
   calcTotal();
 
-  // Profile checkboxes
   (ev.profile||[]).forEach(val => {
     const el = document.querySelector(`#fm-profile-group [data-value="${val}"]`);
     if (el) el.classList.add('checked');
   });
-
-  // Sector checkboxes
   (ev.sector||[]).forEach(val => {
     const el = document.querySelector(`#fm-sector-group [data-value="${val}"]`);
     if (el) el.classList.add('checked');
   });
-
-  // Age pills
-  (ev.ageRange||[]).forEach(age => {
-    const pill = document.querySelector(`#fm-age-group [data-age="${age}"]`);
-    if (pill) pill.classList.add('selected');
+  // Age Range — now check-items
+  (ev.ageRange||[]).forEach(val => {
+    const el = document.querySelector(`#fm-age-group [data-value="${val}"]`);
+    if (el) el.classList.add('checked');
   });
 
   document.getElementById('form-modal-title').textContent = 'Edit Event';
@@ -1236,24 +1262,21 @@ function openEditModal(id) {
 function closeFormModal() { hide('event-form-modal'); }
 
 function clearForm() {
-  document.getElementById('fm-name').value   = '';
-  document.getElementById('fm-type').value   = '';
-  document.getElementById('fm-mode').value   = '';
-  document.getElementById('fm-date').value   = '';
+  document.getElementById('fm-name').value     = '';
+  document.getElementById('fm-type').value     = '';
+  document.getElementById('fm-mode').value     = '';
+  document.getElementById('fm-date').value     = '';
   document.getElementById('fm-duration').value = '';
-  document.getElementById('fm-hours').value  = '';
-  document.getElementById('fm-male').value   = '';
-  document.getElementById('fm-female').value = '';
+  document.getElementById('fm-hours').value    = '';
+  document.getElementById('fm-male').value     = '';
+  document.getElementById('fm-female').value   = '';
   document.getElementById('fm-total-display').textContent = '0';
-  // Uncheck all
-  document.querySelectorAll('#fm-profile-group .check-item, #fm-sector-group .check-item').forEach(el => {
+  document.querySelectorAll('#fm-profile-group .check-item, #fm-sector-group .check-item, #fm-age-group .check-item').forEach(el => {
     el.classList.remove('checked');
   });
-  document.querySelectorAll('#fm-age-group .age-pill').forEach(el => el.classList.remove('selected'));
   document.getElementById('form-error').classList.add('hidden');
 }
 
-// Holds validated payload while user reviews in confirm modal
 let _pendingPayload = null;
 
 function saveEvent() {
@@ -1267,7 +1290,7 @@ function saveEvent() {
   const female   = parseInt(document.getElementById('fm-female').value) || 0;
   const profile  = getCheckedValues('fm-profile-group');
   const sector   = getCheckedValues('fm-sector-group');
-  const ageRange = getSelectedAges();
+  const ageRange = getCheckedValues('fm-age-group');
   const err      = document.getElementById('form-error');
 
   if (!name || !type || !mode || !date) {
@@ -1300,10 +1323,8 @@ function saveEvent() {
   }
   err.classList.add('hidden');
 
-  // Store payload and show confirmation modal
   _pendingPayload = { name, type, mode, date, duration, hours, male, female, profile, sector, ageRange };
 
-  const MONTHS = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
   const [y, m, d] = date.split('-');
   const fmtD = new Date(+y, +m-1, +d).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
 
@@ -1323,15 +1344,11 @@ function saveEvent() {
   show('save-confirm-modal');
 }
 
-function closeSaveConfirm() {
-  hide('save-confirm-modal');
-  _pendingPayload = null;
-}
+function closeSaveConfirm() { hide('save-confirm-modal'); _pendingPayload = null; }
 
 function confirmSaveEvent() {
   if (!_pendingPayload) return;
   const { name } = _pendingPayload;
-
   if (editingEventId) {
     const idx = EVENTS.findIndex(e => e.id === editingEventId);
     if (idx !== -1) EVENTS[idx] = { ...EVENTS[idx], ..._pendingPayload };
@@ -1340,7 +1357,6 @@ function confirmSaveEvent() {
     EVENTS.unshift({ id: nextEventId++, docs: [], ..._pendingPayload });
     showToast('Event Added', `"${name}" has been added successfully.`);
   }
-
   _pendingPayload = null;
   hide('save-confirm-modal');
   closeFormModal();
@@ -1365,7 +1381,6 @@ function openDetailModal(id) {
   document.getElementById('det-female').textContent    = (ev.female||0).toLocaleString();
   document.getElementById('det-total').textContent     = ((ev.male||0)+(ev.female||0)).toLocaleString();
 
-  // Type icon
   const typeIconMap = { 'IP Awareness (IPA)':'ti-bulb','Patent Search (PS)':'ti-search','Patent Drafting (PD)':'ti-file-pencil','IPA and PS':'ti-bulb','IPA and PD':'ti-bulb','PS and PD':'ti-file-search','IPA, PS, and PD':'ti-certificate' };
   const badge = document.getElementById('det-type-badge-wrap');
   const icon  = document.getElementById('det-type-icon');
@@ -1374,26 +1389,23 @@ function openDetailModal(id) {
   icon.style.color       = '#0058be';
   icon.style.fontSize    = '18px';
 
-  // Profile tags
   const profileEl = document.getElementById('det-profile');
   profileEl.innerHTML = (ev.profile||[]).length
     ? (ev.profile||[]).map(p=>`<span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700">${p}</span>`).join('')
     : '<span class="text-[13px] text-outline">—</span>';
 
-  // Sector tags
   const sectorEl = document.getElementById('det-sector');
   sectorEl.innerHTML = (ev.sector||[]).length
     ? (ev.sector||[]).map(s=>`<span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">${s}</span>`).join('')
     : '<span class="text-[13px] text-outline">—</span>';
 
-  // Age range tags
   const ageEl = document.getElementById('det-age');
   ageEl.innerHTML = (ev.ageRange||[]).length
     ? (ev.ageRange||[]).map(a=>`<span class="inline-flex items-center text-[11px] font-bold px-3 py-1 rounded-full bg-orange-50 text-orange-700">${a}</span>`).join('')
     : '<span class="text-[13px] text-outline">—</span>';
 
-  // Doc count badge
   document.getElementById('doc-count-badge').textContent = (ev.docs||[]).length;
+  _activeTab = 'info';
   switchTab('info');
   renderDocs(ev.docs||[], 'all');
   show('event-detail-modal');
@@ -1402,12 +1414,32 @@ function openDetailModal(id) {
 function closeDetailModal() { hide('event-detail-modal'); }
 function editCurrentEvent() { closeDetailModal(); openEditModal(viewingEventId); }
 
+/* ── Animated tab switch ── */
 function switchTab(tab) {
+  const goingRight = (tab === 'docs' && _activeTab === 'info');
+  const goingLeft  = (tab === 'info' && _activeTab === 'docs');
+  const wasTab     = _activeTab;
+  _activeTab       = tab;
+
   const isInfo = tab === 'info';
-  document.getElementById('tab-info-content').classList.toggle('hidden', !isInfo);
-  document.getElementById('tab-docs-content').classList.toggle('hidden', isInfo);
+  const outEl  = isInfo ? document.getElementById('tab-docs-content') : document.getElementById('tab-info-content');
+  const inEl   = isInfo ? document.getElementById('tab-info-content') : document.getElementById('tab-docs-content');
+
+  // Update tab button styles immediately
   document.getElementById('tab-info').className = `tab-btn px-1 py-3.5 text-[13px] mr-6 border-b-2 transition-colors ${isInfo ? 'font-semibold text-primary border-primary' : 'font-medium text-outline border-transparent hover:text-on-surface'}`;
   document.getElementById('tab-docs').className = `tab-btn px-1 py-3.5 text-[13px] border-b-2 transition-colors ${!isInfo ? 'font-semibold text-primary border-primary' : 'font-medium text-outline border-transparent hover:text-on-surface'}`;
+
+  if (wasTab === tab) return; // no change, skip animation
+
+  // Hide outgoing, show incoming with animation class
+  outEl.classList.add('hidden');
+  inEl.classList.remove('hidden');
+  const animClass = goingRight ? 'tab-entering-right' : 'tab-entering-left';
+  inEl.classList.add(animClass);
+  inEl.addEventListener('animationend', function handler() {
+    inEl.removeEventListener('animationend', handler);
+    inEl.classList.remove(animClass);
+  }, { once: true });
 }
 
 /* ═══════════════════════ DOCUMENTS ═══════════════════════ */
@@ -1447,7 +1479,6 @@ function filterDocs(type) {
   const ev = EVENTS.find(e => e.id === viewingEventId);
   if (ev) renderDocs(ev.docs||[], type);
 }
-
 function removeDoc(docId) {
   const ev = EVENTS.find(e => e.id === viewingEventId);
   if (!ev) return;
@@ -1527,13 +1558,8 @@ function fmtDate(d) {
 
 function catClass(type) {
   const map = {
-    'IP Awareness (IPA)':'cat-ipa',
-    'Patent Search (PS)':'cat-ps',
-    'Patent Drafting (PD)':'cat-pd',
-    'IPA and PS':'cat-ipa-ps',
-    'IPA and PD':'cat-ipa-pd',
-    'PS and PD':'cat-ps-pd',
-    'IPA, PS, and PD':'cat-all',
+    'IP Awareness (IPA)':'cat-ipa','Patent Search (PS)':'cat-ps','Patent Drafting (PD)':'cat-pd',
+    'IPA and PS':'cat-ipa-ps','IPA and PD':'cat-ipa-pd','PS and PD':'cat-ps-pd','IPA, PS, and PD':'cat-all',
   };
   return map[type] || 'cat-other';
 }
