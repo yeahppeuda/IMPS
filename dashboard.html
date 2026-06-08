@@ -70,6 +70,7 @@
     padding:12px; box-shadow:0 10px 36px rgba(0,0,0,0.12); animation:mpIn 0.15s ease;
   }
   .cal-month-picker.open { display:block; }
+  @keyframes fadeSlideIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
   @keyframes mpIn { from { opacity:0; transform:translateX(-50%) translateY(-6px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
   .mp-year-row { display:flex; align-items:center; justify-content:space-between; padding:2px 2px 10px; margin-bottom:8px; border-bottom:1px solid #e1e2ec; }
   .mp-year-btn { background:none; border:1px solid #e1e2ec; border-radius:8px; width:28px; height:28px; cursor:pointer; color:#424754; display:flex; align-items:center; justify-content:center; font-size:15px; transition:background 0.12s; }
@@ -408,12 +409,20 @@
           <input id="rm-id" type="text" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="e.g. CR-2026-001"/>
         </div>
         <div>
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">College</label>
+          <select id="rm-college" onchange="updateDeptOptions()" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all appearance-none">
+            <option value="">— Select College —</option>
+            <option value="College of Computer Studies">College of Computer Studies</option>
+            <option value="College of Engineering">College of Engineering</option>
+            <option value="College of Accounting">College of Accounting</option>
+            <option value="College of Business">College of Business</option>
+          </select>
+        </div>
+      </div>
+      <div id="rm-dept-wrap" class="hidden grid grid-cols-1 gap-4">
+        <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Department</label>
           <select id="rm-dept" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all appearance-none">
-            <option>College of Computer Studies</option>
-            <option>College of Education</option>
-            <option>College of Engineering</option>
-            <option>College of Technology</option>
           </select>
         </div>
       </div>
@@ -764,6 +773,17 @@ function backToCategory() {
    RESEARCH FORM
 ══════════════════════════════════ */
 let pendingSubmission = null;
+// ── FIX: tracks which category was submitted so viewResearch() can route correctly ──
+let lastSubmittedCategory = null;
+
+// Maps category id → the HTML file for that module
+const CATEGORY_ROUTES = {
+  'copyright':         'copyright.html',
+  'patent':            'patent.html',
+  'trademark':         'trademark.html',
+  'utility-model':     'utility-model.html',
+  'industrial-design': 'industrial-design.html',
+};
 
 function openResearchForm() {
   const cat = CATEGORIES.find(c => c.id === selectedCategory);
@@ -774,7 +794,9 @@ function openResearchForm() {
   document.getElementById('rm-title').value='';
   document.getElementById('rm-id').value='';
   document.getElementById('rm-date').value='';
-  document.getElementById('rm-dept').selectedIndex=0;
+  document.getElementById('rm-college').selectedIndex=0;
+  document.getElementById('rm-dept-wrap').classList.add('hidden');
+  document.getElementById('rm-dept').innerHTML='';
   document.getElementById('rm-error').classList.add('hidden');
   document.getElementById('rm-authors').innerHTML='';
   clearAuthorError();
@@ -871,11 +893,13 @@ function getAuthorValues() {
 function reviewResearchEntry() {
   const title   = document.getElementById('rm-title').value.trim();
   const id      = document.getElementById('rm-id').value.trim();
-  const dept    = document.getElementById('rm-dept').value;
+  const college  = document.getElementById('rm-college').value;
+  const deptSel  = document.getElementById('rm-dept').value;
+  const dept     = college && deptSel ? college + ' — ' + deptSel : college || deptSel;
   const date    = document.getElementById('rm-date').value;
   const authors = getAuthorValues();
   const errorEl = document.getElementById('rm-error');
-  if(!title||!id||!date||!authors.length){ errorEl.textContent='Please fill in all required fields and add at least one author.'; errorEl.classList.remove('hidden'); return; }
+  if(!title||!id||!date||!authors.length||!college){ errorEl.textContent='Please fill in all required fields (including College) and add at least one author.'; errorEl.classList.remove('hidden'); return; }
   if(authors.length>MAX_AUTHORS){ errorEl.textContent=`Too many authors.`; errorEl.classList.remove('hidden'); return; }
   errorEl.classList.add('hidden');
 
@@ -906,20 +930,93 @@ function backToResearchModal() {
   document.getElementById('review-modal').classList.remove('flex');
   openResearchForm();
 }
-function confirmResearchEntry() {
+async function confirmResearchEntry() {
   if (!pendingSubmission) return;
-  const stored = JSON.parse(sessionStorage.getItem('copyrightNewEntries')||'[]');
-  stored.push(pendingSubmission);
-  sessionStorage.setItem('copyrightNewEntries', JSON.stringify(stored));
-  document.getElementById('review-modal').classList.add('hidden');
-  document.getElementById('review-modal').classList.remove('flex');
-  const sm = document.getElementById('success-modal');
-  sm.classList.remove('hidden'); sm.classList.add('flex');
-  window._successTimer = setTimeout(closeSuccessModal, 4000);
-  pendingSubmission = null;
+
+  // ── FIX: save category before clearing pendingSubmission ──
+  lastSubmittedCategory = pendingSubmission.category;
+
+  try {
+    const response = await fetch(
+      "http://localhost:5000/api/research",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category: pendingSubmission.category,
+          researchTitle: pendingSubmission.title,
+          referenceId: pendingSubmission.id,
+          department: pendingSubmission.department,
+          authors: pendingSubmission.authors,
+          date: pendingSubmission.date,
+          status: pendingSubmission.status
+        })
+      }
+    );
+
+    const data = await response.json();
+    console.log(data);
+
+    document.getElementById('review-modal').classList.add('hidden');
+    document.getElementById('review-modal').classList.remove('flex');
+
+    const sm = document.getElementById('success-modal');
+    sm.classList.remove('hidden');
+    sm.classList.add('flex');
+
+    window._successTimer = setTimeout(closeSuccessModal, 4000);
+    pendingSubmission = null;
+
+  } catch(error) {
+    console.error(error);
+    alert("Failed to save research to database.");
+  }
 }
-function closeSuccessModal(){ clearTimeout(window._successTimer); const sm=document.getElementById('success-modal'); sm.classList.add('hidden'); sm.classList.remove('flex'); }
-function viewResearch(){ sessionStorage.setItem('copyrightJustAdded','true'); window.location.href='copyright.html'; }
+
+function closeSuccessModal() {
+  clearTimeout(window._successTimer);
+  const sm = document.getElementById('success-modal');
+  sm.classList.add('hidden');
+  sm.classList.remove('flex');
+}
+
+// ── FIX: route to the correct category page based on what was submitted ──
+function viewResearch() {
+  const page = CATEGORY_ROUTES[lastSubmittedCategory] || 'copyright.html';
+  sessionStorage.setItem(lastSubmittedCategory + 'JustAdded', 'true');
+  window.location.href = page;
+}
+
+/* ══════════════════════════════════
+   CASCADING COLLEGE → DEPARTMENT
+══════════════════════════════════ */
+const COLLEGE_DEPTS = {
+  'College of Computer Studies': ['Information Technology', 'Information System', 'Computer Science'],
+  'College of Engineering':      ['Industrial Engineering', 'Electronic Engineering', 'Computer Engineering'],
+  'College of Accounting':       ['Accounting', 'Management Accounting'],
+  'College of Business':         ['Entrepreneurship'],
+};
+
+function updateDeptOptions() {
+  const college  = document.getElementById('rm-college').value;
+  const deptWrap = document.getElementById('rm-dept-wrap');
+  const deptSel  = document.getElementById('rm-dept');
+
+  deptSel.innerHTML = '';
+
+  if (college && COLLEGE_DEPTS[college]) {
+    COLLEGE_DEPTS[college].forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d; opt.textContent = d;
+      deptSel.appendChild(opt);
+    });
+    deptWrap.classList.remove('hidden');
+    deptWrap.style.cssText = 'animation:fadeSlideIn 0.18s ease;';
+  } else {
+    deptWrap.classList.add('hidden');
+    deptWrap.style.cssText = '';
+  }
+}
 </script>
 </body>
 </html>
