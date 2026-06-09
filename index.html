@@ -234,120 +234,128 @@
 </div>
 
 <script>
-  const VALID_EMAIL    = 'admin@itso.edu.ph';
-  const VALID_PASSWORD = 'admin123';
-  const MAX_ATTEMPTS   = 3;
-  let failedAttempts   = 0;
-  let isLocked         = false;
+const API_URL = "http://localhost:5000/api/auth/login";
 
-  /* ── Password visibility toggle ── */
-  function togglePasswordVisibility() {
-    const input     = document.getElementById('password');
-    const eyeOpen   = document.getElementById('eyeOpen');
-    const eyeClosed = document.getElementById('eyeClosed');
-    const isHidden  = input.type === 'password';
-    input.type      = isHidden ? 'text' : 'password';
-    eyeOpen.classList.toggle('hidden', isHidden);
-    eyeClosed.classList.toggle('hidden', !isHidden);
+const MAX_ATTEMPTS = 3;
+let failedAttempts = 0;
+let isLocked = false;
+
+/* ── Password toggle ── */
+function togglePasswordVisibility() {
+  const input = document.getElementById('password');
+  const eyeOpen = document.getElementById('eyeOpen');
+  const eyeClosed = document.getElementById('eyeClosed');
+
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+
+  eyeOpen.classList.toggle('hidden', isHidden);
+  eyeClosed.classList.toggle('hidden', !isHidden);
+}
+
+/* ── LOGIN ── */
+async function login(e) {
+  e.preventDefault();
+  if (isLocked) return;
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  const btn = document.getElementById('loginBtn');
+  const label = document.getElementById('loginBtnLabel');
+
+  document.getElementById('loginError').classList.add('hidden');
+
+  if (!email || !password) {
+    return showError("Please enter email and password.");
   }
 
-  /* ── Login handler ── */
-  function login(e) {
-    e.preventDefault();
-    if (isLocked) return;
+  btn.disabled = true;
+  label.innerHTML = `
+    <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle>
+      <path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8v8z"></path>
+    </svg>
+    Signing in...
+  `;
 
-    const email  = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const btn    = document.getElementById('loginBtn');
-    const label  = document.getElementById('loginBtnLabel');
+  try {
+    const res = await fetch(API_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  },
+  body: JSON.stringify({ email, password })
+});
 
-    document.getElementById('loginError').classList.add('hidden');
+const text = await res.text(); // always read raw response first
 
-    if (!email || !password) {
-      showError('Please enter your email and password.');
-      return;
-    }
+console.log("RAW RESPONSE:", text); // 🔥 DEBUG
 
-    btn.disabled = true;
-    label.innerHTML = `
-      <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-      </svg>
-      Signing in…`;
+let data;
+try {
+  data = JSON.parse(text);
+} catch (e) {
+  throw new Error("Backend did not return JSON. Check server logs.");
+}
 
-    setTimeout(() => {
-      if (email === VALID_EMAIL && password === VALID_PASSWORD) {
-        sessionStorage.setItem('itso_authenticated', 'true');
-        sessionStorage.setItem('itso_user', email);
-        window.location.href = 'dashboard.html';
-      } else {
-        failedAttempts++;
-        btn.disabled = false;
+if (!res.ok || !data.success) {
+  throw new Error(data.message || "Login failed");
+}
+    // SUCCESS
+    sessionStorage.setItem('itso_authenticated', 'true');
+    sessionStorage.setItem('itso_user', JSON.stringify(data.user));
 
-        if (failedAttempts >= MAX_ATTEMPTS) {
-          lockAccount();
-        } else {
-          const remaining = MAX_ATTEMPTS - failedAttempts;
-          const noun = remaining === 1 ? 'attempt' : 'attempts';
-          label.innerHTML = `
-            Sign In
-            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-            </svg>`;
-          showError(`Incorrect email or password. ${remaining} ${noun} remaining before your account is temporarily locked.`);
-        }
-      }
-    }, 900);
-  }
+   if (data.user.role === "admin") {
+  window.location.href = "admin-dashboard.html";
+} else {
+  window.location.href = "dashboard.html";
+}
 
-  /* ── Lock the form after MAX_ATTEMPTS ── */
-  function lockAccount() {
-    isLocked = true;
-    const btn   = document.getElementById('loginBtn');
-    const label = document.getElementById('loginBtnLabel');
-    const email = document.getElementById('email');
-    const pwd   = document.getElementById('password');
-    const toggle = document.getElementById('togglePassword');
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
 
-    email.disabled  = true;
-    pwd.disabled    = true;
-    if (toggle) toggle.disabled = true;
-    btn.disabled    = true;
-    btn.classList.add('opacity-60', 'cursor-not-allowed');
+    failedAttempts++;
+    btn.disabled = false;
 
-    label.innerHTML = `
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      </svg>
-      Account Locked`;
+    label.innerHTML = "Sign In";
 
-    showError('Too many failed login attempts. Your account has been temporarily locked. Please contact your system administrator or try again later.', true);
-  }
+    const remaining = MAX_ATTEMPTS - failedAttempts;
 
-  /* ── Show error banner ── */
-  function showError(msg, isLockout = false) {
-    const errorEl  = document.getElementById('loginError');
-    const errorTxt = document.getElementById('loginErrorText');
-    const errorIcon = document.getElementById('loginErrorIcon');
-
-    errorTxt.textContent = msg;
-
-    if (isLockout) {
-      errorEl.classList.remove('bg-red-50', 'border-red-200', 'text-red-600');
-      errorEl.classList.add('bg-amber-50', 'border-amber-300', 'text-amber-700');
-      errorIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>`;
+    if (failedAttempts >= MAX_ATTEMPTS) {
+      lockAccount();
     } else {
-      errorEl.classList.remove('bg-amber-50', 'border-amber-300', 'text-amber-700');
-      errorEl.classList.add('bg-red-50', 'border-red-200', 'text-red-600');
-      errorIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>`;
-    }
-
-    errorEl.classList.remove('hidden');
-    if (!isLockout) {
-      document.getElementById('loginForm').classList.add('shake');
-      setTimeout(() => document.getElementById('loginForm').classList.remove('shake'), 350);
+      showError(`${err.message} (${remaining} attempts left)`);
     }
   }
+}
+
+/* ── LOCK ACCOUNT ── */
+function lockAccount() {
+  isLocked = true;
+
+  document.getElementById('email').disabled = true;
+  document.getElementById('password').disabled = true;
+  document.getElementById('loginBtn').disabled = true;
+
+  showError("Too many failed attempts. Account locked.", true);
+}
+
+/* ── ERROR DISPLAY ── */
+function showError(msg, isLock = false) {
+  const el = document.getElementById('loginError');
+  const txt = document.getElementById('loginErrorText');
+
+  txt.textContent = msg;
+  el.classList.remove('hidden');
+
+  if (!isLock) {
+    const form = document.getElementById('loginForm');
+    form.classList.add('shake');
+    setTimeout(() => form.classList.remove('shake'), 350);
+  }
+}
 </script>
-</body></html>
+</body>
+</html>

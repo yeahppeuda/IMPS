@@ -62,7 +62,6 @@
   .page-btn.active { background: #0058be; color: #fff; font-weight: 700; }
   .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-  /* Modal field editable state */
   .modal-field:not(:disabled) {
     background: #ffffff !important;
     border-color: #93c5fd !important;
@@ -79,7 +78,6 @@
     padding-right: 2.5rem !important;
   }
 
-  /* ── STATUS BADGES ── */
   .status-badge {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 4px 10px 4px 8px;
@@ -88,74 +86,40 @@
     border-width: 1px; border-style: solid;
     white-space: nowrap;
   }
-  /* per-status colour tokens */
-  .badge-submitted {
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    color: #1e40af; border-color: #bfdbfe;
-  }
-  .badge-esoa {
-    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
-    color: #4338ca; border-color: #c4b5fd;
-  }
-  .badge-paid {
-    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-    color: #065f46; border-color: #6ee7b7;
-  }
-  .badge-approved {
-    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-    color: #92400e; border-color: #fcd34d;
-  }
-  .badge-default {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    color: #475569; border-color: #cbd5e1;
-  }
-  /* ── VIEW BUTTON ── */
+  .badge-submitted { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af; border-color: #bfdbfe; }
+  .badge-esoa      { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); color: #4338ca; border-color: #c4b5fd; }
+  .badge-paid      { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); color: #065f46; border-color: #6ee7b7; }
+  .badge-approved  { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); color: #92400e; border-color: #fcd34d; }
+  .badge-default   { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); color: #475569; border-color: #cbd5e1; }
+
   .btn-view {
     display: inline-flex; align-items: center; gap: 5px;
-    padding: 5px 12px 5px 10px;
-    border-radius: 8px;
-    font-size: 12px; font-weight: 600;
-    color: #0058be;
+    padding: 5px 12px 5px 10px; border-radius: 8px;
+    font-size: 12px; font-weight: 600; color: #0058be;
     background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    border: 1px solid #bfdbfe;
-    cursor: pointer;
-    transition: background 0.18s, border-color 0.18s, color 0.18s,
-                transform 0.15s, box-shadow 0.18s;
+    border: 1px solid #bfdbfe; cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s, box-shadow 0.18s;
     position: relative; overflow: hidden;
   }
   .btn-view::before {
-    content: '';
-    position: absolute; inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: linear-gradient(135deg, #0058be 0%, #1d4ed8 100%);
-    opacity: 0;
-    transition: opacity 0.18s;
-    border-radius: inherit;
+    opacity: 0; transition: opacity 0.18s; border-radius: inherit;
   }
   .btn-view:hover::before { opacity: 1; }
-  .btn-view:hover { color: #fff; border-color: #0058be;
-    transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,88,190,0.25); }
+  .btn-view:hover { color: #fff; border-color: #0058be; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,88,190,0.25); }
   .btn-view:active { transform: translateY(0); box-shadow: none; }
   .btn-view i, .btn-view span { position: relative; z-index: 1; }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .page-fade { animation: fadeIn 0.4s ease both; }
 
-  @keyframes toastIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes shrink {
-    from { width: 100%; }
-    to   { width: 0%; }
-  }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body class="bg-surface text-on-surface font-sans antialiased flex min-h-screen">
 
-<!-- ======================== SIDEBAR ======================== -->
+<!-- SIDEBAR -->
 <aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-white flex flex-col z-50">
   <div class="flex items-center gap-3 px-5 py-5 border-b border-outline-variant">
     <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white flex-shrink-0">
@@ -186,7 +150,7 @@
   </div>
 </aside>
 
-<!-- ======================== MAIN ======================== -->
+<!-- MAIN -->
 <main class="flex-1 ml-[260px] min-h-screen flex flex-col bg-surface page-fade">
 
   <!-- Header -->
@@ -317,7 +281,7 @@
   </div>
 </main>
 
-<!-- ======================== VIEW/EDIT MODAL ======================== -->
+<!-- VIEW/EDIT MODAL -->
 <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm"
   id="research-modal" style="display:none;">
   <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col">
@@ -333,6 +297,7 @@
     </div>
 
     <div class="p-7 space-y-5 overflow-y-auto max-h-[75vh]">
+
       <!-- Status Hero -->
       <div>
         <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Registration Status</label>
@@ -355,24 +320,32 @@
           class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all"/>
       </div>
 
-      <!-- Ref No + Dept -->
+      <!-- Ref No + College -->
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Reference No.</label>
-          <!-- Always read-only — it's the display ID, not the DB _id -->
           <input id="field-ref" type="text" disabled
             class="w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all cursor-default"/>
         </div>
         <div>
-          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Department</label>
-          <select id="field-dept" disabled
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">College</label>
+          <select id="field-college" disabled onchange="updateModalDeptOptions()"
             class="modal-field modal-field-select w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all appearance-none cursor-default">
-            <option>College of Computer Studies</option>
-            <option>College of Education</option>
-            <option>College of Engineering</option>
-            <option>College of Technology</option>
+            <option value="">— Select College —</option>
+            <option value="College of Computer Studies">College of Computer Studies</option>
+            <option value="College of Engineering">College of Engineering</option>
+            <option value="College of Accounting">College of Accounting</option>
+            <option value="College of Business">College of Business</option>
           </select>
         </div>
+      </div>
+
+      <!-- Department (cascades from College) -->
+      <div id="modal-dept-wrap">
+        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Department</label>
+        <select id="field-dept" disabled
+          class="modal-field modal-field-select w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all appearance-none cursor-default">
+        </select>
       </div>
 
       <!-- Author + Date -->
@@ -408,7 +381,7 @@
   </div>
 </div>
 
-<!-- ======================== CONFIRM MODAL ======================== -->
+<!-- CONFIRM MODAL -->
 <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-on-surface/50 backdrop-blur-sm"
   id="confirm-modal" style="display:none;">
   <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center">
@@ -426,7 +399,7 @@
   </div>
 </div>
 
-<!-- ======================== SUCCESS TOAST ======================== -->
+<!-- SUCCESS TOAST -->
 <div id="success-toast"
   class="fixed bottom-8 right-8 z-[80] flex items-center gap-3 bg-white border border-emerald-200 shadow-xl rounded-2xl px-5 py-4 pointer-events-none"
   style="opacity:0; transform:translateY(12px); transition:opacity 0.25s ease, transform 0.25s ease; min-width:260px;">
@@ -440,11 +413,11 @@
   <div class="absolute bottom-0 left-0 h-[3px] bg-emerald-400 rounded-b-2xl" id="toast-bar" style="width:100%;"></div>
 </div>
 
-<!-- ======================== SCRIPT ======================== -->
+<!-- SCRIPT -->
 <script>
 const API_URL = "http://localhost:5000/api/research";
 
-/* ── CLOCK ── */
+/* CLOCK */
 function updateClock() {
   const now = new Date();
   let h = now.getHours();
@@ -458,28 +431,39 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-/* ── STATE ── */
-let ALL_RECORDS = [];       // full dataset (mapped)
-let filteredRecords = [];   // after search + filter
-
+/* STATE */
+let ALL_RECORDS = [];
+let filteredRecords = [];
 const ROWS_PER_PAGE = 10;
 let currentPage = 1;
 let activeStatusFilter = 'All';
-
-// Track open record's MongoDB _id (string) — single source of truth
 let activeMongoId = null;
-// Snapshot for Cancel revert
 let activeSnapshot = null;
 
-/* ── STATUS STYLES ── */
-const statusBadge = {
-  'Submitted to IPO': 'badge-submitted',
-  'Received E-SOA':   'badge-esoa',
-  'Paid':             'badge-paid',
-  'Approved':         'badge-approved',
+/* COLLEGE → DEPARTMENT MAP */
+const MODAL_COLLEGE_DEPTS = {
+  'College of Computer Studies': ['Information Technology', 'Information System', 'Computer Science'],
+  'College of Engineering':      ['Industrial Engineering', 'Electronic Engineering', 'Computer Engineering'],
+  'College of Accounting':       ['Accounting', 'Management Accounting'],
+  'College of Business':         ['Entrepreneurship'],
 };
 
-// Dot + label config for rich badges
+function updateModalDeptOptions() {
+  const college = document.getElementById('field-college').value;
+  const deptSel = document.getElementById('field-dept');
+  const deptWrap = document.getElementById('modal-dept-wrap');
+  deptSel.innerHTML = '';
+  if (college && MODAL_COLLEGE_DEPTS[college]) {
+    MODAL_COLLEGE_DEPTS[college].forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d; opt.textContent = d;
+      deptSel.appendChild(opt);
+    });
+    deptWrap.style.animation = 'fadeSlideIn 0.18s ease';
+  }
+}
+
+/* STATUS STYLES */
 const statusMeta = {
   'Submitted to IPO': { cls: 'badge-submitted', label: 'Submitted to IPO' },
   'Received E-SOA':   { cls: 'badge-esoa',       label: 'Received E-SOA'   },
@@ -504,21 +488,16 @@ function updateStatusStyle(sel) {
   sel.style.borderColor     = s.border;
   sel.style.backgroundColor = s.bg;
   sel.style.color           = s.color;
-  sel.style.textShadow      = '';
 }
 
-/* ── STAT CARDS (dynamic) ── */
+/* STAT CARDS */
 function updateStats() {
-  const total    = ALL_RECORDS.length;
-  const approved = ALL_RECORDS.filter(r => r.status === 'Approved').length;
-  const pending  = ALL_RECORDS.filter(r => r.status !== 'Approved').length;
-
-  document.getElementById('stat-total').textContent    = total;
-  document.getElementById('stat-approved').textContent = approved;
-  document.getElementById('stat-pending').textContent  = pending;
+  document.getElementById('stat-total').textContent    = ALL_RECORDS.length;
+  document.getElementById('stat-approved').textContent = ALL_RECORDS.filter(r => r.status === 'Approved').length;
+  document.getElementById('stat-pending').textContent  = ALL_RECORDS.filter(r => r.status !== 'Approved').length;
 }
 
-/* ── FILTER DROPDOWN ── */
+/* FILTER DROPDOWN */
 function toggleFilterMenu() {
   const menu    = document.getElementById('filter-menu');
   const chevron = document.getElementById('filter-chevron');
@@ -540,12 +519,10 @@ function applyStatusFilter(val) {
 
 document.addEventListener('click', e => {
   const w = document.getElementById('filter-wrapper');
-  if (w && !w.contains(e.target)) {
-    document.getElementById('filter-menu').classList.add('hidden');
-  }
+  if (w && !w.contains(e.target)) document.getElementById('filter-menu').classList.add('hidden');
 });
 
-/* ── SEARCH + FILTER ── */
+/* SEARCH + FILTER */
 function filterAndRender() {
   const q = document.getElementById('search-input').value.toLowerCase().trim();
   filteredRecords = ALL_RECORDS.filter(r => {
@@ -562,15 +539,13 @@ function filterAndRender() {
   render();
 }
 
-/* ── RENDER TABLE ── */
+/* RENDER TABLE */
 function render() {
   const tbody   = document.getElementById('table-body');
   const emptyEl = document.getElementById('empty-state');
   const total   = filteredRecords.length;
   const totalPages = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
-
   if (currentPage > totalPages) currentPage = totalPages;
-
   const start = (currentPage - 1) * ROWS_PER_PAGE;
   const page  = filteredRecords.slice(start, start + ROWS_PER_PAGE);
 
@@ -579,36 +554,31 @@ function render() {
     emptyEl.classList.remove('hidden');
   } else {
     emptyEl.classList.add('hidden');
-    tbody.innerHTML = page.map(r => {
-      return `
-        <tr class="hover:bg-slate-50/70 transition-colors">
-          <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide">${r.referenceNo || '—'}</td>
-          <td class="px-5 py-4 text-[13px] text-on-surface font-medium max-w-[200px] truncate">${r.title || ''}</td>
-          <td class="px-5 py-4 text-[12px] text-on-surface-variant">${r.author || ''}</td>
-          <td class="px-5 py-4 text-[12px] text-on-surface-variant">${r.dept || ''}</td>
-          <td class="px-5 py-4">${statusBadgeHTML(r.status)}</td>
-          <td class="px-5 py-4 text-[12px] text-on-surface-variant tabular-nums">${r.dateApplied || ''}</td>
-          <td class="px-5 py-4 text-center">
-            <button onclick="openResearchModal('${r._id}')" class="btn-view">
-              <i class="ti ti-eye" style="font-size:13px;"></i>
-              <span>View</span>
-            </button>
-          </td>
-        </tr>`;
-    }).join('');
+    tbody.innerHTML = page.map(r => `
+      <tr class="hover:bg-slate-50/70 transition-colors">
+        <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide">${r.referenceNo || '—'}</td>
+        <td class="px-5 py-4 text-[13px] text-on-surface font-medium max-w-[200px] truncate">${r.title || ''}</td>
+        <td class="px-5 py-4 text-[12px] text-on-surface-variant">${r.author || ''}</td>
+        <td class="px-5 py-4 text-[12px] text-on-surface-variant">${r.dept || ''}</td>
+        <td class="px-5 py-4">${statusBadgeHTML(r.status)}</td>
+        <td class="px-5 py-4 text-[12px] text-on-surface-variant tabular-nums">${r.dateApplied || ''}</td>
+        <td class="px-5 py-4 text-center">
+          <button onclick="openResearchModal('${r._id}')" class="btn-view">
+            <i class="ti ti-eye" style="font-size:13px;"></i><span>View</span>
+          </button>
+        </td>
+      </tr>`).join('');
   }
 
   document.getElementById('pagination-info').textContent =
     `Showing ${total === 0 ? 0 : start + 1}–${Math.min(start + ROWS_PER_PAGE, total)} of ${total}`;
-
   renderPagination(totalPages);
 }
 
-/* ── PAGINATION ── */
+/* PAGINATION */
 function renderPagination(totalPages) {
   const ctrl = document.getElementById('pagination-controls');
   ctrl.innerHTML = '';
-
   const makeBtn = (labelOrIcon, targetPage, disabled, active, isIcon) => {
     const b = document.createElement('button');
     b.className = `page-btn ${active ? 'active' : ''}`;
@@ -616,52 +586,30 @@ function renderPagination(totalPages) {
     b.innerHTML = isIcon
       ? `<span class="material-symbols-outlined" style="font-size:16px;">${labelOrIcon}</span>`
       : labelOrIcon;
-    if (!disabled && !active) {
-      b.onclick = () => { currentPage = targetPage; render(); };
-    }
+    if (!disabled && !active) b.onclick = () => { currentPage = targetPage; render(); };
     ctrl.appendChild(b);
   };
-
   makeBtn('chevron_left',  currentPage - 1, currentPage === 1,          false, true);
   for (let i = 1; i <= totalPages; i++) makeBtn(i, i, false, i === currentPage, false);
   makeBtn('chevron_right', currentPage + 1, currentPage === totalPages, false, true);
 }
 
-/* ── MAP RAW API ITEM → internal record ── */
+/* MAP RAW API ITEM */
 function mapRecord(item) {
-  // Title
-  const title =
-    (item.researchTitle && item.researchTitle.trim()) ||
-    (item.title         && item.title.trim())         ||
-    'No Title';
+  const title = (item.researchTitle && item.researchTitle.trim()) || (item.title && item.title.trim()) || 'No Title';
 
-  // Authors — backend stores as array field "authors"
   let author = 'Unknown';
-  if (Array.isArray(item.authors) && item.authors.length > 0) {
-    author = item.authors.join(', ');
-  } else if (typeof item.author === 'string' && item.author.trim()) {
-    author = item.author.trim();
-  }
+  if (Array.isArray(item.authors) && item.authors.length > 0) author = item.authors.join(', ');
+  else if (typeof item.author === 'string' && item.author.trim()) author = item.author.trim();
 
-  // Department
   const dept = item.department || item.dept || 'N/A';
 
-  // Date — backend field is "date" (not dateApplied)
   let dateApplied = '';
-  if (item.date) {
-    dateApplied = item.date.split('T')[0];
-  } else if (item.dateApplied) {
-    dateApplied = item.dateApplied.split('T')[0];
-  } else if (item.createdAt) {
-    dateApplied = item.createdAt.split('T')[0];
-  }
+  if (item.date)          dateApplied = item.date.split('T')[0];
+  else if (item.dateApplied) dateApplied = item.dateApplied.split('T')[0];
+  else if (item.createdAt)   dateApplied = item.createdAt.split('T')[0];
 
-  // Reference number — backend field is "referenceId"
-  const referenceNo =
-    item.referenceId    ||
-    item.referenceNo    ||
-    item.refNo          ||
-    null;
+  const referenceNo = item.referenceId || item.referenceNo || item.refNo || null;
 
   return {
     _id:        String(item._id),
@@ -674,14 +622,12 @@ function mapRecord(item) {
   };
 }
 
-/* ── FETCH DATA ── */
+/* FETCH DATA */
 async function fetchCopyrights() {
   try {
     const res  = await fetch(API_URL);
     const data = await res.json();
-
     const copyrights = data.filter(item => item.category === 'copyright');
-
     ALL_RECORDS     = copyrights.map(mapRecord);
     filteredRecords = [...ALL_RECORDS];
     updateStats();
@@ -691,47 +637,51 @@ async function fetchCopyrights() {
   }
 }
 
-/* ── OPEN MODAL ── */
+/* OPEN MODAL */
 function openResearchModal(mongoId) {
   const rec = ALL_RECORDS.find(r => r._id === String(mongoId));
   if (!rec) return;
 
-  // Store the MongoDB _id for PUT
-  activeMongoId = rec._id;
-
-  // Store snapshot for cancel revert
+  activeMongoId  = rec._id;
   activeSnapshot = { ...rec };
 
-  // Populate fields
   document.getElementById('modal-subtitle-id').textContent = rec.referenceNo || rec._id;
   document.getElementById('field-ref').value    = rec.referenceNo || '';
   document.getElementById('field-title').value  = rec.title || '';
   document.getElementById('field-author').value = rec.author || '';
   document.getElementById('field-date').value   = rec.dateApplied || '';
 
+  // Parse "College — Department" stored value
+  const parts   = rec.dept ? rec.dept.split(' — ') : [];
+  const college = parts[0] || rec.dept || '';
+  const dept    = parts[1] || '';
+
+  const collegeSel = document.getElementById('field-college');
+  [...collegeSel.options].forEach(o => o.selected = o.value === college);
+
+  // Populate dept options then select the right one
+  updateModalDeptOptions();
   const deptSel = document.getElementById('field-dept');
-  [...deptSel.options].forEach(o => o.selected = o.value === rec.dept);
+  [...deptSel.options].forEach(o => o.selected = o.value === dept);
 
   const statusSel = document.getElementById('field-status');
   [...statusSel.options].forEach(o => o.selected = o.value === rec.status);
   updateStatusStyle(statusSel);
 
-  // Reset to view-only mode
   setViewMode();
-
   document.getElementById('research-modal').style.display = 'flex';
 }
 
-/* ── CLOSE MODAL ── */
+/* CLOSE MODAL */
 function closeModal() {
   document.getElementById('research-modal').style.display = 'none';
   activeMongoId  = null;
   activeSnapshot = null;
 }
 
-/* ── VIEW / EDIT MODE HELPERS ── */
-const EDITABLE_FIELDS   = ['field-title', 'field-author', 'field-date'];
-const EDITABLE_SELECTS  = ['field-dept', 'field-status'];
+/* VIEW / EDIT MODE */
+const EDITABLE_FIELDS  = ['field-title', 'field-author', 'field-date'];
+const EDITABLE_SELECTS = ['field-dept', 'field-status', 'field-college'];
 
 function setViewMode() {
   EDITABLE_FIELDS.forEach(id => document.getElementById(id).disabled = true);
@@ -739,7 +689,6 @@ function setViewMode() {
     const el = document.getElementById(id);
     el.disabled = true;
     if (id === 'field-status') {
-      // Reapply tint, hide arrow in view mode
       updateStatusStyle(el);
       el.style.backgroundImage    = 'none';
       el.style.backgroundRepeat   = '';
@@ -752,7 +701,6 @@ function setViewMode() {
       el.style.paddingRight    = '';
     }
   });
-
   document.getElementById('btn-edit').classList.remove('hidden');
   document.getElementById('btn-cancel-edit').classList.add('hidden');
   document.getElementById('btn-save').classList.add('hidden');
@@ -764,9 +712,7 @@ function enterEditMode() {
     const el = document.getElementById(id);
     el.disabled = false;
     if (id === 'field-status') {
-      // Reapply tint so colour stays consistent
       updateStatusStyle(el);
-      // Inject dark chevron arrow to signal the field is now a dropdown
       el.style.backgroundImage    = 'url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3E%3Cpath stroke=%27%23374151%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M6 8l4 4 4-4%27/%3E%3C/svg%3E")';
       el.style.backgroundRepeat   = 'no-repeat';
       el.style.backgroundPosition = 'right 0.9rem center';
@@ -778,21 +724,26 @@ function enterEditMode() {
       el.style.removeProperty('padding-right');
     }
   });
-
   document.getElementById('btn-edit').classList.add('hidden');
   document.getElementById('btn-cancel-edit').classList.remove('hidden');
   document.getElementById('btn-save').classList.remove('hidden');
 }
 
 function exitEditMode() {
-  // Revert fields to snapshot
   if (activeSnapshot) {
     document.getElementById('field-title').value  = activeSnapshot.title || '';
     document.getElementById('field-author').value = activeSnapshot.author || '';
     document.getElementById('field-date').value   = activeSnapshot.dateApplied || '';
 
+    // Restore college + dept
+    const parts   = activeSnapshot.dept ? activeSnapshot.dept.split(' — ') : [];
+    const college = parts[0] || activeSnapshot.dept || '';
+    const dept    = parts[1] || '';
+    const collegeSel = document.getElementById('field-college');
+    [...collegeSel.options].forEach(o => o.selected = o.value === college);
+    updateModalDeptOptions();
     const deptSel = document.getElementById('field-dept');
-    [...deptSel.options].forEach(o => o.selected = o.value === activeSnapshot.dept);
+    [...deptSel.options].forEach(o => o.selected = o.value === dept);
 
     const statusSel = document.getElementById('field-status');
     [...statusSel.options].forEach(o => o.selected = o.value === activeSnapshot.status);
@@ -801,36 +752,29 @@ function exitEditMode() {
   setViewMode();
 }
 
-/* ── CONFIRMATION MODAL ── */
-function openConfirmation() {
-  document.getElementById('confirm-modal').style.display = 'flex';
-}
-function closeConfirmation() {
-  document.getElementById('confirm-modal').style.display = 'none';
-}
+/* CONFIRMATION MODAL */
+function openConfirmation()  { document.getElementById('confirm-modal').style.display = 'flex'; }
+function closeConfirmation() { document.getElementById('confirm-modal').style.display = 'none'; }
 
-/* ── SAVE (PUT) ── */
+/* SAVE (PUT) */
 async function confirmSave() {
   closeConfirmation();
+  if (!activeMongoId) return;
 
-  if (!activeMongoId) {
-    console.error('No active MongoDB _id — cannot save.');
-    return;
-  }
+  const college = document.getElementById('field-college').value;
+  const deptVal = document.getElementById('field-dept').value;
+  const department = college && deptVal ? `${college} — ${deptVal}` : college || deptVal;
 
-  const refVal = document.getElementById('field-ref').value.trim();
   const payload = {
     researchTitle: document.getElementById('field-title').value.trim(),
-    department:    document.getElementById('field-dept').value,
+    department,
     status:        document.getElementById('field-status').value,
-    date:          document.getElementById('field-date').value,   // backend field name is "date"
-    referenceId:   refVal,                                        // backend field name is "referenceId"
-    // authors is stored as an array — split by comma so backend receives the right type
+    date:          document.getElementById('field-date').value,
+    referenceId:   document.getElementById('field-ref').value.trim(),
     authors: document.getElementById('field-author').value
                .split(',').map(a => a.trim()).filter(Boolean),
   };
 
-  // Disable confirm button to prevent double-submit
   const confirmBtn = document.getElementById('btn-confirm-save');
   confirmBtn.disabled = true;
   confirmBtn.textContent = 'Saving…';
@@ -841,21 +785,11 @@ async function confirmSave() {
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload),
     });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`PUT ${res.status}: ${errText}`);
-    }
+    if (!res.ok) throw new Error(`PUT ${res.status}: ${await res.text()}`);
 
     const updated = await res.json();
-    console.log('PUT response:', updated); // keep for debugging
-
-    // Build a merged object: start from the server response but fall back to
-    // the payload values so blanks from field-name mismatches never win.
     const merged = {
       ...updated,
-      // Pin all fields using payload values as the source of truth,
-      // falling back to whatever the backend echoed, then the pre-save snapshot.
       _id:          activeMongoId,
       referenceId:  payload.referenceId   || updated.referenceId  || activeSnapshot.referenceNo,
       researchTitle: payload.researchTitle || updated.researchTitle || updated.title,
@@ -863,30 +797,19 @@ async function confirmSave() {
       status:       payload.status         || updated.status,
       date:         payload.date           || updated.date,
       authors:      Array.isArray(updated.authors) && updated.authors.length > 0
-                      ? updated.authors
-                      : payload.authors,
+                      ? updated.authors : payload.authors,
     };
 
     const mapped = mapRecord(merged);
-
-    // Update in-memory record
     const idx = ALL_RECORDS.findIndex(r => r._id === activeMongoId);
     if (idx !== -1) ALL_RECORDS[idx] = mapped;
-
-    // Update snapshot
     activeSnapshot = { ...mapped };
 
-    // Refresh stats + table
     updateStats();
     filterAndRender();
-
-    // Close modal back to view mode
     setViewMode();
     closeModal();
-
-    // Success toast
     showToast();
-
   } catch (err) {
     console.error('Save failed:', err);
     alert('Failed to save changes. Please check the console and try again.');
@@ -896,35 +819,25 @@ async function confirmSave() {
   }
 }
 
-/* ── TOAST ── */
+/* TOAST */
 function showToast() {
   const toast = document.getElementById('success-toast');
   const bar   = document.getElementById('toast-bar');
-
-  // Reset bar
   bar.style.transition = 'none';
   bar.style.width      = '100%';
-
-  // Show
   toast.style.opacity   = '1';
   toast.style.transform = 'translateY(0)';
-
-  // Animate shrink bar
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      bar.style.transition = 'width 3s linear';
-      bar.style.width      = '0%';
-    });
-  });
-
-  // Hide after 3.3s
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    bar.style.transition = 'width 3s linear';
+    bar.style.width      = '0%';
+  }));
   setTimeout(() => {
     toast.style.opacity   = '0';
     toast.style.transform = 'translateY(12px)';
   }, 3300);
 }
 
-/* ── INIT ── */
+/* INIT */
 document.addEventListener('DOMContentLoaded', fetchCopyrights);
 </script>
 </body>

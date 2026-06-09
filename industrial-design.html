@@ -387,7 +387,7 @@
 <!-- ======================== SCRIPT ======================== -->
 <script>
 const API_URL  = "http://localhost:5000/api/research";
-const CATEGORY = "industrial design";
+const CATEGORY = "industrial-design";
 
 /* ── CLOCK ── */
 function updateClock() {
@@ -584,8 +584,8 @@ async function fetchIndustrialDesigns() {
 
     // Client-side category guard — matches "industrial design" in any casing
     const filtered = records.filter(item =>
-      (item.category || '').trim().toLowerCase() === CATEGORY
-    );
+  (item.category || '').trim().toLowerCase() === CATEGORY.toLowerCase()
+);
 
     ALL_RECORDS     = filtered.map(mapRecord);
     filteredRecords = [...ALL_RECORDS];
