@@ -10,6 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
   tailwind.config = {
     theme: {
@@ -51,10 +53,14 @@
   .stat-card:hover { transform: translateY(-2px); }
   tbody tr { transition: background 0.12s; }
 
+  /* Modified Table Row Status Colors */
   .row-urgent-pink { background-color: #fdf2f8 !important; }
   .row-urgent-pink:hover { background-color: #fce7f3 !important; }
   .row-urgent-red { background-color: #fef2f2 !important; }
   .row-urgent-red:hover { background-color: #fee2e2 !important; }
+  /* NEW: Orange row warning for 1-month defect deadline */
+  .row-warning-orange { background-color: #fff7ed !important; }
+  .row-warning-orange:hover { background-color: #ffedd5 !important; }
 
   .page-btn {
     width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
@@ -64,27 +70,21 @@
   .page-btn:hover:not(.active):not(:disabled) { background: #f1f5f9; }
   .page-btn.active { background: #0058be; color: #fff; font-weight: 700; }
   .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .page-ellipsis { width:32px; height:32px; display:flex; align-items:center; justify-content:center; color:#727785; font-size:14px; }
 
   .modal-field:not(:disabled) {
-    background: #ffffff !important;
-    border-color: #93c5fd !important;
-    cursor: text !important;
+    background: #ffffff !important; border-color: #93c5fd !important; cursor: text !important;
   }
   .modal-field-select:not(:disabled) {
-    background: #ffffff !important;
-    border-color: #93c5fd !important;
-    cursor: pointer !important;
+    background: #ffffff !important; border-color: #93c5fd !important; cursor: pointer !important;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
-    background-repeat: no-repeat !important;
-    background-position: right 0.75rem center !important;
-    background-size: 1.25em 1.25em !important;
-    padding-right: 2.5rem !important;
+    background-repeat: no-repeat !important; background-position: right 0.75rem center !important;
+    background-size: 1.25em 1.25em !important; padding-right: 2.5rem !important;
   }
 
   .status-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 4px 10px 4px 8px; border-radius: 20px;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.01em;
+    display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px 4px 8px;
+    border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.01em;
     border-width: 1px; border-style: solid; white-space: nowrap;
   }
   .badge-submitted { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af; border-color: #bfdbfe; }
@@ -96,9 +96,8 @@
   .badge-default   { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); color: #475569; border-color: #cbd5e1; }
 
   .btn-view {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 5px 12px 5px 10px; border-radius: 8px;
-    font-size: 12px; font-weight: 600; color: #0058be;
+    display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px 5px 10px;
+    border-radius: 8px; font-size: 12px; font-weight: 600; color: #0058be;
     background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
     border: 1px solid #bfdbfe; cursor: pointer;
     transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s, box-shadow 0.18s;
@@ -116,16 +115,13 @@
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .page-fade { animation: fadeIn 0.4s ease both; }
-  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Modal entrance animation */
   @keyframes modalIn {
     from { opacity: 0; transform: translateY(-12px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0)     scale(1);    }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
   }
   .modal-enter { animation: modalIn 0.22s cubic-bezier(0.34,1.3,0.64,1) both; }
 
-  /* Defect card resolved animation */
   @keyframes resolvedPop {
     0%   { transform: scale(1); }
     40%  { transform: scale(1.025); }
@@ -133,31 +129,25 @@
   }
   .resolved-pop { animation: resolvedPop 0.35s ease both; }
 
-  /* Checkmark draw animation */
   @keyframes checkDraw {
     from { stroke-dashoffset: 50; }
-    to   { stroke-dashoffset: 0;  }
+    to   { stroke-dashoffset: 0; }
   }
   .check-draw { stroke-dasharray: 50; stroke-dashoffset: 50; animation: checkDraw 0.4s 0.1s ease forwards; }
 
-  /* ── Alert card dual-state ── */
-  .alert-card-calm  { background: linear-gradient(135deg,#f0fdf4,#ffffff); border-color:#bbf7d0; }
+  .alert-card-calm   { background: linear-gradient(135deg,#f0fdf4,#ffffff); border-color:#bbf7d0; }
   .alert-card-urgent { background: linear-gradient(135deg,#fff1f2,#fff5f5); border-color:#fda4af; }
-
   .alert-icon-calm   { background:#dcfce7; color:#16a34a; }
   .alert-icon-urgent { background:#ffe4e6; color:#e11d48; }
 
   .alert-chip {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 3px 9px 3px 7px; border-radius: 20px;
-    font-size: 11px; font-weight: 700; border-width: 1px; border-style: solid;
+    display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px 3px 7px;
+    border-radius: 20px; font-size: 11px; font-weight: 700; border-width: 1px; border-style: solid;
     cursor: pointer; transition: filter 0.15s, transform 0.12s; white-space: nowrap;
   }
   .alert-chip:hover { filter: brightness(0.94); transform: translateY(-1px); }
-  .alert-chip:active { transform: translateY(0); }
   .chip-ser  { background:#fff1f2; color:#be185d; border-color:#fecdd3; }
   .chip-fd   { background:#fef2f2; color:#b91c1c; border-color:#fecaca; }
-  .chip-calm { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; cursor:default; pointer-events:none; }
 
   @keyframes urgentPulse {
     0%,100% { box-shadow: 0 0 0 0 rgba(225,29,72,0); }
@@ -165,23 +155,81 @@
   }
   .alert-card-urgent { animation: urgentPulse 2.4s ease-in-out infinite; }
 
-  /* Unsaved dot indicator */
   .unsaved-dot {
-    display: inline-block; width: 7px; height: 7px;
-    background: #f59e0b; border-radius: 50%;
-    margin-left: 6px; vertical-align: middle;
+    display: inline-block; width: 7px; height: 7px; background: #f59e0b;
+    border-radius: 50%; margin-left: 6px; vertical-align: middle;
     animation: pulse-dot 1.6s ease-in-out infinite;
   }
   @keyframes pulse-dot {
-    0%,100% { opacity: 1; transform: scale(1);    }
+    0%,100% { opacity: 1; transform: scale(1); }
     50%     { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  /* ── Defect deadline warning glow (within 30 days) ── */
+  @keyframes deadlineGlow {
+    0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+    50%     { box-shadow: 0 0 0 8px rgba(239,68,68,0.18); }
+  }
+  .defect-warning-glow {
+    border-color: #fca5a5 !important;
+    background: linear-gradient(135deg, #fff1f2 0%, #fff5f5 100%) !important;
+    animation: deadlineGlow 2s ease-in-out infinite;
+  }
+  .defect-warning-label {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5;
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.03em;
+  }
+
+  /* ── Author tooltip ── */
+  .author-cell { position: relative; cursor: default; }
+  .author-tooltip {
+    position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 100;
+    background: #1e293b; color: #fff; font-size: 11px; font-weight: 500;
+    padding: 6px 10px; border-radius: 8px; white-space: nowrap;
+    pointer-events: none; opacity: 0; transform: translateY(4px);
+    transition: opacity 0.15s, transform 0.15s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .author-tooltip::after {
+    content: ''; position: absolute; top: 100%; left: 14px;
+    border: 5px solid transparent; border-top-color: #1e293b;
+  }
+  .author-cell:hover .author-tooltip { opacity: 1; transform: translateY(0); }
+
+  /* ── Rows per page select ── */
+  .rows-select {
+    appearance: none; background: #f8fafc; border: 1px solid #e2e8f0;
+    border-radius: 8px; padding: 6px 28px 6px 10px; font-size: 12px; font-weight: 600;
+    color: #424754; cursor: pointer; outline: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.1em;
+    transition: border-color 0.15s;
+  }
+  .rows-select:hover { border-color: #0058be; }
+
+  /* ── PDF Preview modal table ── */
+  .preview-table { border-collapse: collapse; width: 100%; font-size: 11px; font-family: Inter, sans-serif; }
+  .preview-table th {
+    background: #0058be; color: #fff; padding: 8px 10px; text-align: left;
+    font-weight: 700; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    border: 1px solid #1d4ed8;
+  }
+  .preview-table td { padding: 6px 10px; border: 1px solid #e2e8f0; color: #191b23; vertical-align: middle; }
+
+  /* ── Status column: never compressed ── */
+  td.status-col, th.status-col { min-width: 148px; white-space: nowrap; }
+  td.action-col, th.action-col { min-width: 88px; white-space: nowrap; }
+
+  @media (max-width: 1023px) {
+    #sidebar { transform: translateX(-100%); transition: transform 0.25s ease; }
+    #sidebar.open { transform: translateX(0); }
+    #main-content { margin-left: 0 !important; }
   }
 </style>
 </head>
 <body class="bg-surface text-on-surface font-sans antialiased flex min-h-screen">
 
-<!-- SIDEBAR -->
-<aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-white flex flex-col z-50">
+<aside id="sidebar" class="w-[260px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-white flex flex-col z-50">
   <div class="flex items-center gap-3 px-5 py-5 border-b border-outline-variant">
     <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white flex-shrink-0">
       <i class="ti ti-building-bank" style="font-size:18px;"></i>
@@ -211,17 +259,21 @@
   </div>
 </aside>
 
-<!-- MAIN -->
-<main class="flex-1 ml-[260px] min-h-screen flex flex-col bg-surface page-fade">
-  <header class="h-[60px] flex items-center justify-end px-8 sticky top-0 bg-white/80 backdrop-blur-md z-40 border-b border-outline-variant">
-    <div class="flex items-center gap-4">
+<div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/30 z-40 lg:hidden" onclick="closeSidebar()"></div>
+
+<main id="main-content" class="flex-1 ml-[260px] min-h-screen flex flex-col bg-surface page-fade">
+  <header class="h-[60px] flex items-center justify-between px-5 lg:px-8 sticky top-0 bg-white/80 backdrop-blur-md z-40 border-b border-outline-variant">
+    <button class="lg:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors text-on-surface-variant" onclick="openSidebar()">
+      <i class="ti ti-menu-2" style="font-size:20px;"></i>
+    </button>
+    <div class="flex items-center gap-4 ml-auto">
       <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2">
         <i class="ti ti-clock text-outline" style="font-size:14px;"></i>
         <span id="live-time" class="text-[13px] font-semibold text-on-surface tabular-nums tracking-tight"></span>
         <span id="live-ampm" class="text-[10px] font-bold text-outline uppercase"></span>
       </div>
-      <div class="h-6 w-px bg-outline-variant"></div>
-      <div class="flex items-center gap-2.5 cursor-pointer group">
+      <div class="h-6 w-px bg-outline-variant hidden sm:block"></div>
+      <div class="hidden sm:flex items-center gap-2.5 cursor-pointer group">
         <div class="text-right">
           <p class="text-[13px] font-semibold text-on-surface leading-tight">Admin User</p>
           <p class="text-[10px] text-outline font-semibold uppercase tracking-wider">Administrator</p>
@@ -233,13 +285,10 @@
     </div>
   </header>
 
-  <div class="p-8 space-y-7 flex-1">
+  <div class="p-5 lg:p-8 space-y-7 flex-1">
     <div><h2 class="text-2xl font-bold text-on-surface">Patent Registry</h2></div>
 
-    <!-- Stat Cards -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-
-      <!-- Total Submitted -->
       <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm">
         <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
           <i class="ti ti-file-description text-blue-600" style="font-size:20px;"></i>
@@ -250,8 +299,6 @@
           <p class="text-[11px] text-outline font-medium mt-1">All records</p>
         </div>
       </div>
-
-      <!-- Total Approved -->
       <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm">
         <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
           <i class="ti ti-circle-check text-amber-500" style="font-size:20px;"></i>
@@ -262,8 +309,6 @@
           <p class="text-[11px] text-outline font-medium mt-1">Status: Approved</p>
         </div>
       </div>
-
-      <!-- Total Pending -->
       <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm">
         <div class="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
           <i class="ti ti-clock-pause text-orange-500" style="font-size:20px;"></i>
@@ -276,11 +321,7 @@
           </p>
         </div>
       </div>
-
-      <!-- ── DUAL-STATE ALERT CARD ── -->
-      <div id="alert-card"
-        class="stat-card rounded-2xl border-2 p-5 flex flex-col gap-3 shadow-sm transition-all duration-500 alert-card-calm">
-        <!-- Top row: icon + count -->
+      <div id="alert-card" class="stat-card rounded-2xl border-2 p-5 flex flex-col gap-3 shadow-sm transition-all duration-500 alert-card-calm">
         <div class="flex items-center gap-4">
           <div id="alert-icon" class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-500 alert-icon-calm">
             <i id="alert-icon-glyph" class="ti ti-shield-check" style="font-size:20px;"></i>
@@ -290,34 +331,30 @@
             <p id="stat-urgent" class="text-3xl font-bold text-on-surface mt-0.5 leading-none">—</p>
           </div>
         </div>
-        <!-- Bottom row: chips (hidden when calm, shown when urgent) -->
         <div id="alert-chips" class="hidden flex flex-wrap gap-2 pt-1 border-t border-rose-100">
-          <button id="chip-ser" class="alert-chip chip-ser" onclick="quickFilter('ser')" title="Filter table to SER deadlines">
+          <button id="chip-ser" class="alert-chip chip-ser" onclick="quickFilter('ser')">
             <i class="ti ti-clock-exclamation" style="font-size:10px;"></i>
             <span id="chip-ser-label">0 SER</span>
           </button>
-          <button id="chip-fd" class="alert-chip chip-fd" onclick="quickFilter('fd')" title="Filter table to Formality Defects">
+          <button id="chip-fd" class="alert-chip chip-fd" onclick="quickFilter('fd')">
             <i class="ti ti-clipboard-x" style="font-size:10px;"></i>
             <span id="chip-fd-label">0 Defect</span>
           </button>
         </div>
-        <!-- Calm subtext -->
         <div id="alert-calm-sub" class="flex items-center gap-1.5">
           <i class="ti ti-circle-check text-emerald-500" style="font-size:12px;"></i>
           <p class="text-[11px] text-emerald-600 font-semibold">No deadlines require attention</p>
         </div>
       </div>
-
     </section>
 
-    <!-- Table -->
-    <section class="bg-white rounded-2xl border border-outline-variant shadow-sm overflow-hidden">
-      <div class="px-6 py-4 border-b border-outline-variant flex items-center gap-3">
-        <div class="relative flex-1">
+    <section class="bg-white rounded-2xl border border-outline-variant shadow-sm" style="overflow:visible;">
+      <div class="px-5 py-4 border-b border-outline-variant flex flex-wrap items-center gap-2.5">
+        <div class="relative flex-1 min-w-[180px]">
           <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-outline" style="font-size:15px;"></i>
           <input id="search-input"
             class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-[13px] focus:ring-1 focus:ring-primary focus:bg-white focus:border-primary transition-all outline-none placeholder:text-outline"
-            placeholder="Search by title, author, reference no., department, or status…"
+            placeholder="Search title, author, reference, department, or status…"
             type="text" oninput="filterAndRender()"/>
         </div>
         <div class="relative shrink-0" id="filter-wrapper">
@@ -327,42 +364,43 @@
             <span id="filter-label">All Status</span>
             <i class="ti ti-chevron-down text-outline" id="filter-chevron" style="font-size:12px; transition:transform 0.15s;"></i>
           </button>
-          <div id="filter-menu" class="hidden absolute right-0 mt-1 w-56 bg-white rounded-xl border border-slate-200 shadow-lg z-50 py-1.5 overflow-hidden">
+          <div id="filter-menu" class="hidden absolute right-0 mt-1 w-56 bg-white rounded-xl border border-slate-200 shadow-lg z-[200] py-1.5">
             <div class="px-3 py-1.5 text-[10px] font-bold text-outline uppercase tracking-widest">Filter by Status</div>
-            <button onclick="applyStatusFilter('All')"              class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="All">All<i class="ti ti-check text-primary" style="font-size:13px;"></i></button>
+            <button onclick="applyStatusFilter('All')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="All">All<i class="ti ti-check text-primary" style="font-size:13px;"></i></button>
             <button onclick="applyStatusFilter('Submitted to IPO')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Submitted to IPO">Submitted to IPO<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button onclick="applyStatusFilter('Received E-SOA')"   class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Received E-SOA">Received E-SOA<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button onclick="applyStatusFilter('Paid')"             class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Paid">Paid<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <button onclick="applyStatusFilter('Approved')"         class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Approved">Approved<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+            <button onclick="applyStatusFilter('Received E-SOA')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Received E-SOA">Received E-SOA<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+            <button onclick="applyStatusFilter('Paid')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Paid">Paid<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+            <button onclick="applyStatusFilter('Approved')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Approved">Approved<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
             <div class="px-3 py-1.5 mt-1 border-t border-slate-100 text-[10px] font-bold text-outline uppercase tracking-widest">Action Alerts</div>
             <button onclick="applyStatusFilter('Urgent Substantive')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-pink-600 font-semibold hover:bg-pink-50 flex items-center justify-between transition-colors" data-val="Urgent Substantive">Urgent Substantive<i class="ti ti-check text-pink-600 hidden" style="font-size:13px;"></i></button>
-            <button onclick="applyStatusFilter('Defect Compliance')"  class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-red-600 font-semibold hover:bg-red-50 flex items-center justify-between transition-colors" data-val="Defect Compliance">Defect Compliance<i class="ti ti-check text-red-600 hidden" style="font-size:13px;"></i></button>
+            <button onclick="applyStatusFilter('Defect Compliance')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-red-600 font-semibold hover:bg-red-50 flex items-center justify-between transition-colors" data-val="Defect Compliance">Defect Compliance<i class="ti ti-check text-red-600 hidden" style="font-size:13px;"></i></button>
           </div>
         </div>
-        <button title="Export" class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors shrink-0">
-          <i class="ti ti-download" style="font-size:16px;"></i>
+        <button onclick="openExportModal()" title="Export to PDF"
+          class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors shrink-0">
+          <i class="ti ti-file-type-pdf" style="font-size:17px;"></i>
         </button>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+      <div class="overflow-x-auto" style="overflow-y:visible;">
+        <table class="w-full text-left border-collapse" style="min-width:960px;">
           <thead>
             <tr class="bg-slate-50">
               <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Reference No.</th>
               <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Title</th>
               <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Author(s)</th>
               <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">College / Department</th>
-              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Status</th>
+              <th class="status-col px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Status</th>
               <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Date of Filing</th>
               <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Alerts</th>
-              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant text-center whitespace-nowrap">Action</th>
+              <th class="action-col px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant text-center">Action</th>
             </tr>
           </thead>
           <tbody id="table-body" class="divide-y divide-slate-100">
             <tr>
-              <td colspan="8" class="text-center py-8">
+              <td colspan="8" class="text-center py-10">
                 <i class="ti ti-loader animate-spin text-primary" style="font-size:24px;"></i>
-                <p class="mt-2 text-[12px] text-outline font-medium">Loading records...</p>
+                <p class="mt-2 text-[12px] text-outline font-medium">Loading records…</p>
               </td>
             </tr>
           </tbody>
@@ -376,28 +414,109 @@
 
       <div class="px-6 py-4 border-t border-outline-variant flex flex-col sm:flex-row items-center justify-between gap-3">
         <p id="pagination-info" class="text-[12px] text-outline"></p>
-        <div id="pagination-controls" class="flex items-center gap-1"></div>
+        <div id="pagination-controls" class="flex items-center gap-1 flex-wrap justify-center"></div>
       </div>
     </section>
   </div>
 </main>
 
-<!-- ═══════════════════════════════════════
-     MAIN DETAIL MODAL
-═══════════════════════════════════════ -->
+<div id="pdf-preview-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4"
+  style="display:none; background:rgba(15,23,42,0.75); backdrop-filter:blur(4px);"
+  onclick="handlePdfBackdrop(event)">
+  <div id="pdf-preview-inner" class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col modal-enter" style="max-height:92vh;">
+
+    <div class="px-7 py-5 border-b border-outline-variant flex items-center justify-between bg-white shrink-0">
+      <div>
+        <h2 class="text-[18px] font-bold text-on-surface flex items-center gap-2">
+          <i class="ti ti-file-type-pdf text-red-500" style="font-size:20px;"></i>
+          Export — Print Preview
+        </h2>
+        <p class="text-[12px] text-outline mt-0.5">Set date range, preview the table, then download as PDF.</p>
+      </div>
+      <button onclick="closePdfModal()" class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline">
+        <span class="material-symbols-outlined text-[22px]">close</span>
+      </button>
+    </div>
+
+    <div class="px-7 py-4 bg-slate-50 border-b border-outline-variant flex flex-wrap items-end gap-4 shrink-0">
+      <div>
+        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-1.5">Date of Filing — Range</label>
+        <div class="flex items-center gap-2 flex-wrap">
+          <input type="date" id="export-date-from" onchange="refreshPreview()"
+            class="text-[12px] border border-slate-200 rounded-lg px-3 py-1.5 bg-white outline-none focus:border-primary transition-colors"/>
+          <span class="text-outline text-[12px] font-medium">to</span>
+          <input type="date" id="export-date-to" onchange="refreshPreview()"
+            class="text-[12px] border border-slate-200 rounded-lg px-3 py-1.5 bg-white outline-none focus:border-primary transition-colors"/>
+          <button onclick="clearDateRange()"
+            class="text-[11px] text-outline hover:text-red-500 font-semibold px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:border-red-200 transition-colors whitespace-nowrap">
+            All Records
+          </button>
+        </div>
+      </div>
+      <div class="ml-auto flex items-center gap-3">
+        <span id="preview-count" class="text-[12px] text-outline font-semibold"></span>
+        <button onclick="downloadPDF()"
+          class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-[13px] font-bold rounded-xl hover:bg-blue-700 transition-all hover:-translate-y-0.5 shadow-sm whitespace-nowrap">
+          <i class="ti ti-download" style="font-size:15px;"></i>
+          Download PDF
+        </button>
+      </div>
+    </div>
+
+    <div class="overflow-auto flex-1 p-6">
+      <div class="mb-5 pb-4 border-b-2 border-slate-200">
+        <div class="flex items-start justify-between flex-wrap gap-3">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-6 h-6 rounded bg-primary flex items-center justify-center">
+                <i class="ti ti-file-description text-white" style="font-size:13px;"></i>
+              </div>
+              <h3 class="text-[17px] font-bold text-on-surface">Patent Registry Report</h3>
+            </div>
+            <p class="text-[12px] text-outline">IP Management System — University IP Office</p>
+          </div>
+          <div class="text-right text-[11px] text-outline space-y-0.5">
+            <p>Generated: <span id="preview-gen-date" class="font-semibold text-on-surface"></span></p>
+            <p>Period: <span id="preview-period" class="font-semibold text-on-surface">All Records</span></p>
+            <p>Total: <span id="preview-total-count" class="font-bold text-primary">0</span> record(s)</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="preview-table-container" class="overflow-x-auto">
+        <table class="preview-table">
+          <thead>
+            <tr>
+              <th style="width:100px;">Reference No.</th>
+              <th style="min-width:160px;">Patent Title</th>
+              <th style="min-width:130px;">Author(s)</th>
+              <th style="min-width:120px;">Department</th>
+              <th style="width:120px;">Status</th>
+              <th style="width:96px;">Date Filed</th>
+              <th style="width:104px;">SER Deadline</th>
+              <th style="width:90px;">Alerts</th>
+            </tr>
+          </thead>
+          <tbody id="preview-table-body">
+            <tr><td colspan="8" style="text-align:center;padding:24px;color:#727785;font-style:italic;">No records for selected range.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm"
   id="research-modal" style="display:none;" onclick="handleMainModalBackdrop(event)">
   <div id="research-modal-inner" class="bg-white w-full max-w-[1100px] rounded-2xl shadow-2xl overflow-hidden flex flex-col modal-enter">
 
     <div class="px-7 py-5 border-b border-outline-variant flex items-center justify-between bg-white z-10 relative shadow-sm">
-      <div class="flex items-center gap-3">
-        <div>
-          <h2 class="text-[19px] font-bold text-on-surface flex items-center gap-2">
-            Patent Details &amp; Tracking
-            <span id="unsaved-indicator" class="hidden"><span class="unsaved-dot"></span></span>
-          </h2>
-          <p class="text-[13px] text-primary font-semibold mt-0.5" id="modal-subtitle-id"></p>
-        </div>
+      <div>
+        <h2 class="text-[19px] font-bold text-on-surface flex items-center gap-2">
+          Patent Details & Tracking
+          <span id="unsaved-indicator" class="hidden"><span class="unsaved-dot"></span></span>
+        </h2>
+        <p class="text-[13px] text-primary font-semibold mt-0.5" id="modal-subtitle-id"></p>
       </div>
       <button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline" onclick="requestModalClose()">
         <span class="material-symbols-outlined text-[22px]">close</span>
@@ -405,11 +524,8 @@
     </div>
 
     <div class="p-7 overflow-y-auto max-h-[75vh] grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-      <!-- LEFT: Core Information -->
       <div class="space-y-6">
         <h3 class="text-[12px] font-bold text-outline uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">Core Information</h3>
-
         <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Registration Status</label>
           <select id="field-status" disabled onchange="updateStatusStyle(this); markDirty();"
@@ -421,7 +537,6 @@
             <option value="Approved">Approved</option>
           </select>
         </div>
-
         <div class="space-y-4">
           <div>
             <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Patent Title</label>
@@ -437,7 +552,9 @@
             <div>
               <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Author(s)</label>
               <input id="field-author" type="text" disabled oninput="markDirty()"
-                class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all"/>
+                class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all"
+                placeholder="Comma-separated names"/>
+              <p class="text-[10px] text-outline mt-1">Separate multiple authors with commas</p>
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
@@ -452,14 +569,13 @@
                 <option value="College of Business">College of Business</option>
               </select>
             </div>
-            <div id="modal-dept-wrap">
+            <div>
               <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Department</label>
               <select id="field-dept" disabled onchange="markDirty()"
                 class="modal-field modal-field-select w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all appearance-none cursor-default">
               </select>
             </div>
           </div>
-
           <div class="pt-2">
             <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-1.5">Date of Filing</label>
             <div id="display-date-filing" class="text-[14px] font-medium text-on-surface py-1.5">—</div>
@@ -469,10 +585,7 @@
         </div>
       </div>
 
-      <!-- RIGHT: Tracking -->
       <div class="space-y-8 lg:border-l lg:border-outline-variant lg:pl-8">
-
-        <!-- Substantive Examination -->
         <div>
           <h3 class="text-[12px] font-bold text-outline uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">Substantive Examination</h3>
           <div class="bg-pink-50/50 p-5 rounded-xl border border-pink-100">
@@ -489,7 +602,6 @@
           </div>
         </div>
 
-        <!-- Formality Defects -->
         <div>
           <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-4">
             <h3 class="text-[12px] font-bold text-outline uppercase tracking-widest">Formality Defects</h3>
@@ -504,11 +616,9 @@
             <p class="text-[11px] text-outline mt-1">Click "Edit Record" to track a new defect notice.</p>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- Footer -->
     <div class="px-7 py-5 bg-slate-50 border-t border-outline-variant flex items-center justify-between z-10 relative">
       <div id="modal-dirty-hint" class="hidden flex items-center gap-2 text-[12px] text-amber-600 font-semibold">
         <i class="ti ti-pencil" style="font-size:14px;"></i>
@@ -533,9 +643,6 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     SAVE CONFIRMATION MODAL
-═══════════════════════════════════════ -->
 <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-on-surface/50 backdrop-blur-sm"
   id="confirm-modal" style="display:none;">
   <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center modal-enter">
@@ -551,14 +658,9 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     UNSAVED CHANGES MODAL
-═══════════════════════════════════════ -->
 <div class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-on-surface/60 backdrop-blur-sm"
   id="unsaved-modal" style="display:none;">
   <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden modal-enter">
-
-    <!-- Header strip -->
     <div class="bg-amber-50 border-b border-amber-200 px-7 py-5 flex items-center gap-4">
       <div class="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
         <i class="ti ti-alert-circle text-amber-600" style="font-size:22px;"></i>
@@ -568,42 +670,25 @@
         <p class="text-[12px] text-amber-700 font-medium mt-0.5">Your edits haven't been saved yet</p>
       </div>
     </div>
-
-    <!-- Body -->
     <div class="px-7 py-6">
-      <p class="text-[14px] text-on-surface leading-relaxed">
-        You have made changes to this record that haven't been saved. If you leave now, all unsaved edits will be permanently lost.
-      </p>
-      <!-- Changed fields summary -->
-      <div id="unsaved-fields-list" class="mt-4 space-y-1.5 hidden">
-        <p class="text-[11px] font-bold text-outline uppercase tracking-widest mb-2">Modified fields</p>
-      </div>
+      <p class="text-[14px] text-on-surface leading-relaxed">You have made changes to this record that haven't been saved. If you leave now, all unsaved edits will be permanently lost.</p>
     </div>
-
-    <!-- Footer actions -->
     <div class="px-7 pb-7 flex flex-col gap-3">
       <button onclick="discardChangesAndProceed()"
         class="w-full py-3 text-[13px] font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
-        <i class="ti ti-trash" style="font-size:15px;"></i>
-        Discard Changes &amp; Leave
+        <i class="ti ti-trash" style="font-size:15px;"></i> Discard Changes & Leave
       </button>
       <button onclick="closeUnsavedModal()"
         class="w-full py-3 text-[13px] font-bold text-on-surface bg-white border-2 border-slate-200 hover:border-primary hover:text-primary rounded-xl transition-all flex items-center justify-center gap-2">
-        <i class="ti ti-arrow-back" style="font-size:15px;"></i>
-        Go Back &amp; Save
+        <i class="ti ti-arrow-back" style="font-size:15px;"></i> Go Back & Save
       </button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     RESOLVE DEFECT CONFIRMATION MODAL
-═══════════════════════════════════════ -->
 <div class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-on-surface/60 backdrop-blur-sm"
   id="resolve-modal" style="display:none;">
   <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden modal-enter">
-
-    <!-- Header -->
     <div class="bg-emerald-50 border-b border-emerald-200 px-7 py-5 flex items-center gap-4">
       <div class="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
         <i class="ti ti-circle-check text-emerald-600" style="font-size:22px;"></i>
@@ -613,14 +698,8 @@
         <p class="text-[12px] text-emerald-700 font-medium mt-0.5">Confirm this defect notice has been addressed</p>
       </div>
     </div>
-
-    <!-- Body -->
     <div class="px-7 py-6 space-y-4">
-      <p class="text-[14px] text-on-surface leading-relaxed">
-        You're about to mark the following formality defect notice as <span class="font-bold text-emerald-700">Resolved</span>. This action confirms that the required compliance response has been submitted.
-      </p>
-
-      <!-- Defect detail card -->
+      <p class="text-[14px] text-on-surface leading-relaxed">You're about to mark this formality defect notice as <span class="font-bold text-emerald-700">Resolved</span>.</p>
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
         <div class="flex items-center justify-between">
           <p class="text-[11px] font-bold text-outline uppercase tracking-widest">Defect Notice</p>
@@ -637,29 +716,16 @@
           </div>
         </div>
       </div>
-
-      <div class="flex items-start gap-2.5 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
-        <i class="ti ti-info-circle text-blue-500 flex-shrink-0 mt-0.5" style="font-size:15px;"></i>
-        <p class="text-[12px] text-blue-700 leading-relaxed">This will update the record's compliance status. You can still save all changes when you click <strong>Save Changes</strong>.</p>
-      </div>
     </div>
-
-    <!-- Actions -->
     <div class="px-7 pb-7 flex gap-3">
-      <button onclick="closeResolveModal()"
-        class="flex-1 py-3 text-[13px] font-bold text-on-surface-variant bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
-        Cancel
-      </button>
-      <button onclick="executeResolve()"
-        class="flex-1 py-3 text-[13px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
-        <i class="ti ti-circle-check" style="font-size:16px;"></i>
-        Confirm &amp; Resolve
+      <button onclick="closeResolveModal()" class="flex-1 py-3 text-[13px] font-bold text-on-surface-variant bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Cancel</button>
+      <button onclick="executeResolve()" class="flex-1 py-3 text-[13px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
+        <i class="ti ti-circle-check" style="font-size:16px;"></i> Confirm & Resolve
       </button>
     </div>
   </div>
 </div>
 
-<!-- SUCCESS TOAST -->
 <div id="success-toast"
   class="fixed bottom-8 right-8 z-[90] flex items-center gap-3 bg-white border border-emerald-200 shadow-xl rounded-2xl px-5 py-4 pointer-events-none"
   style="opacity:0; transform:translateY(12px); transition:opacity 0.25s ease, transform 0.25s ease; min-width:260px;">
@@ -676,18 +742,17 @@
   <div class="absolute bottom-0 left-0 h-[3px] bg-emerald-400 rounded-b-2xl" id="toast-bar" style="width:100%;"></div>
 </div>
 
-<!-- ═══════════════════════════════════════ SCRIPT ═══════════════════════════════════════ -->
 <script>
 const API_URL  = "http://localhost:5000/api/research";
 const CATEGORY = "patent";
 
 /* ── CLOCK ── */
-(function() {
+(function () {
   const tick = () => {
     const now = new Date();
     let h = now.getHours();
-    const m = String(now.getMinutes()).padStart(2,'0');
-    const s = String(now.getSeconds()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
     const ap = h >= 12 ? 'PM' : 'AM';
     h = h % 12 || 12;
     document.getElementById('live-time').textContent = `${String(h).padStart(2,'0')}:${m}:${s}`;
@@ -696,30 +761,52 @@ const CATEGORY = "patent";
   tick(); setInterval(tick, 1000);
 })();
 
-function toReadableDate(dateString) {
-  if (!dateString) return '—';
-  const d = new Date(dateString + 'T00:00:00');
-  if (isNaN(d.getTime())) return '—';
-  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+/* ── SIDEBAR MOBILE ── */
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('sidebar-overlay').classList.remove('hidden'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.add('hidden'); }
+
+/* ── HELPERS ── */
+function toReadableDate(ds) {
+  if (!ds) return '—';
+  const d = new Date(ds + 'T00:00:00');
+  if (isNaN(d)) return '—';
+  return d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+}
+function toShortDate(ds) {
+  if (!ds) return '—';
+  const d = new Date(ds + 'T00:00:00');
+  if (isNaN(d)) return '—';
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+
+/* ── AUTHOR FORMAT: max 2 displayed, "+N more" badge ── */
+function formatAuthors(authorString) {
+  if (!authorString || authorString === 'Unknown') return { html: authorString || '—', full: authorString || '—', hasMore: false };
+  const parts = authorString.split(',').map(a => a.trim()).filter(Boolean);
+  if (parts.length <= 2) return { html: parts.join(', '), full: parts.join(', '), hasMore: false };
+  const shown     = parts.slice(0, 2).join(', ');
+  const remaining = parts.length - 2;
+  return {
+    html: `${shown} <span style="display:inline-flex;align-items:center;font-size:10px;font-weight:700;color:#0058be;background:#eff6ff;border:1px solid #bfdbfe;padding:1px 7px;border-radius:20px;margin-left:2px;">+${remaining} more</span>`,
+    full: parts.join(', '),
+    hasMore: true,
+    count: remaining,
+  };
 }
 
 /* ── STATE ── */
-let ALL_RECORDS      = [];
-let filteredRecords  = [];
-const ROWS_PER_PAGE  = 10;
-let currentPage      = 1;
+let ALL_RECORDS        = [];
+let filteredRecords    = [];
+let ROWS_PER_PAGE      = 10;
+let currentPage        = 1;
 let activeStatusFilter = 'All';
-let activeMongoId    = null;
-let activeSnapshot   = null;
-let isEditModeActive = false;
-let isDirty          = false;
-let activeDefects    = [];
-
-// Unsaved modal deferred action
-let pendingAction    = null; // fn to call after discard
-
-// Resolve modal state
-let resolveIndex     = null;
+let activeMongoId      = null;
+let activeSnapshot     = null;
+let isEditModeActive   = false;
+let isDirty            = false;
+let activeDefects      = [];
+let pendingAction      = null;
+let resolveIndex       = null;
 
 const MODAL_COLLEGE_DEPTS = {
   'College of Computer Studies': ['Information Technology','Information System','Computer Science'],
@@ -732,111 +819,61 @@ function updateModalDeptOptions() {
   const college = document.getElementById('field-college').value;
   const deptSel = document.getElementById('field-dept');
   deptSel.innerHTML = '';
-  if (college && MODAL_COLLEGE_DEPTS[college]) {
-    MODAL_COLLEGE_DEPTS[college].forEach(d => {
-      const opt = document.createElement('option');
-      opt.value = d; opt.textContent = d;
-      deptSel.appendChild(opt);
-    });
-  }
+  (MODAL_COLLEGE_DEPTS[college] || []).forEach(d => {
+    const o = document.createElement('option'); o.value = d; o.textContent = d; deptSel.appendChild(o);
+  });
+}
+
+function changeRowsPerPage(val) {
+  ROWS_PER_PAGE = parseInt(val) || 0;
+  currentPage   = 1;
+  render();
 }
 
 /* ── DIRTY TRACKING ── */
-function markDirty() {
-  isDirty = true;
-  document.getElementById('unsaved-indicator').classList.remove('hidden');
-  document.getElementById('modal-dirty-hint').classList.remove('hidden');
-}
-function clearDirty() {
-  isDirty = false;
-  document.getElementById('unsaved-indicator').classList.add('hidden');
-  document.getElementById('modal-dirty-hint').classList.add('hidden');
-}
+function markDirty()  { isDirty = true;  document.getElementById('unsaved-indicator').classList.remove('hidden'); document.getElementById('modal-dirty-hint').classList.remove('hidden'); }
+function clearDirty() { isDirty = false; document.getElementById('unsaved-indicator').classList.add('hidden');    document.getElementById('modal-dirty-hint').classList.add('hidden'); }
 
-/* ── UNSAVED CHANGES GUARD ── */
-function requestModalClose() {
-  if (isDirty) {
-    showUnsavedModal(() => {
-      clearDirty();
-      closeModal();
-    });
-  } else {
-    closeModal();
-  }
-}
+/* ── UNSAVED GUARD ── */
+function requestModalClose()  { isDirty ? showUnsavedModal(() => { clearDirty(); closeModal(); })           : closeModal(); }
+function requestCancelEdit()  { isDirty ? showUnsavedModal(() => { clearDirty(); exitEditMode(true); })     : exitEditMode(true); }
+function handleNavAway(url)   { isDirty ? showUnsavedModal(() => { window.location.href = url; })           : (window.location.href = url); }
+function showUnsavedModal(fn) { pendingAction = fn; document.getElementById('unsaved-modal').style.display = 'flex'; }
+function closeUnsavedModal()  { document.getElementById('unsaved-modal').style.display = 'none'; pendingAction = null; }
+function discardChangesAndProceed() { document.getElementById('unsaved-modal').style.display = 'none'; if (pendingAction) { pendingAction(); pendingAction = null; } }
+function handleMainModalBackdrop(e) { if (e.target === document.getElementById('research-modal')) requestModalClose(); }
 
-function requestCancelEdit() {
-  if (isDirty) {
-    showUnsavedModal(() => {
-      clearDirty();
-      exitEditMode(true); // force exit without guard
-    });
-  } else {
-    exitEditMode(true);
-  }
+/* ── DATE MATH ── */
+function addMonths(ds, months) {
+  if (!ds) return null;
+  const d = new Date(ds + 'T00:00:00'); d.setMonth(d.getMonth() + months); return d.toISOString().split('T')[0];
 }
-
-function handleNavAway(url) {
-  if (isDirty) {
-    showUnsavedModal(() => { window.location.href = url; });
-  } else {
-    window.location.href = url;
-  }
-}
-
-function showUnsavedModal(onDiscard) {
-  pendingAction = onDiscard;
-  document.getElementById('unsaved-modal').style.display = 'flex';
-}
-function closeUnsavedModal() {
-  document.getElementById('unsaved-modal').style.display = 'none';
-  pendingAction = null;
-}
-function discardChangesAndProceed() {
-  document.getElementById('unsaved-modal').style.display = 'none';
-  if (pendingAction) { pendingAction(); pendingAction = null; }
-}
-
-/* ── BACKDROP CLICK HANDLERS ── */
-function handleMainModalBackdrop(e) {
-  if (e.target === document.getElementById('research-modal')) {
-    requestModalClose();
-  }
-}
-function handleUrgentBackdrop(e) {
-  if (e.target === document.getElementById('urgent-modal')) closeUrgentModal();
-}
-
-/* ── CALCULATIONS ── */
-function addMonths(dateString, months) {
-  if (!dateString) return null;
-  const d = new Date(dateString + 'T00:00:00');
-  d.setMonth(d.getMonth() + months);
-  return d.toISOString().split('T')[0];
-}
-function getDaysRemaining(targetDateStr) {
-  if (!targetDateStr) return null;
-  const target = new Date(targetDateStr + 'T00:00:00');
-  const now    = new Date(); now.setHours(0,0,0,0);
-  return Math.ceil((target - now) / 86400000);
+function getDaysRemaining(ds) {
+  if (!ds) return null;
+  const t = new Date(ds + 'T00:00:00'); const n = new Date(); n.setHours(0,0,0,0);
+  return Math.ceil((t - n) / 86400000);
 }
 function computeRecordFlags(r) {
-  const substantiveDeadline  = addMonths(r.dateOfFiling, 18);
-  const complianceDeadline   = r.defectNoticeDate  ? addMonths(r.defectNoticeDate,  2) : null;
-  const complianceDeadline2  = r.defectNoticeDate2 ? addMonths(r.defectNoticeDate2, 2) : null;
-  const substantiveDays = getDaysRemaining(substantiveDeadline);
-  const complianceDays  = getDaysRemaining(complianceDeadline);
-  const complianceDays2 = getDaysRemaining(complianceDeadline2);
-  let isUrgentSubstantive = substantiveDays !== null && substantiveDays <= 60 && r.status !== 'Approved';
-  let isUrgentCompliance  = (complianceDays  !== null && complianceDays  <= 14 && r.status !== 'Approved') ||
-                            (complianceDays2 !== null && complianceDays2 <= 14 && r.status !== 'Approved');
-  return { substantiveDeadline, complianceDeadline, complianceDeadline2, isUrgentSubstantive, isUrgentCompliance };
+  const substantiveDeadline = addMonths(r.dateOfFiling, 18);
+  const complianceDeadline  = r.defectNoticeDate  ? addMonths(r.defectNoticeDate,  2) : null;
+  const complianceDeadline2 = r.defectNoticeDate2 ? addMonths(r.defectNoticeDate2, 2) : null;
+  
+  // Notice the resolved checks so it doesn't trigger alerts for resolved ones
+  const sd  = getDaysRemaining(substantiveDeadline);
+  const cd  = r.isDefect1Resolved ? null : getDaysRemaining(complianceDeadline);
+  const cd2 = r.isDefect2Resolved ? null : getDaysRemaining(complianceDeadline2);
+  
+  const isUrgentSubstantive = sd  !== null && sd  <= 60 && r.status !== 'Approved';
+  const isUrgentCompliance  = ((cd  !== null && cd  <= 14) || (cd2 !== null && cd2 <= 14)) && r.status !== 'Approved';
+  // Warning glow: between 14 and 30 days left
+  const isComplianceWarning = ((cd  !== null && cd  > 14 && cd  <= 30) || (cd2 !== null && cd2 > 14 && cd2 <= 30)) && r.status !== 'Approved';
+  
+  return { substantiveDeadline, complianceDeadline, complianceDeadline2, isUrgentSubstantive, isUrgentCompliance, isComplianceWarning };
 }
 
 function recalcSubstantive() {
-  const filing   = document.getElementById('field-date-filing').value;
-  const deadline = addMonths(filing, 18);
-  document.getElementById('display-substantive-deadline').textContent = toReadableDate(deadline);
+  const filing = document.getElementById('field-date-filing').value;
+  document.getElementById('display-substantive-deadline').textContent = toReadableDate(addMonths(filing, 18));
   document.getElementById('display-date-filing').textContent          = toReadableDate(filing);
 }
 
@@ -844,54 +881,62 @@ function recalcSubstantive() {
 function renderDefects() {
   const container   = document.getElementById('defects-container');
   const placeholder = document.getElementById('no-defects-placeholder');
-
-  if (activeDefects.length === 0) {
-    container.innerHTML = '';
-    placeholder.classList.remove('hidden');
-    return;
-  }
+  if (!activeDefects.length) { container.innerHTML = ''; placeholder.classList.remove('hidden'); return; }
   placeholder.classList.add('hidden');
 
   container.innerHTML = activeDefects.map((defect, i) => {
     const complianceDate = addMonths(defect.date, 2);
     const daysLeft       = getDaysRemaining(complianceDate);
     const isResolved     = defect.confirmed;
+    const isOverdue      = !isResolved && daysLeft !== null && daysLeft  <= 0;
+    const isWarning      = !isResolved && daysLeft !== null && daysLeft  >  0 && daysLeft <= 30;
+    const isUrgent       = !isResolved && daysLeft !== null && daysLeft  >  0 && daysLeft <= 14;
 
-    const cardBg     = isResolved ? 'bg-emerald-50/60 border-emerald-200' : 'bg-white border-slate-200 shadow-sm';
-    const numLabel   = isResolved
-      ? `<span class="inline-flex items-center gap-1.5 text-[11px] font-bold bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full"><svg width="11" height="11" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Resolved</span>`
-      : `<span class="inline-flex items-center gap-1.5 text-[11px] font-bold bg-red-100 text-red-700 px-2.5 py-0.5 rounded-full"><i class="ti ti-alert-triangle" style="font-size:10px;"></i>Pending</span>`;
+    let cardClass = 'bg-white border-slate-200 shadow-sm';
+    if      (isResolved) cardClass = 'bg-emerald-50/60 border-emerald-200';
+    else if (isOverdue)  cardClass = 'bg-red-50 border-red-300 shadow-sm';
+    else if (isWarning)  cardClass = 'defect-warning-glow';
+
+    const badge = isResolved
+      ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full">
+           <svg width="11" height="11" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3" stroke="#059669" stroke-width="2" stroke-linecap="round" fill="none"/></svg>Resolved</span>`
+      : isOverdue
+        ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold bg-red-100 text-red-700 px-2.5 py-0.5 rounded-full"><i class="ti ti-alert-triangle" style="font-size:10px;"></i>Overdue</span>`
+        : isUrgent
+          ? `<span class="defect-warning-label"><i class="ti ti-flame" style="font-size:10px;"></i>Urgent — ${daysLeft}d left</span>`
+          : isWarning
+            ? `<span class="defect-warning-label"><i class="ti ti-clock-exclamation" style="font-size:10px;"></i>Due in ${daysLeft}d</span>`
+            : `<span class="inline-flex items-center gap-1 text-[11px] font-bold bg-amber-100 text-amber-700 px-2.5 py-0.5 rounded-full"><i class="ti ti-clock" style="font-size:10px;"></i>Pending</span>`;
 
     const daysInfo = !isResolved && daysLeft !== null
-      ? `<div class="mt-3 pt-3 border-t ${isResolved ? 'border-emerald-100' : 'border-slate-100'} flex items-center gap-2">
-           <i class="ti ti-${daysLeft < 0 ? 'alert-triangle text-red-500' : daysLeft <= 7 ? 'clock text-amber-500' : 'clock text-slate-400'}" style="font-size:13px;"></i>
-           <span class="text-[12px] font-semibold ${daysLeft < 0 ? 'text-red-600' : daysLeft <= 7 ? 'text-amber-600' : 'text-outline'}">
-             ${daysLeft < 0 ? Math.abs(daysLeft) + ' days overdue' : daysLeft === 0 ? 'Due today' : daysLeft + ' days remaining'}
+      ? `<div class="mt-3 pt-3 border-t ${isWarning ? 'border-rose-100' : 'border-slate-100'} flex items-center gap-2">
+           <i class="ti ti-${daysLeft < 0 ? 'alert-triangle text-red-500' : daysLeft <= 7 ? 'flame text-orange-500' : daysLeft <= 30 ? 'clock-exclamation text-rose-500' : 'clock text-slate-400'}" style="font-size:13px;"></i>
+           <span class="text-[12px] font-semibold ${daysLeft < 0 ? 'text-red-600' : daysLeft <= 7 ? 'text-orange-600' : daysLeft <= 30 ? 'text-rose-600' : 'text-outline'}">
+             ${daysLeft < 0 ? `${Math.abs(daysLeft)} days overdue` : daysLeft === 0 ? 'Due today — act immediately' : daysLeft <= 30 ? `⚠ Due in ${daysLeft} days — act soon` : `${daysLeft} days remaining`}
            </span>
          </div>` : '';
 
     const resolveBtn = !isResolved
       ? `<div class="mt-4 flex justify-end">
            <button onclick="openResolveModal(${i})"
-             class="px-4 py-2 bg-emerald-600 text-white text-[11px] font-bold rounded-lg hover:bg-emerald-700 transition-all hover:-translate-y-0.5 shadow-sm flex items-center gap-1.5">
+             class="px-4 py-2 bg-emerald-600 text-white text-[11px] font-bold rounded-lg hover:bg-emerald-700 transition-all hover:-translate-y-0.5 flex items-center gap-1.5">
              <i class="ti ti-circle-check" style="font-size:14px;"></i> Mark as Resolved
            </button>
          </div>` : '';
 
-    return `
-      <div id="defect-card-${i}" class="p-5 rounded-xl border ${cardBg} transition-all">
-        <div class="flex items-center gap-2 mb-4">
-          ${isResolved
-            ? `<div class="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                 <svg width="14" height="14" viewBox="0 0 14 14"><polyline points="3,7 6,10 11,4" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
-               </div>`
-            : `<div class="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                 <i class="ti ti-file-alert text-red-500" style="font-size:14px;"></i>
-               </div>`}
-          <h4 class="text-[12px] font-bold uppercase tracking-widest ${isResolved ? 'text-emerald-700' : 'text-on-surface'}">Defect Notice ${i + 1}</h4>
-          <div class="ml-auto">${numLabel}</div>
-        </div>
+    const iconEl = isResolved
+      ? `<div class="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center"><svg width="14" height="14" viewBox="0 0 14 14"><polyline points="3,7 6,10 11,4" stroke="#059669" stroke-width="2" stroke-linecap="round" fill="none"/></svg></div>`
+      : isWarning || isOverdue
+        ? `<div class="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center"><i class="ti ti-alert-triangle text-red-500" style="font-size:14px;"></i></div>`
+        : `<div class="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center"><i class="ti ti-file-alert text-amber-500" style="font-size:14px;"></i></div>`;
 
+    return `
+      <div id="defect-card-${i}" class="p-5 rounded-xl border ${cardClass} transition-all">
+        <div class="flex items-center gap-2 mb-4">
+          ${iconEl}
+          <h4 class="text-[12px] font-bold uppercase tracking-widest ${isResolved ? 'text-emerald-700' : 'text-on-surface'}">Defect Notice ${i + 1}</h4>
+          <div class="ml-auto">${badge}</div>
+        </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-1">Notice Issued On</label>
@@ -901,81 +946,55 @@ function renderDefects() {
               onchange="updateDefectDate(${i}, this.value)">
           </div>
           <div>
-            <label class="text-[10px] font-bold ${isResolved ? 'text-emerald-600' : 'text-red-600'} uppercase tracking-widest block mb-1">Compliance Due</label>
-            <div class="text-[13px] font-bold ${isResolved ? 'text-emerald-700' : 'text-red-700'}">${toReadableDate(complianceDate)}</div>
+            <label class="text-[10px] font-bold ${isResolved ? 'text-emerald-600' : isWarning ? 'text-rose-600' : 'text-red-600'} uppercase tracking-widest block mb-1">Compliance Due</label>
+            <div class="text-[13px] font-bold ${isResolved ? 'text-emerald-700' : isWarning ? 'text-rose-700' : 'text-red-700'}">${toReadableDate(complianceDate)}</div>
           </div>
         </div>
-
         ${daysInfo}
         ${resolveBtn}
       </div>`;
   }).join('');
 }
 
-function updateDefectDate(index, val) {
-  if (activeDefects[index]) {
-    activeDefects[index].date = val;
-    markDirty();
-    renderDefects();
-  }
-}
+function updateDefectDate(i, val) { if (activeDefects[i]) { activeDefects[i].date = val; markDirty(); renderDefects(); } }
 function addDefect() {
-  if (activeDefects.length >= 2) {
-    alert('The system currently supports tracking up to 2 sequential Formality Defects per record.');
-    return;
-  }
+  if (activeDefects.length >= 2) { alert('Maximum 2 Formality Defects per record.'); return; }
   activeDefects.push({ date: new Date().toISOString().split('T')[0], confirmed: false });
-  markDirty();
-  renderDefects();
+  markDirty(); renderDefects();
 }
 
-/* ── RESOLVE DEFECT MODAL ── */
-function openResolveModal(index) {
-  resolveIndex = index;
-  const defect         = activeDefects[index];
-  const complianceDate = addMonths(defect.date, 2);
-  document.getElementById('resolve-notice-num').textContent     = `Notice #${index + 1}`;
-  document.getElementById('resolve-notice-date').textContent    = toReadableDate(defect.date);
-  document.getElementById('resolve-compliance-date').textContent = toReadableDate(complianceDate);
+/* ── RESOLVE MODAL ── */
+function openResolveModal(i) {
+  resolveIndex = i;
+  const d = activeDefects[i]; const cd = addMonths(d.date, 2);
+  document.getElementById('resolve-notice-num').textContent      = `Notice #${i + 1}`;
+  document.getElementById('resolve-notice-date').textContent     = toReadableDate(d.date);
+  document.getElementById('resolve-compliance-date').textContent = toReadableDate(cd);
   document.getElementById('resolve-modal').style.display = 'flex';
 }
-function closeResolveModal() {
-  document.getElementById('resolve-modal').style.display = 'none';
-  resolveIndex = null;
-}
+function closeResolveModal() { document.getElementById('resolve-modal').style.display = 'none'; resolveIndex = null; }
 function executeResolve() {
   if (resolveIndex === null) return;
   activeDefects[resolveIndex].confirmed = true;
-  closeResolveModal();
-  markDirty();
-
-  // Animate the resolved card
-  const card = document.getElementById(`defect-card-${resolveIndex}`);
-  renderDefects();
-  requestAnimationFrame(() => {
-    const newCard = document.getElementById(`defect-card-${resolveIndex}`);
-    if (newCard) newCard.classList.add('resolved-pop');
-  });
-
+  closeResolveModal(); markDirty(); renderDefects();
+  requestAnimationFrame(() => { const c = document.getElementById(`defect-card-${resolveIndex}`); if (c) c.classList.add('resolved-pop'); });
   showToastMsg('Defect marked as resolved', 'Remember to save your changes.');
 }
 
-/* ── STATUS STYLES ── */
+/* ── STATUS BADGES ── */
 const statusMeta = {
   'Submitted to IPO': { cls:'badge-submitted' },
   'Received E-SOA':   { cls:'badge-esoa'      },
   'Paid':             { cls:'badge-paid'       },
   'Approved':         { cls:'badge-approved'   },
 };
-function statusBadgeHTML(status) {
-  const m = statusMeta[status] || { cls:'badge-default' };
-  return `<span class="status-badge ${m.cls}">${status || '—'}</span>`;
-}
-function flagBadgeHTML(flags) {
-  let badges = '';
-  if (flags.isUrgentCompliance)  badges += `<span class="status-badge badge-urgent-red"><i class="ti ti-alert-triangle" style="font-size:11px;"></i>Defect Due</span> `;
-  if (flags.isUrgentSubstantive) badges += `<span class="status-badge badge-urgent-pink"><i class="ti ti-clock-exclamation" style="font-size:11px;"></i>Exam Due</span>`;
-  return badges || '<span class="text-[11px] text-outline">—</span>';
+function statusBadgeHTML(s) { const m = statusMeta[s] || { cls:'badge-default' }; return `<span class="status-badge ${m.cls}">${s || '—'}</span>`; }
+function flagBadgeHTML(f) {
+  let b = '';
+  if (f.isUrgentCompliance)       b += `<span class="status-badge badge-urgent-red"><i class="ti ti-alert-triangle" style="font-size:11px;"></i>Defect Due</span> `;
+  if (f.isUrgentSubstantive)      b += `<span class="status-badge badge-urgent-pink"><i class="ti ti-clock-exclamation" style="font-size:11px;"></i>Exam Due</span>`;
+  if (!b && f.isComplianceWarning) b = `<span class="status-badge badge-urgent-pink"><i class="ti ti-clock" style="font-size:11px;"></i>Deadline Soon</span>`;
+  return b || '<span class="text-[11px] text-outline">—</span>';
 }
 const statusHero = {
   'Submitted to IPO': { border:'#93c5fd', bg:'#eff6ff', color:'#1d4ed8' },
@@ -985,9 +1004,7 @@ const statusHero = {
 };
 function updateStatusStyle(sel) {
   const s = statusHero[sel.value] || { border:'#e2e8f0', bg:'#f8fafc', color:'#334155' };
-  sel.style.borderColor     = s.border;
-  sel.style.backgroundColor = s.bg;
-  sel.style.color           = s.color;
+  sel.style.borderColor = s.border; sel.style.backgroundColor = s.bg; sel.style.color = s.color;
 }
 
 /* ── STAT CARDS ── */
@@ -995,150 +1012,128 @@ function updateStats() {
   document.getElementById('stat-total').textContent    = ALL_RECORDS.length;
   document.getElementById('stat-approved').textContent = ALL_RECORDS.filter(r => r.status === 'Approved').length;
   document.getElementById('stat-pending').textContent  = ALL_RECORDS.filter(r => r.status !== 'Approved').length;
-
-  let serCount = 0, fdCount = 0;
-  ALL_RECORDS.forEach(r => {
-    const f = computeRecordFlags(r);
-    if (f.isUrgentSubstantive) serCount++;
-    if (f.isUrgentCompliance)  fdCount++;
-  });
-  const totalUrgent = serCount + fdCount;
-
-  document.getElementById('stat-urgent').textContent = totalUrgent;
-
-  const card     = document.getElementById('alert-card');
-  const icon     = document.getElementById('alert-icon');
-  const glyph    = document.getElementById('alert-icon-glyph');
-  const label    = document.getElementById('alert-label');
-  const chips    = document.getElementById('alert-chips');
-  const calmSub  = document.getElementById('alert-calm-sub');
-  const chipSer  = document.getElementById('chip-ser');
-  const chipFd   = document.getElementById('chip-fd');
-
-  if (totalUrgent === 0) {
-    // ── CALM STATE ──
-    card.classList.remove('alert-card-urgent');
-    card.classList.add('alert-card-calm');
-    icon.classList.remove('alert-icon-urgent');
-    icon.classList.add('alert-icon-calm');
-    glyph.className = 'ti ti-shield-check';
-    label.textContent = 'All Clear';
+  let ser = 0, fd = 0;
+  ALL_RECORDS.forEach(r => { const f = computeRecordFlags(r); if (f.isUrgentSubstantive) ser++; if (f.isUrgentCompliance) fd++; });
+  const total = ser + fd;
+  document.getElementById('stat-urgent').textContent = total;
+  const card    = document.getElementById('alert-card');
+  const icon    = document.getElementById('alert-icon');
+  const glyph   = document.getElementById('alert-icon-glyph');
+  const label   = document.getElementById('alert-label');
+  const chips   = document.getElementById('alert-chips');
+  const calmSub = document.getElementById('alert-calm-sub');
+  if (total === 0) {
+    card.classList.replace('alert-card-urgent','alert-card-calm'); icon.classList.replace('alert-icon-urgent','alert-icon-calm');
+    glyph.className = 'ti ti-shield-check'; label.textContent = 'All Clear';
     label.className = 'text-[10px] font-bold uppercase tracking-widest text-emerald-700 transition-colors duration-500';
-    chips.classList.add('hidden');
-    calmSub.classList.remove('hidden');
+    chips.classList.add('hidden'); calmSub.classList.remove('hidden');
   } else {
-    // ── URGENT STATE ──
-    card.classList.remove('alert-card-calm');
-    card.classList.add('alert-card-urgent');
-    icon.classList.remove('alert-icon-calm');
-    icon.classList.add('alert-icon-urgent');
-    glyph.className = 'ti ti-alert-triangle';
-    label.textContent = 'Action Required';
+    card.classList.replace('alert-card-calm','alert-card-urgent'); icon.classList.replace('alert-icon-calm','alert-icon-urgent');
+    glyph.className = 'ti ti-alert-triangle'; label.textContent = 'Action Required';
     label.className = 'text-[10px] font-bold uppercase tracking-widest text-rose-700 transition-colors duration-500';
-    chips.classList.remove('hidden');
-    calmSub.classList.add('hidden');
-
-    // Update chip labels — hide chip if count is 0
-    document.getElementById('chip-ser-label').textContent = `${serCount} SER`;
-    document.getElementById('chip-fd-label').textContent  = `${fdCount} Defect${fdCount !== 1 ? 's' : ''}`;
-    chipSer.style.display = serCount > 0 ? '' : 'none';
-    chipFd.style.display  = fdCount  > 0 ? '' : 'none';
+    chips.classList.remove('hidden'); calmSub.classList.add('hidden');
+    document.getElementById('chip-ser-label').textContent = `${ser} SER`;
+    document.getElementById('chip-fd-label').textContent  = `${fd} Defect${fd!==1?'s':''}`;
+    document.getElementById('chip-ser').style.display = ser > 0 ? '' : 'none';
+    document.getElementById('chip-fd').style.display  = fd  > 0 ? '' : 'none';
   }
 }
 
-/* ── QUICK FILTER from alert chips ── */
 function quickFilter(type) {
-  const val = type === 'ser' ? 'Urgent Substantive' : 'Defect Compliance';
-  applyStatusFilter(val);
-  // Smooth scroll to table
-  document.querySelector('section.bg-white.rounded-2xl')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  applyStatusFilter(type === 'ser' ? 'Urgent Substantive' : 'Defect Compliance');
+  document.querySelector('section.bg-white.rounded-2xl')?.scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 /* ── FILTER DROPDOWN ── */
 function toggleFilterMenu() {
-  const menu    = document.getElementById('filter-menu');
-  const chevron = document.getElementById('filter-chevron');
-  const isOpen  = !menu.classList.contains('hidden');
-  menu.classList.toggle('hidden', isOpen);
-  chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  const m = document.getElementById('filter-menu'); const c = document.getElementById('filter-chevron');
+  const open = !m.classList.contains('hidden'); m.classList.toggle('hidden', open); c.style.transform = open ? '' : 'rotate(180deg)';
 }
 function applyStatusFilter(val) {
   activeStatusFilter = val;
-  document.querySelectorAll('.filter-val').forEach(btn =>
-    btn.querySelector('i').classList.toggle('hidden', btn.dataset.val !== val));
+  document.querySelectorAll('.filter-val').forEach(b => b.querySelector('i').classList.toggle('hidden', b.dataset.val !== val));
   document.getElementById('filter-label').textContent = val === 'All' ? 'All Status' : val;
-  document.getElementById('filter-menu').classList.add('hidden');
-  document.getElementById('filter-chevron').style.transform = '';
+  document.getElementById('filter-menu').classList.add('hidden'); document.getElementById('filter-chevron').style.transform = '';
   filterAndRender();
 }
-document.addEventListener('click', e => {
-  const w = document.getElementById('filter-wrapper');
-  if (w && !w.contains(e.target)) document.getElementById('filter-menu').classList.add('hidden');
-});
+document.addEventListener('click', e => { const w = document.getElementById('filter-wrapper'); if (w && !w.contains(e.target)) document.getElementById('filter-menu').classList.add('hidden'); });
+
+/* ── SORT helper ── */
+function sortByDateDesc(arr) {
+  return [...arr].sort((a, b) => {
+    const da = a.dateOfFiling ? new Date(a.dateOfFiling) : new Date(0);
+    const db = b.dateOfFiling ? new Date(b.dateOfFiling) : new Date(0);
+    return db - da;
+  });
+}
 
 /* ── SEARCH + FILTER ── */
 function filterAndRender() {
   const q = document.getElementById('search-input').value.toLowerCase().trim();
   filteredRecords = ALL_RECORDS.filter(r => {
-    const flags = computeRecordFlags(r);
-    let matchStatus = false;
-    if      (activeStatusFilter === 'All')               matchStatus = true;
-    else if (activeStatusFilter === 'Urgent Substantive') matchStatus = flags.isUrgentSubstantive;
-    else if (activeStatusFilter === 'Defect Compliance')  matchStatus = flags.isUrgentCompliance;
-    else                                                  matchStatus = r.status === activeStatusFilter;
-
-    const matchSearch = !q ||
-      (r.referenceNo || '').toLowerCase().includes(q) ||
-      (r.title       || '').toLowerCase().includes(q) ||
-      (r.author      || '').toLowerCase().includes(q) ||
-      (r.dept        || '').toLowerCase().includes(q) ||
-      (r.status      || '').toLowerCase().includes(q);
-    return matchStatus && matchSearch;
+    const f = computeRecordFlags(r);
+    let ms = false;
+    if      (activeStatusFilter === 'All')                ms = true;
+    else if (activeStatusFilter === 'Urgent Substantive') ms = f.isUrgentSubstantive;
+    else if (activeStatusFilter === 'Defect Compliance')  ms = f.isUrgentCompliance;
+    else                                                   ms = r.status === activeStatusFilter;
+    const mq = !q || (r.referenceNo||'').toLowerCase().includes(q) || (r.title||'').toLowerCase().includes(q)
+                   || (r.author||'').toLowerCase().includes(q)      || (r.dept||'').toLowerCase().includes(q)
+                   || (r.status||'').toLowerCase().includes(q);
+    return ms && mq;
   });
+  filteredRecords = sortByDateDesc(filteredRecords);
   currentPage = 1;
   render();
 }
 
 /* ── RENDER TABLE ── */
 function render() {
-  const tbody      = document.getElementById('table-body');
-  const emptyEl    = document.getElementById('empty-state');
-  const total      = filteredRecords.length;
-  const totalPages = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
-  if (currentPage > totalPages) currentPage = totalPages;
-  const start = (currentPage - 1) * ROWS_PER_PAGE;
-  const page  = filteredRecords.slice(start, start + ROWS_PER_PAGE);
-
-  if (total === 0) {
-    tbody.innerHTML = '';
-    emptyEl.classList.remove('hidden');
-  } else {
+  const tbody   = document.getElementById('table-body');
+  const emptyEl = document.getElementById('empty-state');
+  const total   = filteredRecords.length;
+  let page, start;
+  if (ROWS_PER_PAGE === 0) { page = filteredRecords; start = 0; }
+  else {
+    const tp = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
+    if (currentPage > tp) currentPage = tp;
+    start = (currentPage - 1) * ROWS_PER_PAGE;
+    page  = filteredRecords.slice(start, start + ROWS_PER_PAGE);
+  }
+  if (total === 0) { tbody.innerHTML = ''; emptyEl.classList.remove('hidden'); }
+  else {
     emptyEl.classList.add('hidden');
     tbody.innerHTML = page.map(r => {
       const flags = computeRecordFlags(r);
-      let rowClass = '';
-      if (flags.isUrgentCompliance)  rowClass = 'row-urgent-red';
-      else if (flags.isUrgentSubstantive) rowClass = 'row-urgent-pink';
+      let rc = '';
+      
+      // NEW: Applied the orange warning logic here!
+      if      (flags.isUrgentCompliance)  rc = 'row-urgent-red';
+      else if (flags.isComplianceWarning) rc = 'row-warning-orange';
+      else if (flags.isUrgentSubstantive) rc = 'row-urgent-pink';
 
       let deptText = r.dept || 'N/A', collegeText = '';
-      if (r.dept && r.dept.includes(' — ')) {
-        [collegeText, deptText] = r.dept.split(' — ');
-      }
+      if (r.dept && r.dept.includes(' — ')) [collegeText, deptText] = r.dept.split(' — ');
+
+      const au = formatAuthors(r.author);
       return `
-        <tr class="${rowClass} hover:bg-slate-50/70 transition-colors">
-          <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide">${r.referenceNo || '—'}</td>
-          <td class="px-5 py-4 text-[13px] text-on-surface font-medium max-w-[200px] truncate">${r.title || ''}</td>
-          <td class="px-5 py-4 text-[12px] text-on-surface-variant">${r.author || ''}</td>
+        <tr class="${rc} hover:bg-slate-50/70 transition-colors">
+          <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide whitespace-nowrap">${r.referenceNo || '—'}</td>
+          <td class="px-5 py-4 text-[13px] text-on-surface font-medium" style="max-width:210px;"><div class="truncate" title="${(r.title||'').replace(/"/g,'"')}">${r.title || ''}</div></td>
+          <td class="px-5 py-4 text-[12px] text-on-surface-variant">
+            <div class="author-cell">
+              <div>${au.html}</div>
+              ${au.hasMore ? `<div class="author-tooltip">${au.full}</div>` : ''}
+            </div>
+          </td>
           <td class="px-5 py-4">
             <div class="text-[13px] font-medium text-on-surface">${deptText}</div>
             ${collegeText ? `<div class="text-[11px] text-outline mt-0.5">${collegeText}</div>` : ''}
           </td>
-          <td class="px-5 py-4">${statusBadgeHTML(r.status)}</td>
-          <td class="px-5 py-4 text-[12px] text-on-surface-variant tabular-nums">${toReadableDate(r.dateOfFiling)}</td>
-          <td class="px-5 py-4 whitespace-nowrap">
-            <div class="flex flex-col gap-1">${flagBadgeHTML(flags)}</div>
-          </td>
-          <td class="px-5 py-4 text-center">
+          <td class="status-col px-5 py-4">${statusBadgeHTML(r.status)}</td>
+          <td class="px-5 py-4 text-[12px] text-on-surface-variant tabular-nums whitespace-nowrap">${toReadableDate(r.dateOfFiling)}</td>
+          <td class="px-5 py-4 whitespace-nowrap"><div class="flex flex-col gap-1">${flagBadgeHTML(flags)}</div></td>
+          <td class="action-col px-5 py-4 text-center">
             <button onclick="openResearchModal('${r._id}')" class="btn-view">
               <i class="ti ti-eye" style="font-size:13px;"></i><span>View</span>
             </button>
@@ -1146,119 +1141,115 @@ function render() {
         </tr>`;
     }).join('');
   }
-
-  document.getElementById('pagination-info').textContent =
-    `Showing ${total === 0 ? 0 : start + 1}–${Math.min(start + ROWS_PER_PAGE, total)} of ${total}`;
-  renderPagination(totalPages);
+  const shownEnd   = ROWS_PER_PAGE === 0 ? total : Math.min(start + ROWS_PER_PAGE, total);
+  const shownStart = total === 0 ? 0 : (ROWS_PER_PAGE === 0 ? 1 : start + 1);
+  document.getElementById('pagination-info').textContent = `Showing ${shownStart}–${shownEnd} of ${total} record${total !== 1 ? 's' : ''}`;
+  if (ROWS_PER_PAGE === 0) document.getElementById('pagination-controls').innerHTML = '';
+  else renderPagination(Math.max(1, Math.ceil(total / ROWS_PER_PAGE)));
 }
 
-/* ── PAGINATION ── */
+/* ── PAGINATION with ellipsis ── */
 function renderPagination(totalPages) {
   const ctrl = document.getElementById('pagination-controls');
   ctrl.innerHTML = '';
-  const makeBtn = (labelOrIcon, targetPage, disabled, active, isIcon) => {
+  const btn = (labelOrIcon, tp, disabled, active, isIcon) => {
     const b = document.createElement('button');
-    b.className = `page-btn ${active ? 'active' : ''}`;
-    b.disabled = disabled;
+    b.className = `page-btn${active ? ' active' : ''}`;
+    b.disabled  = disabled;
     b.innerHTML = isIcon ? `<span class="material-symbols-outlined" style="font-size:16px;">${labelOrIcon}</span>` : labelOrIcon;
-    if (!disabled && !active) b.onclick = () => { currentPage = targetPage; render(); };
+    if (!disabled && !active) b.onclick = () => { currentPage = tp; render(); };
     ctrl.appendChild(b);
   };
-  makeBtn('chevron_left',  currentPage - 1, currentPage === 1,          false, true);
-  for (let i = 1; i <= totalPages; i++) makeBtn(i, i, false, i === currentPage, false);
-  makeBtn('chevron_right', currentPage + 1, currentPage === totalPages, false, true);
+  const ellipsis = () => { const s = document.createElement('span'); s.className = 'page-ellipsis'; s.textContent = '…'; ctrl.appendChild(s); };
+
+  btn('chevron_left', currentPage - 1, currentPage === 1, false, true);
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) btn(i, i, false, i === currentPage, false);
+  } else {
+    btn(1, 1, false, currentPage === 1, false);
+    if (currentPage > 3) ellipsis();
+    const s = Math.max(2, currentPage - 1), e = Math.min(totalPages - 1, currentPage + 1);
+    for (let i = s; i <= e; i++) btn(i, i, false, i === currentPage, false);
+    if (currentPage < totalPages - 2) ellipsis();
+    btn(totalPages, totalPages, false, currentPage === totalPages, false);
+  }
+  btn('chevron_right', currentPage + 1, currentPage === totalPages, false, true);
 }
 
-/* ── MAP RAW API ITEM ── */
+/* ── MAP API RECORD ── */
 function mapRecord(item) {
-  const title =
-    (item.researchTitle && item.researchTitle.trim()) ||
-    (item.title         && item.title.trim())         || 'No Title';
-
+  const title = (item.researchTitle?.trim()) || (item.title?.trim()) || 'No Title';
   let author = 'Unknown';
-  if (Array.isArray(item.authors) && item.authors.length > 0) author = item.authors.join(', ');
+  if (Array.isArray(item.authors) && item.authors.length)        author = item.authors.join(', ');
   else if (typeof item.author   === 'string' && item.author.trim())   author = item.author.trim();
   else if (typeof item.inventor === 'string' && item.inventor.trim()) author = item.inventor.trim();
-
   const dept = item.department || item.dept || 'N/A';
-
   let dateOfFiling = '';
-  if (item.date)           dateOfFiling = item.date.split('T')[0];
+  if      (item.date)        dateOfFiling = item.date.split('T')[0];
   else if (item.dateApplied) dateOfFiling = item.dateApplied.split('T')[0];
   else if (item.createdAt)   dateOfFiling = item.createdAt.split('T')[0];
-
-  const referenceNo = item.referenceId || item.referenceNo || item.refNo || null;
-
+  
+  // NEW: Read the defect status correctly
   return {
     _id: String(item._id),
-    referenceNo: referenceNo || String(item._id),
+    referenceNo: item.referenceId || item.referenceNo || item.refNo || String(item._id),
     title, author, dept,
     status: item.status || 'Submitted to IPO',
     dateOfFiling,
     defectNoticeDate:  item.defectNoticeDate  ? item.defectNoticeDate.split('T')[0]  : null,
     defectNoticeDate2: item.defectNoticeDate2 ? item.defectNoticeDate2.split('T')[0] : null,
+    isDefect1Resolved: item.isDefect1Resolved || false,
+    isDefect2Resolved: item.isDefect2Resolved || false,
   };
 }
 
-/* ── FETCH DATA ── */
+/* ── FETCH ── */
 async function fetchPatents() {
   try {
     const res  = await fetch(API_URL);
     const data = await res.json();
-    const records = Array.isArray(data) ? data : (data.data ?? []);
-    const patents = records.filter(item => (item.category || '').toLowerCase() === CATEGORY);
-    ALL_RECORDS     = patents.map(mapRecord);
-    filteredRecords = [...ALL_RECORDS];
-    updateStats();
-    render();
+    const raw  = Array.isArray(data) ? data : (data.data ?? []);
+    ALL_RECORDS     = raw.filter(i => (i.category || '').toLowerCase() === CATEGORY).map(mapRecord);
+    filteredRecords = sortByDateDesc([...ALL_RECORDS]);
+    updateStats(); render();
   } catch (err) {
-    console.error('Failed to fetch patents:', err);
+    console.error('Fetch failed:', err);
     document.getElementById('table-body').innerHTML =
-      `<tr><td colspan="8" class="text-center py-8 text-red-500 text-[13px]">Failed to load records. Make sure the API is running.</td></tr>`;
+      `<tr><td colspan="8" class="text-center py-8 text-red-500 text-[13px] font-medium">Failed to load records. Make sure the API server is running.</td></tr>`;
   }
 }
 
-/* ── OPEN MODAL ── */
+/* ── OPEN DETAIL MODAL ── */
 function openResearchModal(mongoId) {
   const rec = ALL_RECORDS.find(r => r._id === String(mongoId));
   if (!rec) return;
-  activeMongoId  = rec._id;
-  activeSnapshot = { ...rec };
-
-  document.getElementById('modal-subtitle-id').textContent   = rec.referenceNo || rec._id;
-  document.getElementById('field-ref').value                 = rec.referenceNo || '';
-  document.getElementById('field-title').value               = rec.title || '';
-  document.getElementById('field-author').value              = rec.author || '';
-  document.getElementById('field-date-filing').value         = rec.dateOfFiling || '';
-
+  activeMongoId = rec._id; activeSnapshot = { ...rec };
+  document.getElementById('modal-subtitle-id').textContent = rec.referenceNo || rec._id;
+  document.getElementById('field-ref').value               = rec.referenceNo || '';
+  document.getElementById('field-title').value             = rec.title || '';
+  document.getElementById('field-author').value            = rec.author || '';
+  document.getElementById('field-date-filing').value       = rec.dateOfFiling || '';
+  
+  // NEW: Don't hardcode confirmed to false anymore, read from 'rec'
   activeDefects = [];
-  if (rec.defectNoticeDate)  activeDefects.push({ date: rec.defectNoticeDate,  confirmed: false });
-  if (rec.defectNoticeDate2) activeDefects.push({ date: rec.defectNoticeDate2, confirmed: false });
-
-  const parts   = rec.dept ? rec.dept.split(' — ') : [];
-  const college = parts[0] || rec.dept || '';
-  const dept    = parts[1] || '';
-  const collegeSel = document.getElementById('field-college');
-  [...collegeSel.options].forEach(o => o.selected = o.value === college);
+  if (rec.defectNoticeDate)  activeDefects.push({ date: rec.defectNoticeDate,  confirmed: rec.isDefect1Resolved });
+  if (rec.defectNoticeDate2) activeDefects.push({ date: rec.defectNoticeDate2, confirmed: rec.isDefect2Resolved });
+  
+  const parts  = rec.dept ? rec.dept.split(' — ') : [];
+  const col    = parts[0] || rec.dept || '';
+  const dpt    = parts[1] || '';
+  const colSel = document.getElementById('field-college');
+  [...colSel.options].forEach(o => o.selected = o.value === col);
   updateModalDeptOptions();
-  const deptSel = document.getElementById('field-dept');
-  [...deptSel.options].forEach(o => o.selected = o.value === dept);
-
-  const statusSel = document.getElementById('field-status');
-  [...statusSel.options].forEach(o => o.selected = o.value === rec.status);
-  updateStatusStyle(statusSel);
-
-  recalcSubstantive();
-  clearDirty();
-  setViewMode();
+  const dSel = document.getElementById('field-dept');
+  [...dSel.options].forEach(o => o.selected = o.value === dpt);
+  const sSel = document.getElementById('field-status');
+  [...sSel.options].forEach(o => o.selected = o.value === rec.status);
+  updateStatusStyle(sSel);
+  recalcSubstantive(); clearDirty(); setViewMode();
   document.getElementById('research-modal').style.display = 'flex';
 }
-
-function closeModal() {
-  document.getElementById('research-modal').style.display = 'none';
-  activeMongoId = null; activeSnapshot = null;
-  clearDirty();
-}
+function closeModal() { document.getElementById('research-modal').style.display = 'none'; activeMongoId = null; activeSnapshot = null; clearDirty(); }
 
 /* ── VIEW / EDIT MODE ── */
 const EDITABLE_FIELDS  = ['field-title','field-author'];
@@ -1268,8 +1259,7 @@ function setViewMode() {
   isEditModeActive = false;
   EDITABLE_FIELDS.forEach(id => document.getElementById(id).disabled = true);
   EDITABLE_SELECTS.forEach(id => {
-    const el = document.getElementById(id);
-    el.disabled = true;
+    const el = document.getElementById(id); el.disabled = true;
     if (id === 'field-status') { updateStatusStyle(el); el.style.backgroundImage = 'none'; el.style.cursor = 'default'; }
     else el.style.backgroundImage = 'none';
   });
@@ -1281,26 +1271,16 @@ function setViewMode() {
   document.getElementById('btn-cancel-edit').classList.add('hidden');
   document.getElementById('btn-save').classList.add('hidden');
 }
-
 function enterEditMode() {
   isEditModeActive = true;
   EDITABLE_FIELDS.forEach(id => document.getElementById(id).disabled = false);
   document.getElementById('field-date-filing').disabled = false;
   EDITABLE_SELECTS.forEach(id => {
-    const el = document.getElementById(id);
-    el.disabled = false;
+    const el = document.getElementById(id); el.disabled = false;
     if (id === 'field-status') {
       updateStatusStyle(el);
-      el.style.backgroundImage    = 'url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3E%3Cpath stroke=%27%23374151%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M6 8l4 4 4-4%27/%3E%3C/svg%3E")';
-      el.style.backgroundRepeat   = 'no-repeat';
-      el.style.backgroundPosition = 'right 0.9rem center';
-      el.style.backgroundSize     = '1.15em 1.15em';
-      el.style.paddingRight       = '2.5rem';
-      el.style.cursor             = 'pointer';
-    } else {
-      el.style.removeProperty('background-image');
-      el.style.removeProperty('padding-right');
-    }
+      el.style.cssText += ';background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3E%3Cpath stroke=%27%23374151%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M6 8l4 4 4-4%27/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.9rem center;background-size:1.15em;padding-right:2.5rem;cursor:pointer;';
+    } else { el.style.removeProperty('background-image'); el.style.removeProperty('padding-right'); }
   });
   document.getElementById('field-date-filing').classList.remove('hidden');
   document.getElementById('display-date-filing').classList.add('hidden');
@@ -1310,30 +1290,29 @@ function enterEditMode() {
   document.getElementById('btn-cancel-edit').classList.remove('hidden');
   document.getElementById('btn-save').classList.remove('hidden');
 }
-
-function exitEditMode(force = false) {
+function exitEditMode() {
   if (activeSnapshot) {
     document.getElementById('field-title').value       = activeSnapshot.title || '';
     document.getElementById('field-author').value      = activeSnapshot.author || '';
     document.getElementById('field-date-filing').value = activeSnapshot.dateOfFiling || '';
+    
+    // NEW: Restore correct defect statuses
     activeDefects = [];
-    if (activeSnapshot.defectNoticeDate)  activeDefects.push({ date: activeSnapshot.defectNoticeDate,  confirmed: false });
-    if (activeSnapshot.defectNoticeDate2) activeDefects.push({ date: activeSnapshot.defectNoticeDate2, confirmed: false });
-    const parts   = activeSnapshot.dept ? activeSnapshot.dept.split(' — ') : [];
-    const college = parts[0] || activeSnapshot.dept || '';
-    const dept    = parts[1] || '';
-    const collegeSel = document.getElementById('field-college');
-    [...collegeSel.options].forEach(o => o.selected = o.value === college);
+    if (activeSnapshot.defectNoticeDate)  activeDefects.push({ date: activeSnapshot.defectNoticeDate,  confirmed: activeSnapshot.isDefect1Resolved });
+    if (activeSnapshot.defectNoticeDate2) activeDefects.push({ date: activeSnapshot.defectNoticeDate2, confirmed: activeSnapshot.isDefect2Resolved });
+    
+    const parts = activeSnapshot.dept ? activeSnapshot.dept.split(' — ') : [];
+    const col   = parts[0] || activeSnapshot.dept || '', dpt = parts[1] || '';
+    const cSel  = document.getElementById('field-college');
+    [...cSel.options].forEach(o => o.selected = o.value === col);
     updateModalDeptOptions();
-    const deptSel = document.getElementById('field-dept');
-    [...deptSel.options].forEach(o => o.selected = o.value === dept);
-    const statusSel = document.getElementById('field-status');
-    [...statusSel.options].forEach(o => o.selected = o.value === activeSnapshot.status);
-    updateStatusStyle(statusSel);
-    recalcSubstantive();
+    const dSel = document.getElementById('field-dept');
+    [...dSel.options].forEach(o => o.selected = o.value === dpt);
+    const sSel = document.getElementById('field-status');
+    [...sSel.options].forEach(o => o.selected = o.value === activeSnapshot.status);
+    updateStatusStyle(sSel); recalcSubstantive();
   }
-  clearDirty();
-  setViewMode();
+  clearDirty(); setViewMode();
 }
 
 /* ── CONFIRM + SAVE ── */
@@ -1342,67 +1321,203 @@ function closeConfirmation() { document.getElementById('confirm-modal').style.di
 
 async function confirmSave() {
   if (!activeMongoId) return;
-
-  const college    = document.getElementById('field-college').value;
-  const deptVal    = document.getElementById('field-dept').value;
-  const department = college && deptVal ? `${college} — ${deptVal}` : college || deptVal;
-
-  const defectNoticeDate  = activeDefects[0] ? activeDefects[0].date : '';
-  const defectNoticeDate2 = activeDefects[1] ? activeDefects[1].date : '';
-
+  const college   = document.getElementById('field-college').value;
+  const deptVal   = document.getElementById('field-dept').value;
+  const dept      = college && deptVal ? `${college} — ${deptVal}` : college || deptVal;
+  
+  // NEW: Add the resolved status dynamically to the payload
   const payload = {
     researchTitle:    document.getElementById('field-title').value.trim(),
-    department,
+    department:       dept,
     status:           document.getElementById('field-status').value,
     date:             document.getElementById('field-date-filing').value,
     referenceId:      document.getElementById('field-ref').value.trim(),
     authors:          document.getElementById('field-author').value.split(',').map(a => a.trim()).filter(Boolean),
-    defectNoticeDate,
-    defectNoticeDate2,
+    defectNoticeDate:  activeDefects[0]?.date || '',
+    defectNoticeDate2: activeDefects[1]?.date || '',
+    isDefect1Resolved: activeDefects[0]?.confirmed || false,
+    isDefect2Resolved: activeDefects[1]?.confirmed || false,
   };
-
-  const confirmBtn = document.getElementById('btn-confirm-save');
-  confirmBtn.disabled = true; confirmBtn.textContent = 'Saving…';
-
+  
+  const btn = document.getElementById('btn-confirm-save');
+  btn.disabled = true; btn.textContent = 'Saving…';
   try {
-    const res = await fetch(`${API_URL}/${activeMongoId}`, {
-      method: 'PUT', headers: { 'Content-Type':'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(`PUT ${res.status}: ${await res.text()}`);
-
+    const res = await fetch(`${API_URL}/${activeMongoId}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    if (!res.ok) throw new Error(await res.text());
     const updated = await res.json();
-    const merged  = {
-      ...updated, _id: activeMongoId,
-      referenceId:       payload.referenceId   || updated.referenceId,
-      researchTitle:     payload.researchTitle  || updated.researchTitle,
-      department:        payload.department     || updated.department,
-      status:            payload.status         || updated.status,
-      date:              payload.date           || updated.date,
-      defectNoticeDate:  payload.defectNoticeDate  || updated.defectNoticeDate,
-      defectNoticeDate2: payload.defectNoticeDate2 || updated.defectNoticeDate2,
-      authors: Array.isArray(updated.authors) && updated.authors.length ? updated.authors : payload.authors,
-    };
-
-    const mapped = mapRecord(merged);
-    const idx    = ALL_RECORDS.findIndex(r => r._id === activeMongoId);
-    if (idx !== -1) ALL_RECORDS[idx] = mapped;
-    activeSnapshot = { ...mapped };
-
-    updateStats();
-    filterAndRender();
-    clearDirty();
-    setViewMode();
-
-    closeConfirmation();
-    closeModal();
+    const merged  = mapRecord({ ...updated, _id: activeMongoId, ...payload, authors: updated.authors?.length ? updated.authors : payload.authors });
+    const idx     = ALL_RECORDS.findIndex(r => r._id === activeMongoId);
+    if (idx !== -1) ALL_RECORDS[idx] = merged;
+    activeSnapshot = { ...merged };
+    updateStats(); filterAndRender(); clearDirty(); setViewMode();
+    closeConfirmation(); closeModal();
     showToastMsg('Record saved successfully', 'All changes have been applied.');
   } catch (err) {
     console.error('Save failed:', err);
-    alert('Failed to save changes. Please check the console and try again.');
-  } finally {
-    confirmBtn.disabled = false; confirmBtn.textContent = 'Confirm';
+    alert('Failed to save. Check the console and try again.');
+  } finally { btn.disabled = false; btn.textContent = 'Confirm'; }
+}
+
+/* ══════════════════════════════════════
+   EXPORT / PDF PREVIEW
+══════════════════════════════════════ */
+function openExportModal() {
+  document.getElementById('export-date-from').value = '';
+  document.getElementById('export-date-to').value   = '';
+  document.getElementById('preview-gen-date').textContent =
+    new Date().toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+  refreshPreview();
+  document.getElementById('pdf-preview-modal').style.display = 'flex';
+}
+function closePdfModal() { document.getElementById('pdf-preview-modal').style.display = 'none'; }
+function handlePdfBackdrop(e) { if (e.target === document.getElementById('pdf-preview-modal')) closePdfModal(); }
+function clearDateRange() { document.getElementById('export-date-from').value = ''; document.getElementById('export-date-to').value = ''; refreshPreview(); }
+
+function getExportRecords() {
+  const fromVal = document.getElementById('export-date-from').value;
+  const toVal   = document.getElementById('export-date-to').value;
+  const from    = fromVal ? new Date(fromVal + 'T00:00:00') : null;
+  const to      = toVal   ? new Date(toVal   + 'T23:59:59') : null;
+  return sortByDateDesc(ALL_RECORDS.filter(r => {
+    if (!from && !to) return true;
+    if (!r.dateOfFiling) return false;
+    const d = new Date(r.dateOfFiling + 'T00:00:00');
+    return (!from || d >= from) && (!to || d <= to);
+  }));
+}
+
+const previewSC = {
+  'Submitted to IPO': { bg:'#dbeafe', color:'#1e40af', border:'#bfdbfe' },
+  'Received E-SOA':   { bg:'#ede9fe', color:'#4338ca', border:'#c4b5fd' },
+  'Paid':             { bg:'#d1fae5', color:'#065f46', border:'#6ee7b7' },
+  'Approved':         { bg:'#fef3c7', color:'#92400e', border:'#fcd34d' },
+};
+
+function refreshPreview() {
+  const records = getExportRecords();
+  const fromVal = document.getElementById('export-date-from').value;
+  const toVal   = document.getElementById('export-date-to').value;
+
+  document.getElementById('preview-count').textContent       = `${records.length} record${records.length !== 1 ? 's' : ''}`;
+  document.getElementById('preview-total-count').textContent = records.length;
+
+  if (!fromVal && !toVal) { document.getElementById('preview-period').textContent = 'All Records'; }
+  else {
+    const p = []; if (fromVal) p.push(`From ${toShortDate(fromVal)}`); if (toVal) p.push(`to ${toShortDate(toVal)}`);
+    document.getElementById('preview-period').textContent = p.join(' ');
   }
+
+  const tbody = document.getElementById('preview-table-body');
+  if (!records.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:24px;color:#727785;font-style:italic;">No records found for selected date range.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = records.map((r, idx) => {
+    const flags   = computeRecordFlags(r);
+    const sc      = previewSC[r.status] || { bg:'#f1f5f9', color:'#475569', border:'#cbd5e1' };
+    const au      = formatAuthors(r.author);
+    const auText  = au.hasMore ? `${r.author.split(',').slice(0,2).join(', ')} +${au.count} more` : (r.author || '—');
+    const ser     = r.dateOfFiling ? toShortDate(addMonths(r.dateOfFiling, 18)) : '—';
+    const alert   = flags.isUrgentCompliance ? '🔴 Defect Due' : flags.isUrgentSubstantive ? '🔴 Exam Due' : flags.isComplianceWarning ? '🟡 Deadline Soon' : '—';
+    const rowBg   = idx % 2 === 0 ? '#fff' : '#f8fafc';
+    return `<tr style="background:${rowBg};">
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;font-weight:700;white-space:nowrap;">${r.referenceNo || '—'}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;max-width:180px;">${r.title || '—'}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;color:#424754;">${auText}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;color:#424754;">${r.dept || '—'}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;white-space:nowrap;">
+        <span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:9.5px;font-weight:700;background:${sc.bg};color:${sc.color};border:1px solid ${sc.border};">${r.status || '—'}</span>
+      </td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;white-space:nowrap;">${toShortDate(r.dateOfFiling)}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;color:#be185d;font-weight:600;white-space:nowrap;">${ser}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;font-weight:600;${alert!=='—'?'color:#b91c1c;':'color:#727785;'}">${alert}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── DOWNLOAD PDF ── */
+function downloadPDF() {
+  const records = getExportRecords();
+  const fromVal = document.getElementById('export-date-from').value;
+  const toVal   = document.getElementById('export-date-to').value;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });
+
+  // Header bar
+  doc.setFillColor(0, 88, 190);
+  doc.rect(0, 0, 297, 18, 'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont('helvetica','bold');
+  doc.text('Patent Registry Report', 14, 12);
+  doc.setFontSize(8); doc.setFont('helvetica','normal');
+  doc.text('IP Management System — University IP Office', 190, 9, { align:'right' });
+  doc.text(`Generated: ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`, 190, 14, { align:'right' });
+
+  // Sub-header
+  doc.setTextColor(80,80,80); doc.setFontSize(8);
+  let period = 'All Records';
+  if (fromVal || toVal) {
+    const p = []; if (fromVal) p.push(`From: ${toShortDate(fromVal)}`); if (toVal) p.push(`To: ${toShortDate(toVal)}`);
+    period = p.join('  •  ');
+  }
+  doc.text(`Period: ${period}`, 14, 25);
+  doc.text(`Total Records: ${records.length}`, 240, 25, { align:'right' });
+
+  const tableData = records.map(r => {
+    const flags = computeRecordFlags(r);
+    const auArr = r.author ? r.author.split(',').map(a=>a.trim()) : [];
+    const auTxt = auArr.length > 2 ? `${auArr.slice(0,2).join(', ')} +${auArr.length-2}` : auArr.join(', ') || '—';
+    const dept  = r.dept ? (r.dept.includes(' — ') ? r.dept.split(' — ')[1] : r.dept) : '—';
+    const alert = flags.isUrgentCompliance ? 'Defect Due' : flags.isUrgentSubstantive ? 'Exam Due' : flags.isComplianceWarning ? 'Deadline Soon' : '—';
+    return [ r.referenceNo||'—', r.title||'—', auTxt, dept, r.status||'—', toShortDate(r.dateOfFiling), r.dateOfFiling ? toShortDate(addMonths(r.dateOfFiling,18)) : '—', alert ];
+  });
+
+  doc.autoTable({
+    startY: 30,
+    head: [['Reference No.','Patent Title','Author(s)','Department','Status','Date Filed','SER Deadline','Alerts']],
+    body: tableData,
+    theme: 'grid',
+    headStyles: { fillColor:[0,88,190], textColor:[255,255,255], fontStyle:'bold', fontSize:8, cellPadding:4 },
+    bodyStyles: { fontSize:7.5, cellPadding:3.5 },
+    columnStyles: {
+      0: { cellWidth:28, fontStyle:'bold' },
+      1: { cellWidth:52 },
+      2: { cellWidth:38 },
+      3: { cellWidth:36 },
+      4: { cellWidth:28 },
+      5: { cellWidth:24 },
+      6: { cellWidth:26 },
+      7: { cellWidth:20 },
+    },
+    alternateRowStyles: { fillColor:[248,250,252] },
+    didParseCell(data) {
+      if (data.section !== 'body') return;
+      if (data.column.index === 4) {
+        const s = data.cell.raw;
+        if      (s === 'Approved')         { data.cell.styles.textColor=[146,64,14];   data.cell.styles.fillColor=[254,243,199]; }
+        else if (s === 'Paid')             { data.cell.styles.textColor=[6,95,70];     data.cell.styles.fillColor=[209,250,229]; }
+        else if (s === 'Received E-SOA')   { data.cell.styles.textColor=[67,56,202];   data.cell.styles.fillColor=[237,233,254]; }
+        else                               { data.cell.styles.textColor=[30,64,175];   data.cell.styles.fillColor=[219,234,254]; }
+      }
+      if (data.column.index === 7 && data.cell.raw !== '—') {
+        data.cell.styles.textColor  = [185,28,28];
+        data.cell.styles.fontStyle  = 'bold';
+      }
+    },
+    margin: { left:14, right:14 },
+  });
+
+  // Page footers
+  const pages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) {
+    doc.setPage(i); doc.setFontSize(7); doc.setTextColor(160,160,160);
+    doc.text('Patent Registry — IP Management System', 14, doc.internal.pageSize.height - 6);
+    doc.text(`Page ${i} of ${pages}`, 260, doc.internal.pageSize.height - 6);
+  }
+
+  const fname = `Patent_Registry_${fromVal||toVal ? (fromVal||'start')+'_to_'+(toVal||'end')+'_' : 'All_'}${new Date().toISOString().split('T')[0]}.pdf`;
+  doc.save(fname);
+  showToastMsg('PDF Downloaded', `${records.length} record${records.length!==1?'s':''} exported.`);
 }
 
 /* ── TOAST ── */
@@ -1413,18 +1528,11 @@ function showToastMsg(title, body) {
   const bar   = document.getElementById('toast-bar');
   bar.style.transition = 'none'; bar.style.width = '100%';
   toast.style.opacity = '1'; toast.style.transform = 'translateY(0)';
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    bar.style.transition = 'width 3s linear'; bar.style.width = '0%';
-  }));
+  requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = 'width 3s linear'; bar.style.width = '0%'; }));
   setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(12px)'; }, 3300);
 }
 
-/* ── BROWSER BACK / UNLOAD GUARD ── */
-window.addEventListener('beforeunload', e => {
-  if (isDirty) { e.preventDefault(); e.returnValue = ''; }
-});
-
-/* ── INIT ── */
+window.addEventListener('beforeunload', e => { if (isDirty) { e.preventDefault(); e.returnValue = ''; } });
 document.addEventListener('DOMContentLoaded', fetchPatents);
 </script>
 </body>
