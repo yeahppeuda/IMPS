@@ -43,6 +43,9 @@
   ::-webkit-scrollbar { width:6px; }
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:#e2e8f0; border-radius:10px; }
+  
+  /* Added Spinner Animation */
+  @keyframes spin { 100% { transform: rotate(360deg); } }
 
   /* ── Nav ── */
   .nav-item { display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:8px; cursor:pointer; transition:background 0.15s,color 0.15s; text-decoration:none; color:#424754; font-size:13.5px; font-weight:400; width:100%; }
@@ -138,19 +141,8 @@
   .review-badge { display:inline-flex; align-items:center; gap:5px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:20px; padding:3px 10px; font-size:12px; font-weight:600; }
   .cat-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; }
 
-  /* ── Search bar ── */
-  .search-clear-btn { position:absolute; right:52px; top:50%; transform:translateY(-50%); background:#e1e2ec; border:none; border-radius:50%; width:18px; height:18px; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:11px; color:#424754; line-height:1; transition:background 0.12s; padding:0; flex-shrink:0; }
-  .search-clear-btn:hover { background:#c2c6d6; }
-  .search-results-bar { display:none; margin-bottom:16px; padding:10px 14px; background:#e8f0fd; border:1px solid #bfdbfe; border-radius:10px; font-size:13px; color:#1d4ed8; font-weight:500; align-items:center; gap:8px; }
-  .search-results-bar .clear-search-link { margin-left:auto; font-size:12px; color:#0058be; font-weight:600; cursor:pointer; text-decoration:underline; white-space:nowrap; }
-
-  /* ── Filter button + dropdown ── */
-  .filter-btn { position:absolute; right:0; top:0; bottom:0; display:flex; align-items:center; gap:6px; padding:0 14px; background:#f2f3fd; border:none; border-left:1px solid #e1e2ec; border-radius:0 9999px 9999px 0; cursor:pointer; font-size:12px; font-weight:600; color:#424754; font-family:'Inter',sans-serif; transition:background 0.15s,color 0.15s; white-space:nowrap; }
-  .filter-btn:hover { background:#e6e7f2; color:#191b23; }
-  .filter-btn.active { background:#0058be; color:#fff; border-left-color:#0058be; }
-  .filter-btn.active i { color:#fff; }
-  .filter-btn i { font-size:14px; color:#727785; transition:color 0.15s; }
-  .filter-dropdown { position:absolute; top:calc(100% + 8px); right:0; z-index:100; background:#fff; border:1px solid #e1e2ec; border-radius:14px; padding:6px; box-shadow:0 10px 36px rgba(0,0,0,0.13); min-width:200px; animation:filterDropIn 0.15s ease; }
+  /* ── Filter dropdown ── */
+  .filter-dropdown { position:absolute; z-index:100; background:#fff; border:1px solid #e1e2ec; border-radius:14px; padding:6px; box-shadow:0 10px 36px rgba(0,0,0,0.13); animation:filterDropIn 0.15s ease; }
   @keyframes filterDropIn { from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none} }
   .filter-opt { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:9px; cursor:pointer; font-size:13px; color:#424754; font-family:'Inter',sans-serif; transition:background 0.12s; border:none; background:none; width:100%; text-align:left; font-weight:500; }
   .filter-opt:hover { background:#f2f3fd; color:#191b23; }
@@ -159,14 +151,12 @@
   .filter-opt .fo-check { margin-left:auto; font-size:14px; color:#0058be; display:none; }
   .filter-opt.active .fo-check { display:block; }
   .filter-divider { height:1px; background:#f1f5f9; margin:4px 0; }
-  /* active filter chip shown in search bar */
-  .active-filter-chip { display:none; align-items:center; gap:5px; position:absolute; left:40px; top:50%; transform:translateY(-50%); background:#e8f0fd; border:1px solid #bfdbfe; border-radius:20px; padding:2px 8px 2px 6px; font-size:11px; font-weight:700; color:#0058be; pointer-events:none; white-space:nowrap; max-width:140px; overflow:hidden; text-overflow:ellipsis; }
 
   /* ── Live time display ── */
   .live-time-badge { display:flex; align-items:center; gap:6px; background:#f2f3fd; border:1px solid #e1e2ec; border-radius:8px; padding:5px 11px; font-size:12px; font-weight:600; color:#424754; white-space:nowrap; flex-shrink:0; }
   .live-time-badge i { color:#0058be; font-size:14px; }
 
-  /* ── ADDED: Empty state ── */
+  /* ── Empty state ── */
   .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:36px 20px; text-align:center; }
   .empty-state .es-icon { width:48px; height:48px; border-radius:14px; background:#f2f3fd; display:flex; align-items:center; justify-content:center; color:#0058be; font-size:22px; margin-bottom:2px; }
   .empty-state h4 { font-size:14px; font-weight:600; color:#191b23; margin:0; }
@@ -174,18 +164,18 @@
   .empty-state .es-cta { display:inline-flex; align-items:center; gap:5px; background:#0058be; color:#fff; border:none; border-radius:8px; padding:7px 14px; font-size:12px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:background 0.12s; margin-top:4px; }
   .empty-state .es-cta:hover { background:#004fa6; }
 
-  /* ── ADDED: Insight cards ── */
+  /* ── Insight cards ── */
   .insight-row { display:flex; flex-direction:column; gap:3px; padding:8px 0; border-bottom:1px solid #f2f3fd; }
   .insight-row:last-child { border-bottom:none; }
   .insight-label { font-size:10px; font-weight:700; color:#727785; text-transform:uppercase; letter-spacing:0.06em; }
   .insight-value { font-size:13px; font-weight:600; color:#191b23; }
   .insight-sub { font-size:11px; color:#727785; }
 
-  /* ── ADDED: Loading skeleton ── */
+  /* ── Loading skeleton ── */
   .skeleton { background:linear-gradient(90deg,#f2f3fd 25%,#e6e7f2 50%,#f2f3fd 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-  /* ── ADDED: Status badge variants ── */
+  /* ── Status badge variants ── */
   .status-badge { display:inline-flex; align-items:center; gap:4px; border-radius:20px; padding:3px 10px; font-size:11px; font-weight:700; }
   .status-submitted { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
   .status-approved  { background:#d1fae5; color:#065f46; border:1px solid #6ee7b7; }
@@ -204,7 +194,6 @@
 </head>
 <body class="bg-background font-body-md text-on-surface selection:bg-primary">
 
-<!-- ═══════════════════ SIDEBAR (unchanged) ═══════════════════ -->
 <aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-surface-container-lowest flex flex-col z-50">
   <div class="flex items-center gap-3 px-5 py-5 border-b border-outline-variant">
     <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white flex-shrink-0">
@@ -234,91 +223,76 @@
   </div>
 </aside>
 
-<!-- ═══════════════════ HEADER ═══════════════════ -->
 <header class="fixed top-0 left-0 right-0 pl-[260px] z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
-  <div class="flex items-center h-[60px] px-6 w-full gap-4">
+  <div class="flex items-center justify-between h-[60px] w-full px-6 gap-4">
 
-    <!-- Search bar — fills available space, filter button on right end -->
-    <div class="flex-1 relative" id="searchWrapper">
-      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px] transition-colors z-10" id="searchIcon" style="pointer-events:none;">search</span>
+    <div class="flex items-center gap-3 w-full">
 
-      <!-- Active filter chip (shown inside input when filter is active) -->
-      <span class="active-filter-chip" id="activeFilterChip">
-        <span id="activeFilterChipText"></span>
-      </span>
+      <div class="relative flex-1" id="searchWrapper">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px] pointer-events-none transition-colors" id="searchIcon">search</span>
 
-      <input id="globalSearch"
-        class="w-full bg-surface-container-low border border-outline-variant rounded-full pl-10 pr-36 py-[9px] focus:ring-2 focus:ring-primary/20 focus:border-primary text-[13px] outline-none placeholder:text-on-surface-variant/60 transition-all"
-        placeholder="Search records, applications, or documents..."
-        type="text" autocomplete="off"/>
+        <span class="active-filter-chip" id="activeFilterChip" style="left:34px; top:50%; transform:translateY(-50%); display:none; position:absolute; align-items:center; gap:5px; background:#e8f0fd; border:1px solid #bfdbfe; border-radius:20px; padding:2px 8px 2px 6px; font-size:11px; font-weight:700; color:#0058be; pointer-events:none; white-space:nowrap; z-index:5;">
+          <span id="activeFilterChipText"></span>
+        </span>
 
-      <!-- Clear (×) button -->
-      <button id="searchClearBtn" class="search-clear-btn" onclick="clearSearch()" title="Clear">×</button>
+        <input id="globalSearch"
+          class="w-full h-[38px] bg-surface-container-lowest border border-outline-variant rounded-xl pl-10 pr-8 text-[13.5px] text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-on-surface-variant/60 shadow-sm"
+          placeholder="Search records, applications, or documents..."
+          type="text" autocomplete="off"/>
 
-      <!-- Filter button -->
-      <button class="filter-btn" id="filterBtn" onclick="toggleFilterDropdown(event)" title="Filter by category">
-        <i class="ti ti-adjustments-horizontal"></i>
-        <span id="filterBtnLabel">Filter</span>
-        <i class="ti ti-chevron-down" id="filterChevron" style="font-size:11px;transition:transform 0.2s;"></i>
-      </button>
+        <button id="searchClearBtn" class="absolute right-2 top-1/2 -translate-y-1/2 bg-surface-variant hover:bg-outline-variant text-on-surface-variant rounded-full w-[20px] h-[20px] hidden items-center justify-center text-[12px] transition-colors" onclick="clearSearch()" title="Clear search">×</button>
 
-      <!-- Filter dropdown -->
-      <div class="filter-dropdown" id="filterDropdown" style="display:none;">
-        <button class="filter-opt active" data-cat="" onclick="setFilter('',this)">
-          <span class="fo-dot" style="background:#e1e2ec;"></span>
-          All Categories
-          <span class="material-symbols-outlined fo-check">check</span>
+        <div id="searchDropdownMenu" class="absolute left-0 right-0 top-[calc(100%+6px)] bg-surface-container-lowest border border-outline-variant rounded-xl shadow-xl z-[100] hidden flex-col overflow-hidden max-h-[350px]">
+          <div id="searchDropdownContent" class="overflow-y-auto flex-1 p-2 space-y-1"></div>
+        </div>
+      </div>
+
+      <div class="relative shrink-0">
+        <button id="filterBtn" class="h-[38px] flex items-center gap-2 px-4 bg-surface-container-lowest border border-outline-variant rounded-xl text-[13px] font-semibold text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all shadow-sm" onclick="toggleFilterDropdown(event)" title="Filter by category">
+          <i class="ti ti-adjustments-horizontal text-[16px]"></i>
+          <span id="filterBtnLabel">All Categories</span>
+          <i class="ti ti-chevron-down text-[12px] transition-transform duration-200" id="filterChevron"></i>
         </button>
-        <div class="filter-divider"></div>
-        <button class="filter-opt" data-cat="copyright" onclick="setFilter('copyright',this)">
-          <span class="fo-dot" style="background:#0058be;"></span>
-          Copyright
-          <span class="material-symbols-outlined fo-check">check</span>
-        </button>
-        <button class="filter-opt" data-cat="patent" onclick="setFilter('patent',this)">
-          <span class="fo-dot" style="background:#6b38d4;"></span>
-          Patent
-          <span class="material-symbols-outlined fo-check">check</span>
-        </button>
-        <button class="filter-opt" data-cat="trademark" onclick="setFilter('trademark',this)">
-          <span class="fo-dot" style="background:#059669;"></span>
-          Trademark
-          <span class="material-symbols-outlined fo-check">check</span>
-        </button>
-        <button class="filter-opt" data-cat="utility-model" onclick="setFilter('utility-model',this)">
-          <span class="fo-dot" style="background:#924700;"></span>
-          Utility Model
-          <span class="material-symbols-outlined fo-check">check</span>
-        </button>
-        <button class="filter-opt" data-cat="industrial-design" onclick="setFilter('industrial-design',this)">
-          <span class="fo-dot" style="background:#dc2626;"></span>
-          Industrial Design
-          <span class="material-symbols-outlined fo-check">check</span>
-        </button>
+
+        <div class="filter-dropdown" id="filterDropdown" style="display:none; right:0; top:calc(100% + 6px); min-width:200px; position:absolute; z-index:100; background:#fff; border:1px solid #e1e2ec; border-radius:14px; padding:6px; box-shadow:0 10px 36px rgba(0,0,0,0.13); animation:filterDropIn 0.15s ease;">
+          <div style="padding:6px 10px 4px; font-size:10px; font-weight:700; color:#727785; text-transform:uppercase; letter-spacing:0.08em;">Filter by Category</div>
+          <button class="filter-opt active" data-cat="" onclick="setFilter('',this)">
+            <span class="fo-dot" style="background:#e1e2ec;"></span>All Categories<span class="material-symbols-outlined fo-check">check</span>
+          </button>
+          <div class="filter-divider"></div>
+          <button class="filter-opt" data-cat="copyright" onclick="setFilter('copyright',this)">
+            <span class="fo-dot" style="background:#0058be;"></span>Copyright<span class="material-symbols-outlined fo-check">check</span>
+          </button>
+          <button class="filter-opt" data-cat="patent" onclick="setFilter('patent',this)">
+            <span class="fo-dot" style="background:#6b38d4;"></span>Patent<span class="material-symbols-outlined fo-check">check</span>
+          </button>
+          <button class="filter-opt" data-cat="trademark" onclick="setFilter('trademark',this)">
+            <span class="fo-dot" style="background:#059669;"></span>Trademark<span class="material-symbols-outlined fo-check">check</span>
+          </button>
+          <button class="filter-opt" data-cat="utility-model" onclick="setFilter('utility-model',this)">
+            <span class="fo-dot" style="background:#924700;"></span>Utility Model<span class="material-symbols-outlined fo-check">check</span>
+          </button>
+          <button class="filter-opt" data-cat="industrial-design" onclick="setFilter('industrial-design',this)">
+            <span class="fo-dot" style="background:#dc2626;"></span>Industrial Design<span class="material-symbols-outlined fo-check">check</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Live clock -->
-    <div class="live-time-badge">
-      <i class="ti ti-clock"></i>
-      <span id="liveClockDisplay">--:-- --</span>
-    </div>
-
-    <!-- User info -->
-    <div class="flex items-center gap-3 pl-4 border-l border-outline-variant">
-      <div class="text-right hidden sm:block">
-        <p class="text-[13px] font-bold leading-tight">Admin User</p>
-        <p class="text-[10px] text-on-surface-variant font-semibold tracking-wider uppercase">Administrator</p>
+    <div class="flex items-center gap-4 shrink-0">
+      <div class="live-time-badge">
+        <i class="ti ti-clock"></i>
+        <span id="liveClockDisplay">--:-- --</span>
       </div>
-      <div class="w-9 h-9 rounded-full bg-secondary-fixed flex items-center justify-center overflow-hidden border-2 border-surface-container-highest flex-shrink-0">
-        <img alt="Admin User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtS5si_PKG24Rw7q2_w4G1LPgv4qZ0IDFv16X_sDHSIjKkiAvbUb3IIhf7YLBfH-7mHmFgZxUFTm08OHMNK-fJM39n7IMRjiQC0aLPn-iu_zUj9DSGvVH0k1zRrb2-Ff38yVqqujD62M_WBdGWAnjmztqqh7JKfgo6XB2iQiIhySjsanYZ0WHfMu-51IhL-6xuSrra_gVjemHRGltkhHYPY0qF7bPm_irHwKJB7jsWNq0A9KMjRrphtmHInv9EjHoOZ_dtL46pTA"/>
+      <div class="h-6 w-px bg-outline-variant"></div>
+      <div class="w-9 h-9 rounded-full bg-secondary-fixed flex items-center justify-center overflow-hidden border-2 border-surface-container-highest cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all shadow-sm">
+        <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtS5si_PKG24Rw7q2_w4G1LPgv4qZ0IDFv16X_sDHSIjKkiAvbUb3IIhf7YLBfH-7mHmFgZxUFTm08OHMNK-fJM39n7IMRjiQC0aLPn-iu_zUj9DSGvVH0k1zRrb2-Ff38yVqqujD62M_WBdGWAnjmztqqh7JKfgo6XB2iQiIhySjsanYZ0WHfMu-51IhL-6xuSrra_gVjemHRGltkhHYPY0qF7bPm_irHwKJB7jsWNq0A9KMjRrphtmHInv9EjHoOZ_dtL46pTA"/>
       </div>
     </div>
 
   </div>
 </header>
 
-<!-- ═══════════════════ MAIN ═══════════════════ -->
 <main id="mainContent" class="pl-[280px] pt-[76px] min-h-screen" style="opacity:0;transition:opacity 0.6s ease-out,transform 0.6s ease-out;transform:translateY(8px)">
   <div class="py-6 px-8 max-w-[1440px]">
 
@@ -337,16 +311,8 @@
       </div>
     </div>
 
-    <!-- Search results notification bar -->
-    <div id="searchResultsBar" class="search-results-bar">
-      <span class="material-symbols-outlined text-[16px]">search</span>
-      <span id="searchResultsText"></span>
-      <span class="clear-search-link" onclick="clearSearch()">Clear search</span>
-    </div>
-
     <div class="grid grid-cols-12 gap-6">
 
-      <!-- ── Copyright stat card — DB-driven ── -->
       <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col" style="border-left:3px solid #0058be;">
         <div class="flex flex-col justify-between h-full p-4 gap-2">
           <div class="flex justify-between items-center">
@@ -367,7 +333,6 @@
         </div>
       </div>
 
-      <!-- ── Patent stat card — DB-driven ── -->
       <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col" style="border-left:3px solid #6b38d4;">
         <div class="flex flex-col justify-between h-full p-4 gap-2">
           <div class="flex justify-between items-center">
@@ -388,7 +353,6 @@
         </div>
       </div>
 
-      <!-- ── Small stat cards — DB-driven ── -->
       <div class="col-span-12 md:col-span-6 lg:col-span-3 flex flex-col gap-2.5">
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant flex items-center gap-3 px-4 py-3 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 cursor-pointer flex-1">
           <div class="p-1.5 rounded-lg flex-shrink-0" style="background:#d1fae5;"><span class="material-symbols-outlined text-[16px]" style="color:#059669;font-variation-settings:'FILL' 1;">verified_user</span></div>
@@ -422,7 +386,6 @@
         </div>
       </div>
 
-      <!-- ── Calendar (unchanged structure) ── -->
       <div class="col-span-12 lg:col-span-3 bg-surface-container-lowest border-2 border-outline-variant p-4 rounded-xl flex flex-col relative overflow-visible hover:-translate-y-1 hover:shadow-lg transition-all duration-300 shadow-sm">
         <div class="relative z-10 flex flex-col h-full">
           <div class="cal-header">
@@ -452,7 +415,6 @@
         </div>
       </div>
 
-      <!-- ── Line chart — DB-driven ── -->
       <div class="col-span-12 glass-panel rounded-2xl p-6 shadow-sm lg:col-span-6 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
         <div class="flex justify-between items-start mb-3">
           <div>
@@ -466,7 +428,6 @@
           </div>
         </div>
         <div class="flex flex-wrap gap-4 mb-4" id="lineLegend"></div>
-        <!-- Empty / loading / chart states -->
         <div id="lineChartLoading" style="position:relative;width:100%;height:200px;" class="flex items-center justify-center">
           <div class="skeleton w-full h-full rounded-xl"></div>
         </div>
@@ -489,7 +450,6 @@
         <div id="lineChartWrap" style="position:relative;width:100%;height:200px;display:none;"><canvas id="lineChart"></canvas></div>
       </div>
 
-      <!-- ── Pie chart — DB-driven ── -->
       <div class="col-span-12 lg:col-span-6 glass-panel rounded-2xl p-6 shadow-sm flex flex-col hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
         <div class="flex justify-between items-center mb-5">
           <div>
@@ -515,7 +475,6 @@
         </div>
       </div>
 
-      <!-- ── ADDED: Insights panel — DB-driven ── -->
       <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
         <div class="flex items-center gap-2 mb-4">
           <div class="p-1.5 rounded-lg" style="background:#e8f0fd;"><span class="material-symbols-outlined text-[18px]" style="color:#0058be;font-variation-settings:'FILL' 1;">insights</span></div>
@@ -537,7 +496,6 @@
         </div>
       </div>
 
-      <!-- ── ADDED: Recent submissions — DB-driven ── -->
       <div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-2">
@@ -562,11 +520,9 @@
         <div id="recentList" style="display:none;" class="space-y-2"></div>
       </div>
 
-    </div><!-- /grid -->
-  </div>
+    </div></div>
 </main>
 
-<!-- ═══════════════════ NOTE MODAL (unchanged) ═══════════════════ -->
 <div class="note-overlay" id="noteOverlay" role="dialog" aria-modal="true">
   <div class="note-modal">
     <div class="note-modal-header">
@@ -590,7 +546,6 @@
   </div>
 </div>
 
-<!-- ═══════════════════ CATEGORY MODAL — enlarged ═══════════════════ -->
 <div id="category-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
   <div class="relative w-full max-w-3xl rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col" style="animation:modalIn 0.22s ease;">
     <div class="px-8 py-6 border-b border-slate-100 flex items-start justify-between gap-4">
@@ -614,7 +569,6 @@
   </div>
 </div>
 
-<!-- ═══════════════════ RESEARCH MODAL ═══════════════════ -->
 <div id="research-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
   <div class="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
     <div class="px-7 py-5 border-b border-slate-200 flex items-start justify-between gap-4">
@@ -627,7 +581,6 @@
         <h2 class="text-[17px] font-bold text-on-surface">New Research Submission</h2>
         <p class="text-[12px] text-on-surface-variant mt-0.5">Fill in the details below. Status is pre-set and cannot be changed.</p>
       </div>
-      <!-- FIX: X button hides modal WITHOUT resetting form data -->
       <button onclick="hideResearchModal()" class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline flex-shrink-0">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
@@ -644,7 +597,6 @@
         </div>
         <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">College</label>
-          <!-- FIX: clean placeholder, added College of Education -->
           <select id="rm-college" onchange="updateDeptOptions()" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all appearance-none">
             <option value="" disabled selected>Select College</option>
             <option value="College of Computer Studies">College of Computer Studies</option>
@@ -692,7 +644,6 @@
     <div class="px-7 py-5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3">
       <p id="rm-error" class="text-[12px] text-red-500 hidden"></p>
       <div class="flex gap-3 ml-auto">
-        <!-- FIX: Cancel hides but preserves data -->
         <button onclick="hideResearchModal()" type="button" class="px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant border border-slate-200 rounded-xl hover:bg-slate-100 transition-all">Cancel</button>
         <button onclick="reviewResearchEntry()" type="button" class="px-6 py-2.5 text-[13px] font-bold text-white bg-primary rounded-xl hover:bg-blue-700 hover:-translate-y-0.5 transition-all">Review & Submit</button>
       </div>
@@ -700,7 +651,6 @@
   </div>
 </div>
 
-<!-- ═══════════════════ REVIEW MODAL (unchanged) ═══════════════════ -->
 <div id="review-modal" class="fixed inset-0 z-[65] hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-sm">
   <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col" style="animation:modalIn 0.22s ease;">
     <div class="px-6 pt-6 pb-4 border-b border-slate-100">
@@ -728,7 +678,6 @@
       </div>
     </div>
     <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex gap-3 justify-end">
-      <!-- FIX: Back restores form with preserved data -->
       <button onclick="backToResearchFromReview()" type="button" class="px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant border border-slate-200 rounded-xl hover:bg-slate-100 transition-all flex items-center gap-1.5">
         <span class="material-symbols-outlined text-[15px]">arrow_back</span> Back
       </button>
@@ -739,7 +688,6 @@
   </div>
 </div>
 
-<!-- ═══════════════════ SUCCESS MODAL (unchanged) ═══════════════════ -->
 <div id="success-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
   <div class="w-full max-w-sm rounded-2xl bg-white shadow-2xl p-8 text-center" style="animation:modalIn 0.22s ease;">
     <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
@@ -757,7 +705,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 /* ═══════════════════════════════════════════
-   CONFIG — change API_BASE to your server URL
+   CONFIG
 ═══════════════════════════════════════════ */
 const API_BASE = 'http://localhost:5000/api';
 
@@ -771,7 +719,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCategoryCards();
   startLiveClock();
   initSearch();
-  loadDashboardData();   // single entry-point: fetches all DB data
+  loadDashboardData();   
 });
 
 /* ═══════════════════════════════════════════
@@ -790,13 +738,18 @@ function startLiveClock() {
 }
 
 /* ═══════════════════════════════════════════
-   SEARCH — functional real-time filter
-   Searches across all fetched records in memory
+   SEARCH
 ═══════════════════════════════════════════ */
-let _allRecords = [];   // populated from DB on load
-let _activeFilter = ''; // active category filter ('' = all)
+let _allRecords = [];   
+let _activeFilter = ''; 
+const CATEGORY_ROUTES={
+  'copyright':'copyright.html',
+  'patent':'patent.html',
+  'trademark':'trademark.html',
+  'utility-model':'utility-model.html',
+  'industrial-design':'industrial-design.html'
+};
 
-/* ── Filter dropdown ── */
 function toggleFilterDropdown(e) {
   e.stopPropagation();
   const dd = document.getElementById('filterDropdown');
@@ -806,12 +759,18 @@ function toggleFilterDropdown(e) {
   chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
 }
 
-// Close dropdown when clicking outside
 document.addEventListener('click', function(e) {
   const wrapper = document.getElementById('searchWrapper');
-  if (wrapper && !wrapper.contains(e.target)) {
+  const filterBtnContainer = document.getElementById('filterBtn').parentElement;
+  
+  if (filterBtnContainer && !filterBtnContainer.contains(e.target)) {
     const dd = document.getElementById('filterDropdown');
     if (dd) { dd.style.display = 'none'; document.getElementById('filterChevron').style.transform = ''; }
+  }
+  
+  if (wrapper && !wrapper.contains(e.target)) {
+    const searchDd = document.getElementById('searchDropdownMenu');
+    if (searchDd) { searchDd.classList.add('hidden'); searchDd.classList.remove('flex'); }
   }
 });
 
@@ -829,42 +788,42 @@ const FILTER_LABELS = {
   'utility-model':     'Utility Model',
   'industrial-design': 'Industrial Design',
 };
+const FILTER_SHORT = {
+  'copyright':         'Copyright',
+  'patent':            'Patent',
+  'trademark':         'Trademark',
+  'utility-model':     'Utility Model',
+  'industrial-design': 'Ind. Design',
+};
 
 function setFilter(cat, el) {
   _activeFilter = cat;
-
-  // Update dropdown option active states
   document.querySelectorAll('.filter-opt').forEach(o => o.classList.toggle('active', o.dataset.cat === cat));
-
-  // Update filter button appearance
-  const btn = document.getElementById('filterBtn');
-  const label = document.getElementById('filterBtnLabel');
-  const chip = document.getElementById('activeFilterChip');
+  const btn      = document.getElementById('filterBtn');
+  const label    = document.getElementById('filterBtnLabel');
+  const chip     = document.getElementById('activeFilterChip');
   const chipText = document.getElementById('activeFilterChipText');
-  const input = document.getElementById('globalSearch');
+  const input    = document.getElementById('globalSearch');
 
   if (cat) {
-    btn.classList.add('active');
-    label.textContent = FILTER_LABELS[cat];
+    btn.classList.add('active', 'text-primary');
+    label.textContent = FILTER_SHORT[cat];
     chip.style.display = 'flex';
-    chip.style.borderColor = FILTER_COLORS[cat] + '66';
-    chip.style.background = FILTER_COLORS[cat] + '18';
-    chip.style.color = FILTER_COLORS[cat];
-    chipText.textContent = FILTER_LABELS[cat];
-    // Indent input text so it doesn't overlap chip
-    input.style.paddingLeft = '148px';
+    chip.style.background   = FILTER_COLORS[cat] + '18';
+    chip.style.borderColor  = FILTER_COLORS[cat] + '66';
+    chip.style.color        = FILTER_COLORS[cat];
+    chipText.textContent    = FILTER_LABELS[cat];
+    input.style.paddingLeft = '130px';
+    input.placeholder       = `Search in ${FILTER_LABELS[cat]}...`;
   } else {
-    btn.classList.remove('active');
-    label.textContent = 'Filter';
-    chip.style.display = 'none';
-    input.style.paddingLeft = '2.5rem'; // back to pl-10
+    btn.classList.remove('active', 'text-primary');
+    label.textContent       = 'All Categories';
+    chip.style.display      = 'none';
+    input.style.paddingLeft = '2.5rem'; 
+    input.placeholder       = 'Search records, applications, or documents...';
   }
-
-  // Close dropdown
   document.getElementById('filterDropdown').style.display = 'none';
   document.getElementById('filterChevron').style.transform = '';
-
-  // Re-run search with new filter
   runSearch();
 }
 
@@ -873,6 +832,7 @@ function initSearch() {
   input.addEventListener('input', runSearch);
   input.addEventListener('focus', () => {
     document.getElementById('searchIcon').style.color = '#0058be';
+    if (input.value.trim()) runSearch(); 
   });
   input.addEventListener('blur', () => {
     document.getElementById('searchIcon').style.color = '';
@@ -882,59 +842,84 @@ function initSearch() {
 function runSearch() {
   const input = document.getElementById('globalSearch');
   const clearBtn = document.getElementById('searchClearBtn');
-  const bar = document.getElementById('searchResultsBar');
-  const txt = document.getElementById('searchResultsText');
+  const dropdownMenu = document.getElementById('searchDropdownMenu');
+  const dropdownContent = document.getElementById('searchDropdownContent');
   const q = input.value.trim().toLowerCase();
 
   clearBtn.style.display = q ? 'flex' : 'none';
 
-  // Apply category filter first
   let pool = _activeFilter
     ? _allRecords.filter(r => (r.category||'').toLowerCase().replace(/\s+/g,'-') === _activeFilter)
     : _allRecords;
 
-  // Then apply text search
-  const hits = q
-    ? pool.filter(r =>
-        (r.researchTitle||r.title||'').toLowerCase().includes(q) ||
-        (r.referenceId||'').toLowerCase().includes(q) ||
-        (r.department||'').toLowerCase().includes(q) ||
-        (r.college||'').toLowerCase().includes(q) ||
-        (r.status||'').toLowerCase().includes(q) ||
-        (Array.isArray(r.authors) ? r.authors.join(' ').toLowerCase().includes(q) : false)
-      )
-    : pool;
-
-  // Show results bar only when there's a query or active filter
-  if (!q && !_activeFilter) {
-    bar.style.display = 'none';
+  if (!q) {
+    dropdownMenu.classList.add('hidden');
+    dropdownMenu.classList.remove('flex');
     return;
   }
 
-  bar.style.display = 'flex';
-  const filterLabel = _activeFilter ? ` in ${FILTER_LABELS[_activeFilter]}` : '';
-  const queryLabel  = q ? ` matching "${input.value}"` : '';
-  txt.textContent = hits.length
-    ? `${hits.length} record${hits.length !== 1 ? 's' : ''}${filterLabel}${queryLabel}`
-    : `No records found${filterLabel}${queryLabel}`;
+  const hits = pool.filter(r =>
+    (r.researchTitle||r.title||'').toLowerCase().includes(q) ||
+    (r.referenceId||'').toLowerCase().includes(q) ||
+    (r.department||'').toLowerCase().includes(q) ||
+    (r.college||'').toLowerCase().includes(q) ||
+    (r.status||'').toLowerCase().includes(q) ||
+    (Array.isArray(r.authors) ? r.authors.join(' ').toLowerCase().includes(q) : false)
+  );
+
+  dropdownMenu.classList.remove('hidden');
+  dropdownMenu.classList.add('flex');
+  dropdownContent.innerHTML = '';
+
+  if (hits.length === 0) {
+    dropdownContent.innerHTML = `<div class="px-4 py-3 text-[13px] text-on-surface-variant text-center">No records found matching "${input.value}"</div>`;
+    return;
+  }
+
+  const displayHits = hits.slice(0, 10);
+
+  displayHits.forEach(r => {
+    const title = r.researchTitle || r.title || '(Untitled)';
+    const rawCat = (r.category||'Unknown');
+    const catFormatted = rawCat.toLowerCase().trim().replace(/\s+/g,'-');
+    const catLabel = rawCat.replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase());
+    
+    const item = document.createElement('div');
+    item.className = 'flex flex-col px-3 py-2 hover:bg-surface-container-low rounded-lg cursor-pointer transition-colors';
+    item.innerHTML = `
+      <div class="flex justify-between items-center mb-0.5">
+        <span class="text-[13px] font-semibold text-on-surface truncate">${title}</span>
+        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-surface-container-highest text-primary whitespace-nowrap ml-2">${catLabel}</span>
+      </div>
+      <span class="text-[11px] text-on-surface-variant truncate">${r.referenceId || 'No ID'} • ${r.college || 'No College'}</span>
+    `;
+    
+    // REDIRECT AND HIGHLIGHT FROM SEARCH
+    item.addEventListener('click', () => {
+      dropdownMenu.classList.add('hidden');
+      sessionStorage.setItem('highlightResearchId', r.referenceId);
+      window.location.href = CATEGORY_ROUTES[catFormatted] || 'copyright.html';
+    });
+
+    dropdownContent.appendChild(item);
+  });
+
+  if (hits.length > 10) {
+    const more = document.createElement('div');
+    more.className = 'px-3 py-2 text-[11px] font-semibold text-primary text-center border-t border-outline-variant mt-1';
+    more.textContent = `+ ${hits.length - 10} more results`;
+    dropdownContent.appendChild(more);
+  }
 }
 
 function clearSearch() {
   const input = document.getElementById('globalSearch');
   input.value = '';
-  document.getElementById('searchClearBtn').style.display = 'none';
-  // Only hide results bar if no active filter either
-  if (!_activeFilter) {
-    document.getElementById('searchResultsBar').style.display = 'none';
-  } else {
-    runSearch(); // re-run to show filter-only results
-  }
+  runSearch(); 
 }
 
 /* ═══════════════════════════════════════════
-   DB LOADER — single fetch fan-out
-   Calls /api/dashboard/stats (aggregated) and
-   /api/research (recent list). Falls back gracefully.
+   DB LOADER 
 ═══════════════════════════════════════════ */
 let lineChartInstance = null;
 let pieChartInstance  = null;
@@ -944,9 +929,6 @@ let lastSubmittedCategory = null;
 async function loadDashboardData() {
   showSkeletons();
   try {
-    // Primary strategy: fetch all records from the existing /api/research endpoint
-    // and aggregate client-side. This works with your original backend without
-    // needing a /dashboard/stats endpoint.
     const allRes = await fetch(`${API_BASE}/research`);
     if (!allRes.ok) throw new Error(`Server returned ${allRes.status}`);
 
@@ -954,10 +936,8 @@ async function loadDashboardData() {
     _allRecords   = Array.isArray(allRaw) ? allRaw : (allRaw.data || allRaw.records || []);
 
     const stats   = aggregateClientSide(_allRecords);
-    // Cache for period-button re-renders
     window._lastStats = stats;
 
-    // Most-recent 5 for the recent list (sorted newest first by date)
     const recent = [..._allRecords]
       .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
       .slice(0, 5);
@@ -974,7 +954,6 @@ async function loadDashboardData() {
   }
 }
 
-/* Client-side aggregation fallback (when no /dashboard/stats endpoint) */
 function aggregateClientSide(records) {
   const catCounts = { copyright:0, patent:0, trademark:0, 'utility-model':0, 'industrial-design':0 };
   const collegeCounts = {};
@@ -987,18 +966,13 @@ function aggregateClientSide(records) {
   };
 
   records.forEach(r => {
-    // Normalise category: handle spaces or dashes, any casing
     const cat = (r.category||'').toLowerCase().trim().replace(/\s+/g,'-');
     if (catCounts[cat] !== undefined) catCounts[cat]++;
 
-    // College: prefer explicit college field, else extract from department string
-    const college = r.college
-      || (r.department ? r.department.split(' — ')[0].split(' -- ')[0] : '')
-      || 'Other';
+    const college = r.college || (r.department ? r.department.split(' — ')[0].split(' -- ')[0] : '') || 'Other';
     const collegeKey = college.trim() || 'Other';
     collegeCounts[collegeKey] = (collegeCounts[collegeKey] || 0) + 1;
 
-    // Monthly trend (current year only)
     const rawDate = r.date || r.dateOfApplication || r.createdAt;
     if (rawDate) {
       const d = new Date(rawDate);
@@ -1020,7 +994,6 @@ function aggregateClientSide(records) {
 }
 
 function showSkeletons() {
-  // stat cards already have skeletons in HTML, charts show loading states
   show('lineChartLoading'); hide('lineChartEmpty'); hide('lineChartError'); hide('lineChartWrap');
   show('pieChartLoading');  hide('pieChartEmpty');  hide('pieChartWrap');
   show('insightsLoading');  hide('insightsContent'); hide('insightsEmpty');
@@ -1043,7 +1016,6 @@ function renderStatCards(stats) {
 function setStatCard(id, value) {
   const el = document.getElementById(`stat-${id}`);
   if (!el) return;
-  // Replace any skeleton markup with the real number
   el.innerHTML = value.toLocaleString();
 }
 
@@ -1065,7 +1037,6 @@ function renderLineChart(stats, period) {
     return;
   }
 
-  // Build data arrays for the period
   let labels, data;
   if (period === 'monthly') {
     labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1076,13 +1047,11 @@ function renderLineChart(stats, period) {
       stats.monthly['utility-model'] || new Array(12).fill(0)
     ];
   } else if (period === 'weekly') {
-    // weekly: use last 12 weeks (server should provide; fallback zeros)
     labels = Array.from({length:12},(_,i)=>`Wk ${i+1}`);
     data = (stats.weekly
       ? [stats.weekly.copyright,stats.weekly.patent,stats.weekly.trademark,stats.weekly['utility-model']]
       : [new Array(12).fill(0),new Array(12).fill(0),new Array(12).fill(0),new Array(12).fill(0)]);
   } else {
-    // yearly: last 6 years
     const yr = new Date().getFullYear();
     labels = Array.from({length:6},(_,i)=>String(yr-5+i));
     data = (stats.yearly
@@ -1131,7 +1100,6 @@ document.querySelectorAll('.chart-filter-btn').forEach(btn => {
     document.querySelectorAll('.chart-filter-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     currentPeriod = btn.dataset.period;
-    // Re-render with cached data
     if (window._lastStats) renderLineChart(window._lastStats, currentPeriod);
   });
 });
@@ -1184,18 +1152,14 @@ function renderInsights(stats) {
   const total = Object.values(c).reduce((a,b)=>a+b,0);
   if (total === 0) { show('insightsEmpty'); return; }
 
-  // Most active college
   let topCollege = '—';
   if (stats.college) {
     const sorted = Object.entries(stats.college).sort((a,b)=>b[1]-a[1]);
     if (sorted.length) topCollege = sorted[0][0];
   }
 
-  // Most active category
   const topCatEntry = Object.entries(c).sort((a,b)=>b[1]-a[1])[0];
   const topCat = topCatEntry ? `${topCatEntry[0].replace(/-/g,' ')} (${topCatEntry[1]})` : '—';
-
-  // This month
   const thisMonth = stats.recentMonth || 0;
 
   const rows = [
@@ -1239,7 +1203,6 @@ function renderRecentList(records) {
     const cat   = (r.category||'').toLowerCase().trim().replace(/\s+/g,'-');
     const color = CAT_COLORS[cat] || '#424754';
     const bg    = CAT_BG[cat]    || '#f2f3fd';
-    // Handle both field names from original schema
     const title = r.researchTitle || r.title || '(Untitled)';
     const catLabel = (r.category||'Unknown').replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase());
     const rawDate = r.date || r.dateOfApplication || r.createdAt;
@@ -1261,6 +1224,13 @@ function renderRecentList(records) {
         <p class="text-[11px] text-on-surface-variant truncate">${authors} · ${dateStr}</p>
       </div>
       <span class="text-[10px] font-bold px-2 py-1 rounded-full flex-shrink-0 whitespace-nowrap" style="background:${bg};color:${color};">${catLabel}</span>`;
+    
+    // REDIRECT AND HIGHLIGHT FROM RECENT SUBMISSIONS
+    item.addEventListener('click', () => {
+      sessionStorage.setItem('highlightResearchId', r.referenceId);
+      window.location.href = CATEGORY_ROUTES[cat] || 'copyright.html';
+    });
+      
     list.appendChild(item);
   });
 
@@ -1275,7 +1245,6 @@ function showDashboardError(msg) {
   show('lineChartError');
   const msgEl = document.getElementById('lineChartErrorMsg');
   if (msgEl) msgEl.textContent = msg || 'Unable to reach the server.';
-  // Stat cards: show dashes
   ['copyright','patent','trademark','utility','design'].forEach(id => {
     const el = document.getElementById(`stat-${id}`);
     if (el) el.textContent = '—';
@@ -1286,7 +1255,7 @@ function showDashboardError(msg) {
 }
 
 /* ═══════════════════════════════════════════
-   CALENDAR (unchanged logic)
+   CALENDAR 
 ═══════════════════════════════════════════ */
 const calNotes = {};
 const today = new Date();
@@ -1386,27 +1355,19 @@ function backToCategory(){hideResearchModal();openCategoryModal();}
 
 /* ═══════════════════════════════════════════
    RESEARCH FORM
-   KEY FIX: separate "fresh open" vs "restore"
-   hideResearchModal() — hides WITHOUT clearing
-   openResearchFormFresh() — resets and opens
-   showResearchModal() — shows without clearing (restores)
 ═══════════════════════════════════════════ */
 let pendingSubmission=null;
-const CATEGORY_ROUTES={copyright:'copyright.html',patent:'patent.html',trademark:'trademark.html','utility-model':'utility-model.html','industrial-design':'industrial-design.html'};
 
-// Hide modal only — data stays in fields
 function hideResearchModal(){
   const m=document.getElementById('research-modal');
   m.classList.add('hidden'); m.classList.remove('flex');
 }
 
-// Show modal without touching fields (restore state)
 function showResearchModal(){
   const m=document.getElementById('research-modal');
   m.classList.remove('hidden'); m.classList.add('flex');
 }
 
-// Full reset + open (only called on NEW submission)
 function openResearchFormFresh(){
   const cat=CATEGORIES.find(c=>c.id===selectedCategory);
   const badge=document.getElementById('rm-cat-badge');
@@ -1426,7 +1387,6 @@ function openResearchFormFresh(){
   showResearchModal();
 }
 
-// Hard close — clears everything (only on explicit cancel of entire flow)
 function closeAllResearchModals(){
   closeCategoryModal();
   hideResearchModal();
@@ -1478,23 +1438,31 @@ function reviewResearchEntry(){
   document.getElementById('rv-date').textContent=new Date(yr,mo-1,dy).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
   const authorsEl=document.getElementById('rv-authors');authorsEl.innerHTML='';
   authors.forEach(a=>{const chip=document.createElement('span');chip.style.cssText='display:inline-flex;align-items:center;gap:4px;background:#f2f3fd;color:#191b23;border:1px solid #e1e2ec;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;margin-right:4px;margin-bottom:4px;';chip.innerHTML=`<span class="material-symbols-outlined" style="font-size:12px;color:#6b38d4;font-variation-settings:'FILL' 1;">person</span>${a}`;authorsEl.appendChild(chip);});
-  // Hide form (preserve data), show review
   hideResearchModal();
   const rm=document.getElementById('review-modal');rm.classList.remove('hidden');rm.classList.add('flex');
 }
 
-// FIX: Back from review restores form with all data intact
 function backToResearchFromReview(){
   document.getElementById('review-modal').classList.add('hidden');
   document.getElementById('review-modal').classList.remove('flex');
-  showResearchModal();  // re-show without resetting
+  showResearchModal();  
 }
 
-// Legacy alias kept for any other call sites
 function backToResearchModal(){backToResearchFromReview();}
 
+let isSubmitting = false;
+
 async function confirmResearchEntry(){
-  if(!pendingSubmission)return;
+  if(!pendingSubmission || isSubmitting) return; 
+  
+  isSubmitting = true;
+  const confirmBtn = document.querySelector('#review-modal button[onclick="confirmResearchEntry()"]');
+  const originalBtnContent = confirmBtn.innerHTML;
+  
+  confirmBtn.disabled = true;
+  confirmBtn.classList.add('opacity-50', 'cursor-not-allowed');
+  confirmBtn.innerHTML = `<span class="material-symbols-outlined text-[15px] animate-spin" style="animation: spin 1s linear infinite;">progress_activity</span> Saving...`;
+
   lastSubmittedCategory=pendingSubmission.category;
   try{
     const response=await fetch(`${API_BASE}/research`,{
@@ -1502,8 +1470,8 @@ async function confirmResearchEntry(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         category:      pendingSubmission.category,
-        researchTitle: pendingSubmission.title,      // original field name
-        referenceId:   pendingSubmission.id,         // original field name
+        researchTitle: pendingSubmission.title,      
+        referenceId:   pendingSubmission.id,         
         college:       pendingSubmission.college,
         department:    pendingSubmission.department,
         authors:       pendingSubmission.authors,
@@ -1515,7 +1483,6 @@ async function confirmResearchEntry(){
     const data=await response.json();
     console.log('Saved:',data);
 
-    // Close review, show success
     document.getElementById('review-modal').classList.add('hidden');
     document.getElementById('review-modal').classList.remove('flex');
     const sm=document.getElementById('success-modal');
@@ -1523,17 +1490,22 @@ async function confirmResearchEntry(){
     window._successTimer=setTimeout(closeSuccessModal,4000);
     pendingSubmission=null;
 
-    // Refresh all dashboard data so stats/charts/recent update immediately
     loadDashboardData();
 
   }catch(error){
     console.error('Save error:',error);
-    // Show error inline in the review modal instead of alert
     const errDiv = document.getElementById('review-modal').querySelector('.bg-slate-50');
     if(errDiv){
       let errMsg = errDiv.querySelector('#save-error-msg');
       if(!errMsg){ errMsg=document.createElement('p'); errMsg.id='save-error-msg'; errMsg.className='text-[12px] text-red-500 font-semibold mr-auto flex items-center gap-1'; errDiv.prepend(errMsg); }
       errMsg.innerHTML=`<span class="material-symbols-outlined text-[14px]">error</span>Failed to save. Check your connection and retry.`;
+    }
+  } finally {
+    isSubmitting = false;
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      confirmBtn.innerHTML = originalBtnContent;
     }
   }
 }
@@ -1543,7 +1515,6 @@ function viewResearch(){const page=CATEGORY_ROUTES[lastSubmittedCategory]||'copy
 
 /* ═══════════════════════════════════════════
    COLLEGE → DEPARTMENT CASCADE
-   FIX: added College of Education, clean placeholder
 ═══════════════════════════════════════════ */
 const COLLEGE_DEPTS={
   'College of Computer Studies':['Information Technology','Information System','Computer Science'],
@@ -1563,7 +1534,7 @@ function updateDeptOptions(){
 }
 
 /* ═══════════════════════════════════════════
-   ESC KEY — closes modals without clearing data
+   ESC KEY 
 ═══════════════════════════════════════════ */
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape')return;

@@ -42,7 +42,6 @@
   .nav-item.active { background-color: #e8f0fd; color: #0058be; font-weight: 500; transform: none; }
   .nav-item.active i { color: #0058be; }
   .nav-item i { font-size: 18px; width: 20px; text-align: center; flex-shrink: 0; }
-
   .nav-section-label {
     font-size: 10px; font-weight: 600; color: #727785;
     text-transform: uppercase; letter-spacing: 0.08em; padding: 0 12px; margin: 12px 0 4px;
@@ -118,10 +117,70 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .page-fade { animation: fadeIn 0.4s ease both; }
   @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Modal entrance animation */
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)     scale(1);    }
+  }
+  .modal-enter { animation: modalIn 0.22s cubic-bezier(0.34,1.3,0.64,1) both; }
+
+  /* Defect card resolved animation */
+  @keyframes resolvedPop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.025); }
+    100% { transform: scale(1); }
+  }
+  .resolved-pop { animation: resolvedPop 0.35s ease both; }
+
+  /* Checkmark draw animation */
+  @keyframes checkDraw {
+    from { stroke-dashoffset: 50; }
+    to   { stroke-dashoffset: 0;  }
+  }
+  .check-draw { stroke-dasharray: 50; stroke-dashoffset: 50; animation: checkDraw 0.4s 0.1s ease forwards; }
+
+  /* ── Alert card dual-state ── */
+  .alert-card-calm  { background: linear-gradient(135deg,#f0fdf4,#ffffff); border-color:#bbf7d0; }
+  .alert-card-urgent { background: linear-gradient(135deg,#fff1f2,#fff5f5); border-color:#fda4af; }
+
+  .alert-icon-calm   { background:#dcfce7; color:#16a34a; }
+  .alert-icon-urgent { background:#ffe4e6; color:#e11d48; }
+
+  .alert-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px 3px 7px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; border-width: 1px; border-style: solid;
+    cursor: pointer; transition: filter 0.15s, transform 0.12s; white-space: nowrap;
+  }
+  .alert-chip:hover { filter: brightness(0.94); transform: translateY(-1px); }
+  .alert-chip:active { transform: translateY(0); }
+  .chip-ser  { background:#fff1f2; color:#be185d; border-color:#fecdd3; }
+  .chip-fd   { background:#fef2f2; color:#b91c1c; border-color:#fecaca; }
+  .chip-calm { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; cursor:default; pointer-events:none; }
+
+  @keyframes urgentPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(225,29,72,0); }
+    50%     { box-shadow: 0 0 0 6px rgba(225,29,72,0.12); }
+  }
+  .alert-card-urgent { animation: urgentPulse 2.4s ease-in-out infinite; }
+
+  /* Unsaved dot indicator */
+  .unsaved-dot {
+    display: inline-block; width: 7px; height: 7px;
+    background: #f59e0b; border-radius: 50%;
+    margin-left: 6px; vertical-align: middle;
+    animation: pulse-dot 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; transform: scale(1);    }
+    50%     { opacity: 0.5; transform: scale(0.8); }
+  }
 </style>
 </head>
 <body class="bg-surface text-on-surface font-sans antialiased flex min-h-screen">
 
+<!-- SIDEBAR -->
 <aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-white flex flex-col z-50">
   <div class="flex items-center gap-3 px-5 py-5 border-b border-outline-variant">
     <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white flex-shrink-0">
@@ -145,13 +204,14 @@
     <a class="nav-item" href="event.html"><i class="ti ti-calendar-event"></i><span>Event</span></a>
   </nav>
   <div class="p-4 border-t border-outline-variant">
-    <button onclick="window.location.href='index.html'"
+    <button onclick="handleNavAway('index.html')"
       class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all duration-200">
       <i class="ti ti-logout" style="font-size:16px;"></i><span>Log Out</span>
     </button>
   </div>
 </aside>
 
+<!-- MAIN -->
 <main class="flex-1 ml-[260px] min-h-screen flex flex-col bg-surface page-fade">
   <header class="h-[60px] flex items-center justify-end px-8 sticky top-0 bg-white/80 backdrop-blur-md z-40 border-b border-outline-variant">
     <div class="flex items-center gap-4">
@@ -176,7 +236,10 @@
   <div class="p-8 space-y-7 flex-1">
     <div><h2 class="text-2xl font-bold text-on-surface">Patent Registry</h2></div>
 
+    <!-- Stat Cards -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+      <!-- Total Submitted -->
       <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm">
         <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
           <i class="ti ti-file-description text-blue-600" style="font-size:20px;"></i>
@@ -187,6 +250,8 @@
           <p class="text-[11px] text-outline font-medium mt-1">All records</p>
         </div>
       </div>
+
+      <!-- Total Approved -->
       <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm">
         <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
           <i class="ti ti-circle-check text-amber-500" style="font-size:20px;"></i>
@@ -197,6 +262,8 @@
           <p class="text-[11px] text-outline font-medium mt-1">Status: Approved</p>
         </div>
       </div>
+
+      <!-- Total Pending -->
       <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm">
         <div class="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
           <i class="ti ti-clock-pause text-orange-500" style="font-size:20px;"></i>
@@ -209,21 +276,41 @@
           </p>
         </div>
       </div>
-      <div onclick="openUrgentModal()" title="Click to view all urgent requests" 
-        class="stat-card cursor-pointer hover:border-pink-300 hover:shadow-md transition-all bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm bg-gradient-to-br from-pink-50 to-white">
-        <div class="w-11 h-11 rounded-xl bg-pink-100 flex items-center justify-center flex-shrink-0">
-          <i class="ti ti-alert-triangle text-pink-600" style="font-size:20px;"></i>
+
+      <!-- ── DUAL-STATE ALERT CARD ── -->
+      <div id="alert-card"
+        class="stat-card rounded-2xl border-2 p-5 flex flex-col gap-3 shadow-sm transition-all duration-500 alert-card-calm">
+        <!-- Top row: icon + count -->
+        <div class="flex items-center gap-4">
+          <div id="alert-icon" class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-500 alert-icon-calm">
+            <i id="alert-icon-glyph" class="ti ti-shield-check" style="font-size:20px;"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p id="alert-label" class="text-[10px] font-bold uppercase tracking-widest text-emerald-700 transition-colors duration-500">All Clear</p>
+            <p id="stat-urgent" class="text-3xl font-bold text-on-surface mt-0.5 leading-none">—</p>
+          </div>
         </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-[10px] font-bold text-pink-700 uppercase tracking-widest">Urgent Requests</p>
-          <p class="text-3xl font-bold text-on-surface mt-0.5 leading-none" id="stat-urgent">—</p>
-          <p class="text-[11px] text-pink-600 font-semibold mt-1 flex items-center gap-1">
-            <i class="ti ti-bell-ringing" style="font-size:12px;"></i>Action Needed Now
-          </p>
+        <!-- Bottom row: chips (hidden when calm, shown when urgent) -->
+        <div id="alert-chips" class="hidden flex flex-wrap gap-2 pt-1 border-t border-rose-100">
+          <button id="chip-ser" class="alert-chip chip-ser" onclick="quickFilter('ser')" title="Filter table to SER deadlines">
+            <i class="ti ti-clock-exclamation" style="font-size:10px;"></i>
+            <span id="chip-ser-label">0 SER</span>
+          </button>
+          <button id="chip-fd" class="alert-chip chip-fd" onclick="quickFilter('fd')" title="Filter table to Formality Defects">
+            <i class="ti ti-clipboard-x" style="font-size:10px;"></i>
+            <span id="chip-fd-label">0 Defect</span>
+          </button>
+        </div>
+        <!-- Calm subtext -->
+        <div id="alert-calm-sub" class="flex items-center gap-1.5">
+          <i class="ti ti-circle-check text-emerald-500" style="font-size:12px;"></i>
+          <p class="text-[11px] text-emerald-600 font-semibold">No deadlines require attention</p>
         </div>
       </div>
+
     </section>
 
+    <!-- Table -->
     <section class="bg-white rounded-2xl border border-outline-variant shadow-sm overflow-hidden">
       <div class="px-6 py-4 border-b border-outline-variant flex items-center gap-3">
         <div class="relative flex-1">
@@ -247,9 +334,9 @@
             <button onclick="applyStatusFilter('Received E-SOA')"   class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Received E-SOA">Received E-SOA<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
             <button onclick="applyStatusFilter('Paid')"             class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Paid">Paid<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
             <button onclick="applyStatusFilter('Approved')"         class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Approved">Approved<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
-            <div class="px-3 py-1.5 mt-2 border-t border-slate-100 text-[10px] font-bold text-outline uppercase tracking-widest">Action Alerts</div>
-            <button onclick="applyStatusFilter('Urgent Substantive')", class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-pink-600 font-semibold hover:bg-pink-50 flex items-center justify-between transition-colors" data-val="Urgent Substantive">Urgent Substantive<i class="ti ti-check text-pink-600 hidden" style="font-size:13px;"></i></button>
-            <button onclick="applyStatusFilter('Defect Compliance')",  class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-red-600 font-semibold hover:bg-red-50 flex items-center justify-between transition-colors" data-val="Defect Compliance">Defect Compliance<i class="ti ti-check text-red-600 hidden" style="font-size:13px;"></i></button>
+            <div class="px-3 py-1.5 mt-1 border-t border-slate-100 text-[10px] font-bold text-outline uppercase tracking-widest">Action Alerts</div>
+            <button onclick="applyStatusFilter('Urgent Substantive')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-pink-600 font-semibold hover:bg-pink-50 flex items-center justify-between transition-colors" data-val="Urgent Substantive">Urgent Substantive<i class="ti ti-check text-pink-600 hidden" style="font-size:13px;"></i></button>
+            <button onclick="applyStatusFilter('Defect Compliance')"  class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-red-600 font-semibold hover:bg-red-50 flex items-center justify-between transition-colors" data-val="Defect Compliance">Defect Compliance<i class="ti ti-check text-red-600 hidden" style="font-size:13px;"></i></button>
           </div>
         </div>
         <button title="Export" class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors shrink-0">
@@ -274,7 +361,7 @@
           <tbody id="table-body" class="divide-y divide-slate-100">
             <tr>
               <td colspan="8" class="text-center py-8">
-                <i class="ti ti-loader animate-spin text-primary" style="font-size: 24px;"></i>
+                <i class="ti ti-loader animate-spin text-primary" style="font-size:24px;"></i>
                 <p class="mt-2 text-[12px] text-outline font-medium">Loading records...</p>
               </td>
             </tr>
@@ -295,61 +382,37 @@
   </div>
 </main>
 
-<div class="fixed inset-0 z-[65] flex items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm"
-  id="urgent-modal" style="display:none;">
-  <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
-    <div class="px-7 py-5 border-b border-pink-200 bg-pink-50 flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <div class="w-11 h-11 rounded-full bg-pink-200 flex items-center justify-center text-pink-700">
-          <i class="ti ti-bell-ringing" style="font-size:22px;"></i>
-        </div>
-        <div>
-          <h2 class="text-[17px] font-bold text-pink-900">Urgent Action Required</h2>
-          <p class="text-[12px] text-pink-700 font-semibold mt-0.5">Records nearing substantive or compliance deadlines</p>
-        </div>
-      </div>
-      <button class="p-2 hover:bg-pink-200/50 rounded-full transition-colors text-pink-700" onclick="closeUrgentModal()">
-        <span class="material-symbols-outlined text-[20px]">close</span>
-      </button>
-    </div>
-    <div class="overflow-y-auto flex-1 p-0">
-      <table class="w-full text-left border-collapse">
-        <thead class="sticky top-0 bg-white shadow-sm z-10">
-          <tr>
-            <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Reference No.</th>
-            <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Title</th>
-            <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Author(s)</th>
-            <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Urgent Alert</th>
-            <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant text-center whitespace-nowrap">Action</th>
-          </tr>
-        </thead>
-        <tbody id="urgent-table-body" class="divide-y divide-slate-100"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
+<!-- ═══════════════════════════════════════
+     MAIN DETAIL MODAL
+═══════════════════════════════════════ -->
 <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm"
-  id="research-modal" style="display:none;">
-  <div class="bg-white w-full max-w-[1100px] rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+  id="research-modal" style="display:none;" onclick="handleMainModalBackdrop(event)">
+  <div id="research-modal-inner" class="bg-white w-full max-w-[1100px] rounded-2xl shadow-2xl overflow-hidden flex flex-col modal-enter">
+
     <div class="px-7 py-5 border-b border-outline-variant flex items-center justify-between bg-white z-10 relative shadow-sm">
-      <div>
-        <h2 class="text-[19px] font-bold text-on-surface">Patent Details & Tracking</h2>
-        <p class="text-[13px] text-primary font-semibold mt-0.5" id="modal-subtitle-id"></p>
+      <div class="flex items-center gap-3">
+        <div>
+          <h2 class="text-[19px] font-bold text-on-surface flex items-center gap-2">
+            Patent Details &amp; Tracking
+            <span id="unsaved-indicator" class="hidden"><span class="unsaved-dot"></span></span>
+          </h2>
+          <p class="text-[13px] text-primary font-semibold mt-0.5" id="modal-subtitle-id"></p>
+        </div>
       </div>
-      <button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline" onclick="closeModal()">
+      <button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline" onclick="requestModalClose()">
         <span class="material-symbols-outlined text-[22px]">close</span>
       </button>
     </div>
 
     <div class="p-7 overflow-y-auto max-h-[75vh] grid grid-cols-1 lg:grid-cols-2 gap-8">
-      
+
+      <!-- LEFT: Core Information -->
       <div class="space-y-6">
         <h3 class="text-[12px] font-bold text-outline uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">Core Information</h3>
-        
+
         <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Registration Status</label>
-          <select id="field-status" disabled onchange="updateStatusStyle(this)"
+          <select id="field-status" disabled onchange="updateStatusStyle(this); markDirty();"
             class="w-full text-[15px] font-bold rounded-xl py-3 px-4 border-2 outline-none transition-all appearance-none cursor-default"
             style="background-image:none;">
             <option value="Submitted to IPO">Submitted to IPO</option>
@@ -362,7 +425,7 @@
         <div class="space-y-4">
           <div>
             <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Patent Title</label>
-            <input id="field-title" type="text" disabled
+            <input id="field-title" type="text" disabled oninput="markDirty()"
               class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all"/>
           </div>
           <div class="grid grid-cols-2 gap-4">
@@ -373,14 +436,14 @@
             </div>
             <div>
               <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Author(s)</label>
-              <input id="field-author" type="text" disabled
+              <input id="field-author" type="text" disabled oninput="markDirty()"
                 class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all"/>
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">College</label>
-              <select id="field-college" disabled onchange="updateModalDeptOptions()"
+              <select id="field-college" disabled onchange="updateModalDeptOptions(); markDirty();"
                 class="modal-field modal-field-select w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all appearance-none cursor-default">
                 <option value="">— Select College —</option>
                 <option value="College of Computer Studies">College of Computer Studies</option>
@@ -391,23 +454,25 @@
             </div>
             <div id="modal-dept-wrap">
               <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Department</label>
-              <select id="field-dept" disabled
+              <select id="field-dept" disabled onchange="markDirty()"
                 class="modal-field modal-field-select w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all appearance-none cursor-default">
               </select>
             </div>
           </div>
-          
+
           <div class="pt-2">
             <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-1.5">Date of Filing</label>
             <div id="display-date-filing" class="text-[14px] font-medium text-on-surface py-1.5">—</div>
-            <input id="field-date-filing" type="date" disabled onchange="recalcSubstantive()"
+            <input id="field-date-filing" type="date" disabled onchange="recalcSubstantive(); markDirty();"
               class="modal-field w-full text-[13px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all hidden"/>
           </div>
         </div>
       </div>
 
+      <!-- RIGHT: Tracking -->
       <div class="space-y-8 lg:border-l lg:border-outline-variant lg:pl-8">
-        
+
+        <!-- Substantive Examination -->
         <div>
           <h3 class="text-[12px] font-bold text-outline uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">Substantive Examination</h3>
           <div class="bg-pink-50/50 p-5 rounded-xl border border-pink-100">
@@ -424,6 +489,7 @@
           </div>
         </div>
 
+        <!-- Formality Defects -->
         <div>
           <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-4">
             <h3 class="text-[12px] font-bold text-outline uppercase tracking-widest">Formality Defects</h3>
@@ -431,39 +497,48 @@
               <i class="ti ti-plus"></i> Add Defect Notice
             </button>
           </div>
-          
-          <div id="defects-container" class="space-y-4">
-            </div>
+          <div id="defects-container" class="space-y-4"></div>
           <div id="no-defects-placeholder" class="text-center py-6 px-4 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
             <i class="ti ti-shield-check text-slate-300 mb-2" style="font-size:24px;"></i>
             <p class="text-[12px] font-semibold text-outline">No Formality Defects</p>
-            <p class="text-[11px] text-outline mt-1">Click "Edit" to track a new defect notice.</p>
+            <p class="text-[11px] text-outline mt-1">Click "Edit Record" to track a new defect notice.</p>
           </div>
         </div>
 
       </div>
     </div>
 
-    <div class="px-7 py-5 bg-slate-50 border-t border-outline-variant flex items-center justify-end gap-3 z-10 relative">
-      <button id="btn-edit" onclick="enterEditMode()" type="button"
-        class="px-6 py-2.5 bg-primary text-white text-[13px] font-bold rounded-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
-        <i class="ti ti-pencil" style="font-size:15px;"></i> Edit Record
-      </button>
-      <button id="btn-cancel-edit" onclick="exitEditMode()" type="button"
-        class="hidden px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant bg-white border border-slate-200 hover:border-slate-300 rounded-xl transition-all">
-        Cancel
-      </button>
-      <button id="btn-save" onclick="openConfirmation()" type="button"
-        class="hidden px-6 py-2.5 bg-emerald-600 text-white text-[13px] font-bold rounded-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
-        <i class="ti ti-device-floppy" style="font-size:15px;"></i> Save Changes
-      </button>
+    <!-- Footer -->
+    <div class="px-7 py-5 bg-slate-50 border-t border-outline-variant flex items-center justify-between z-10 relative">
+      <div id="modal-dirty-hint" class="hidden flex items-center gap-2 text-[12px] text-amber-600 font-semibold">
+        <i class="ti ti-pencil" style="font-size:14px;"></i>
+        You have unsaved changes
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        <button id="btn-edit" onclick="enterEditMode()" type="button"
+          class="px-6 py-2.5 bg-primary text-white text-[13px] font-bold rounded-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
+          <i class="ti ti-pencil" style="font-size:15px;"></i> Edit Record
+        </button>
+        <button id="btn-cancel-edit" onclick="requestCancelEdit()" type="button"
+          class="hidden px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant bg-white border border-slate-200 hover:border-slate-300 rounded-xl transition-all">
+          Cancel
+        </button>
+        <button id="btn-save" onclick="openConfirmation()" type="button"
+          class="hidden px-6 py-2.5 bg-emerald-600 text-white text-[13px] font-bold rounded-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
+          <i class="ti ti-device-floppy" style="font-size:15px;"></i> Save Changes
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════
+     SAVE CONFIRMATION MODAL
+═══════════════════════════════════════ -->
 <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-on-surface/50 backdrop-blur-sm"
   id="confirm-modal" style="display:none;">
-  <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center">
+  <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center modal-enter">
     <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-5">
       <span class="material-symbols-outlined text-2xl">help</span>
     </div>
@@ -476,68 +551,186 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════
+     UNSAVED CHANGES MODAL
+═══════════════════════════════════════ -->
+<div class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-on-surface/60 backdrop-blur-sm"
+  id="unsaved-modal" style="display:none;">
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden modal-enter">
+
+    <!-- Header strip -->
+    <div class="bg-amber-50 border-b border-amber-200 px-7 py-5 flex items-center gap-4">
+      <div class="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+        <i class="ti ti-alert-circle text-amber-600" style="font-size:22px;"></i>
+      </div>
+      <div>
+        <h3 class="text-[16px] font-bold text-amber-900">Unsaved Changes</h3>
+        <p class="text-[12px] text-amber-700 font-medium mt-0.5">Your edits haven't been saved yet</p>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="px-7 py-6">
+      <p class="text-[14px] text-on-surface leading-relaxed">
+        You have made changes to this record that haven't been saved. If you leave now, all unsaved edits will be permanently lost.
+      </p>
+      <!-- Changed fields summary -->
+      <div id="unsaved-fields-list" class="mt-4 space-y-1.5 hidden">
+        <p class="text-[11px] font-bold text-outline uppercase tracking-widest mb-2">Modified fields</p>
+      </div>
+    </div>
+
+    <!-- Footer actions -->
+    <div class="px-7 pb-7 flex flex-col gap-3">
+      <button onclick="discardChangesAndProceed()"
+        class="w-full py-3 text-[13px] font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
+        <i class="ti ti-trash" style="font-size:15px;"></i>
+        Discard Changes &amp; Leave
+      </button>
+      <button onclick="closeUnsavedModal()"
+        class="w-full py-3 text-[13px] font-bold text-on-surface bg-white border-2 border-slate-200 hover:border-primary hover:text-primary rounded-xl transition-all flex items-center justify-center gap-2">
+        <i class="ti ti-arrow-back" style="font-size:15px;"></i>
+        Go Back &amp; Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     RESOLVE DEFECT CONFIRMATION MODAL
+═══════════════════════════════════════ -->
+<div class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-on-surface/60 backdrop-blur-sm"
+  id="resolve-modal" style="display:none;">
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden modal-enter">
+
+    <!-- Header -->
+    <div class="bg-emerald-50 border-b border-emerald-200 px-7 py-5 flex items-center gap-4">
+      <div class="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+        <i class="ti ti-circle-check text-emerald-600" style="font-size:22px;"></i>
+      </div>
+      <div>
+        <h3 class="text-[16px] font-bold text-emerald-900">Mark Defect as Resolved</h3>
+        <p class="text-[12px] text-emerald-700 font-medium mt-0.5">Confirm this defect notice has been addressed</p>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="px-7 py-6 space-y-4">
+      <p class="text-[14px] text-on-surface leading-relaxed">
+        You're about to mark the following formality defect notice as <span class="font-bold text-emerald-700">Resolved</span>. This action confirms that the required compliance response has been submitted.
+      </p>
+
+      <!-- Defect detail card -->
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-bold text-outline uppercase tracking-widest">Defect Notice</p>
+          <span id="resolve-notice-num" class="text-[11px] font-bold bg-slate-200 text-slate-600 px-2.5 py-0.5 rounded-full">Notice #1</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <div>
+            <p class="text-[10px] text-outline font-semibold uppercase tracking-wider mb-0.5">Notice Issued</p>
+            <p id="resolve-notice-date" class="text-[13px] font-bold text-on-surface">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-outline font-semibold uppercase tracking-wider mb-0.5">Compliance Due</p>
+            <p id="resolve-compliance-date" class="text-[13px] font-bold text-red-600">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-2.5 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+        <i class="ti ti-info-circle text-blue-500 flex-shrink-0 mt-0.5" style="font-size:15px;"></i>
+        <p class="text-[12px] text-blue-700 leading-relaxed">This will update the record's compliance status. You can still save all changes when you click <strong>Save Changes</strong>.</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="px-7 pb-7 flex gap-3">
+      <button onclick="closeResolveModal()"
+        class="flex-1 py-3 text-[13px] font-bold text-on-surface-variant bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+        Cancel
+      </button>
+      <button onclick="executeResolve()"
+        class="flex-1 py-3 text-[13px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
+        <i class="ti ti-circle-check" style="font-size:16px;"></i>
+        Confirm &amp; Resolve
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS TOAST -->
 <div id="success-toast"
-  class="fixed bottom-8 right-8 z-[80] flex items-center gap-3 bg-white border border-emerald-200 shadow-xl rounded-2xl px-5 py-4 pointer-events-none"
+  class="fixed bottom-8 right-8 z-[90] flex items-center gap-3 bg-white border border-emerald-200 shadow-xl rounded-2xl px-5 py-4 pointer-events-none"
   style="opacity:0; transform:translateY(12px); transition:opacity 0.25s ease, transform 0.25s ease; min-width:260px;">
   <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-    <i class="ti ti-check text-emerald-600" style="font-size:18px;"></i>
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="9" r="9" fill="#d1fae5"/>
+      <polyline points="5,9 8,12 13,6" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-draw"/>
+    </svg>
   </div>
   <div>
-    <p class="text-[13px] font-bold text-on-surface leading-tight">Changes saved successfully</p>
-    <p class="text-[11px] text-outline mt-0.5">The record has been updated.</p>
+    <p class="text-[13px] font-bold text-on-surface leading-tight" id="toast-title">Changes saved successfully</p>
+    <p class="text-[11px] text-outline mt-0.5" id="toast-body">The record has been updated.</p>
   </div>
   <div class="absolute bottom-0 left-0 h-[3px] bg-emerald-400 rounded-b-2xl" id="toast-bar" style="width:100%;"></div>
 </div>
 
+<!-- ═══════════════════════════════════════ SCRIPT ═══════════════════════════════════════ -->
 <script>
 const API_URL  = "http://localhost:5000/api/research";
 const CATEGORY = "patent";
 
-/* CLOCK & FORMATTERS */
-function updateClock() {
-  const now = new Date();
-  let h = now.getHours();
-  const m = String(now.getMinutes()).padStart(2, '0');
-  const s = String(now.getSeconds()).padStart(2, '0');
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  document.getElementById('live-time').textContent = `${String(h).padStart(2, '0')}:${m}:${s}`;
-  document.getElementById('live-ampm').textContent = ampm;
-}
-updateClock();
-setInterval(updateClock, 1000);
+/* ── CLOCK ── */
+(function() {
+  const tick = () => {
+    const now = new Date();
+    let h = now.getHours();
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    document.getElementById('live-time').textContent = `${String(h).padStart(2,'0')}:${m}:${s}`;
+    document.getElementById('live-ampm').textContent = ap;
+  };
+  tick(); setInterval(tick, 1000);
+})();
 
 function toReadableDate(dateString) {
   if (!dateString) return '—';
-  const d = new Date(dateString);
+  const d = new Date(dateString + 'T00:00:00');
   if (isNaN(d.getTime())) return '—';
   return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-/* STATE */
-let ALL_RECORDS     = [];
-let filteredRecords = [];
-const ROWS_PER_PAGE = 10;
-let currentPage     = 1;
+/* ── STATE ── */
+let ALL_RECORDS      = [];
+let filteredRecords  = [];
+const ROWS_PER_PAGE  = 10;
+let currentPage      = 1;
 let activeStatusFilter = 'All';
-let activeMongoId   = null;
-let activeSnapshot  = null;
+let activeMongoId    = null;
+let activeSnapshot   = null;
 let isEditModeActive = false;
+let isDirty          = false;
+let activeDefects    = [];
 
-// Dynamic tracking for Formality Defects
-let activeDefects = []; 
+// Unsaved modal deferred action
+let pendingAction    = null; // fn to call after discard
+
+// Resolve modal state
+let resolveIndex     = null;
 
 const MODAL_COLLEGE_DEPTS = {
-  'College of Computer Studies': ['Information Technology', 'Information System', 'Computer Science'],
-  'College of Engineering':      ['Industrial Engineering', 'Electronic Engineering', 'Computer Engineering'],
-  'College of Accounting':       ['Accounting', 'Management Accounting'],
+  'College of Computer Studies': ['Information Technology','Information System','Computer Science'],
+  'College of Engineering':      ['Industrial Engineering','Electronic Engineering','Computer Engineering'],
+  'College of Accounting':       ['Accounting','Management Accounting'],
   'College of Business':         ['Entrepreneurship'],
 };
 
 function updateModalDeptOptions() {
   const college = document.getElementById('field-college').value;
   const deptSel = document.getElementById('field-dept');
-  const deptWrap = document.getElementById('modal-dept-wrap');
   deptSel.innerHTML = '';
   if (college && MODAL_COLLEGE_DEPTS[college]) {
     MODAL_COLLEGE_DEPTS[college].forEach(d => {
@@ -545,154 +738,251 @@ function updateModalDeptOptions() {
       opt.value = d; opt.textContent = d;
       deptSel.appendChild(opt);
     });
-    deptWrap.style.animation = 'fadeSlideIn 0.18s ease';
   }
 }
 
-/* CALCULATIONS */
+/* ── DIRTY TRACKING ── */
+function markDirty() {
+  isDirty = true;
+  document.getElementById('unsaved-indicator').classList.remove('hidden');
+  document.getElementById('modal-dirty-hint').classList.remove('hidden');
+}
+function clearDirty() {
+  isDirty = false;
+  document.getElementById('unsaved-indicator').classList.add('hidden');
+  document.getElementById('modal-dirty-hint').classList.add('hidden');
+}
+
+/* ── UNSAVED CHANGES GUARD ── */
+function requestModalClose() {
+  if (isDirty) {
+    showUnsavedModal(() => {
+      clearDirty();
+      closeModal();
+    });
+  } else {
+    closeModal();
+  }
+}
+
+function requestCancelEdit() {
+  if (isDirty) {
+    showUnsavedModal(() => {
+      clearDirty();
+      exitEditMode(true); // force exit without guard
+    });
+  } else {
+    exitEditMode(true);
+  }
+}
+
+function handleNavAway(url) {
+  if (isDirty) {
+    showUnsavedModal(() => { window.location.href = url; });
+  } else {
+    window.location.href = url;
+  }
+}
+
+function showUnsavedModal(onDiscard) {
+  pendingAction = onDiscard;
+  document.getElementById('unsaved-modal').style.display = 'flex';
+}
+function closeUnsavedModal() {
+  document.getElementById('unsaved-modal').style.display = 'none';
+  pendingAction = null;
+}
+function discardChangesAndProceed() {
+  document.getElementById('unsaved-modal').style.display = 'none';
+  if (pendingAction) { pendingAction(); pendingAction = null; }
+}
+
+/* ── BACKDROP CLICK HANDLERS ── */
+function handleMainModalBackdrop(e) {
+  if (e.target === document.getElementById('research-modal')) {
+    requestModalClose();
+  }
+}
+function handleUrgentBackdrop(e) {
+  if (e.target === document.getElementById('urgent-modal')) closeUrgentModal();
+}
+
+/* ── CALCULATIONS ── */
 function addMonths(dateString, months) {
   if (!dateString) return null;
-  const d = new Date(dateString);
+  const d = new Date(dateString + 'T00:00:00');
   d.setMonth(d.getMonth() + months);
   return d.toISOString().split('T')[0];
 }
-
 function getDaysRemaining(targetDateStr) {
   if (!targetDateStr) return null;
-  const target = new Date(targetDateStr);
-  const now = new Date();
-  const diffTime = target - now;
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const target = new Date(targetDateStr + 'T00:00:00');
+  const now    = new Date(); now.setHours(0,0,0,0);
+  return Math.ceil((target - now) / 86400000);
 }
-
 function computeRecordFlags(r) {
-  const substantiveDeadline = addMonths(r.dateOfFiling, 18);
-  const complianceDeadline  = r.defectNoticeDate ? addMonths(r.defectNoticeDate, 2) : null;
-  const complianceDeadline2 = r.defectNoticeDate2 ? addMonths(r.defectNoticeDate2, 2) : null;
-  
+  const substantiveDeadline  = addMonths(r.dateOfFiling, 18);
+  const complianceDeadline   = r.defectNoticeDate  ? addMonths(r.defectNoticeDate,  2) : null;
+  const complianceDeadline2  = r.defectNoticeDate2 ? addMonths(r.defectNoticeDate2, 2) : null;
   const substantiveDays = getDaysRemaining(substantiveDeadline);
   const complianceDays  = getDaysRemaining(complianceDeadline);
   const complianceDays2 = getDaysRemaining(complianceDeadline2);
-
-  let isUrgentSubstantive = false;
-  let isUrgentCompliance  = false;
-  
-  if (substantiveDays !== null && substantiveDays <= 60 && r.status !== 'Approved') isUrgentSubstantive = true;
-  if (complianceDays !== null && complianceDays <= 14 && r.status !== 'Approved') isUrgentCompliance = true;
-  if (complianceDays2 !== null && complianceDays2 <= 14 && r.status !== 'Approved') isUrgentCompliance = true;
-
+  let isUrgentSubstantive = substantiveDays !== null && substantiveDays <= 60 && r.status !== 'Approved';
+  let isUrgentCompliance  = (complianceDays  !== null && complianceDays  <= 14 && r.status !== 'Approved') ||
+                            (complianceDays2 !== null && complianceDays2 <= 14 && r.status !== 'Approved');
   return { substantiveDeadline, complianceDeadline, complianceDeadline2, isUrgentSubstantive, isUrgentCompliance };
 }
 
 function recalcSubstantive() {
-  const filing = document.getElementById('field-date-filing').value;
+  const filing   = document.getElementById('field-date-filing').value;
   const deadline = addMonths(filing, 18);
   document.getElementById('display-substantive-deadline').textContent = toReadableDate(deadline);
-  document.getElementById('display-date-filing').textContent = toReadableDate(filing);
+  document.getElementById('display-date-filing').textContent          = toReadableDate(filing);
 }
 
-/* DYNAMIC DEFECTS LOGIC */
+/* ── DEFECT RENDERING ── */
 function renderDefects() {
-  const container = document.getElementById('defects-container');
+  const container   = document.getElementById('defects-container');
   const placeholder = document.getElementById('no-defects-placeholder');
-  
+
   if (activeDefects.length === 0) {
     container.innerHTML = '';
     placeholder.classList.remove('hidden');
     return;
   }
-  
   placeholder.classList.add('hidden');
+
   container.innerHTML = activeDefects.map((defect, i) => {
     const complianceDate = addMonths(defect.date, 2);
-    const isConfirmed = defect.confirmed;
-    
-    const bgClass = isConfirmed ? 'bg-emerald-50/50 border-emerald-200' : 'bg-white border-slate-200 shadow-sm';
-    const headerColor = isConfirmed ? 'text-emerald-700' : 'text-on-surface';
-    const iconState = isConfirmed ? `<i class="ti ti-circle-check text-emerald-600" style="font-size:16px;"></i>` : `<i class="ti ti-file-alert text-red-500" style="font-size:16px;"></i>`;
+    const daysLeft       = getDaysRemaining(complianceDate);
+    const isResolved     = defect.confirmed;
+
+    const cardBg     = isResolved ? 'bg-emerald-50/60 border-emerald-200' : 'bg-white border-slate-200 shadow-sm';
+    const numLabel   = isResolved
+      ? `<span class="inline-flex items-center gap-1.5 text-[11px] font-bold bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full"><svg width="11" height="11" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Resolved</span>`
+      : `<span class="inline-flex items-center gap-1.5 text-[11px] font-bold bg-red-100 text-red-700 px-2.5 py-0.5 rounded-full"><i class="ti ti-alert-triangle" style="font-size:10px;"></i>Pending</span>`;
+
+    const daysInfo = !isResolved && daysLeft !== null
+      ? `<div class="mt-3 pt-3 border-t ${isResolved ? 'border-emerald-100' : 'border-slate-100'} flex items-center gap-2">
+           <i class="ti ti-${daysLeft < 0 ? 'alert-triangle text-red-500' : daysLeft <= 7 ? 'clock text-amber-500' : 'clock text-slate-400'}" style="font-size:13px;"></i>
+           <span class="text-[12px] font-semibold ${daysLeft < 0 ? 'text-red-600' : daysLeft <= 7 ? 'text-amber-600' : 'text-outline'}">
+             ${daysLeft < 0 ? Math.abs(daysLeft) + ' days overdue' : daysLeft === 0 ? 'Due today' : daysLeft + ' days remaining'}
+           </span>
+         </div>` : '';
+
+    const resolveBtn = !isResolved
+      ? `<div class="mt-4 flex justify-end">
+           <button onclick="openResolveModal(${i})"
+             class="px-4 py-2 bg-emerald-600 text-white text-[11px] font-bold rounded-lg hover:bg-emerald-700 transition-all hover:-translate-y-0.5 shadow-sm flex items-center gap-1.5">
+             <i class="ti ti-circle-check" style="font-size:14px;"></i> Mark as Resolved
+           </button>
+         </div>` : '';
 
     return `
-      <div class="relative p-5 rounded-xl border ${bgClass} transition-all">
+      <div id="defect-card-${i}" class="p-5 rounded-xl border ${cardBg} transition-all">
         <div class="flex items-center gap-2 mb-4">
-          ${iconState}
-          <h4 class="text-[12px] font-bold uppercase tracking-widest ${headerColor}">Defect Notice ${i + 1}</h4>
-          ${isConfirmed ? `<span class="ml-auto text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Resolved</span>` : ''}
+          ${isResolved
+            ? `<div class="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                 <svg width="14" height="14" viewBox="0 0 14 14"><polyline points="3,7 6,10 11,4" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+               </div>`
+            : `<div class="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                 <i class="ti ti-file-alert text-red-500" style="font-size:14px;"></i>
+               </div>`}
+          <h4 class="text-[12px] font-bold uppercase tracking-widest ${isResolved ? 'text-emerald-700' : 'text-on-surface'}">Defect Notice ${i + 1}</h4>
+          <div class="ml-auto">${numLabel}</div>
         </div>
-        
+
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-1">Notice Issued On</label>
             <div class="text-[13px] font-medium text-on-surface ${isEditModeActive ? 'hidden' : 'block'}">${toReadableDate(defect.date)}</div>
-            <input type="date" value="${defect.date}" class="modal-field w-full text-[13px] rounded-lg py-2 px-3 border border-slate-300 bg-white ${isEditModeActive ? 'block' : 'hidden'}" onchange="updateDefectDate(${i}, this.value)">
+            <input type="date" value="${defect.date}"
+              class="modal-field w-full text-[13px] rounded-lg py-2 px-3 border border-slate-300 bg-white ${isEditModeActive ? 'block' : 'hidden'}"
+              onchange="updateDefectDate(${i}, this.value)">
           </div>
           <div>
-            <label class="text-[10px] font-bold ${isConfirmed ? 'text-emerald-600' : 'text-red-600'} uppercase tracking-widest block mb-1">Compliance Due</label>
-            <div class="text-[13px] font-bold ${isConfirmed ? 'text-emerald-700' : 'text-red-700'}">${toReadableDate(complianceDate)}</div>
+            <label class="text-[10px] font-bold ${isResolved ? 'text-emerald-600' : 'text-red-600'} uppercase tracking-widest block mb-1">Compliance Due</label>
+            <div class="text-[13px] font-bold ${isResolved ? 'text-emerald-700' : 'text-red-700'}">${toReadableDate(complianceDate)}</div>
           </div>
         </div>
 
-        ${!isConfirmed ? `
-          <div class="mt-4 pt-4 border-t ${isConfirmed ? 'border-emerald-100' : 'border-slate-100'} flex justify-end">
-            <button onclick="confirmDefect(${i})" class="px-4 py-2 bg-emerald-600 text-white text-[11px] font-bold rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-1.5 shadow-sm">
-              <i class="ti ti-check" style="font-size:14px;"></i> Mark as Resolved
-            </button>
-          </div>
-        ` : ''}
-      </div>
-    `;
+        ${daysInfo}
+        ${resolveBtn}
+      </div>`;
   }).join('');
 }
 
 function updateDefectDate(index, val) {
-  if(activeDefects[index]) {
+  if (activeDefects[index]) {
     activeDefects[index].date = val;
+    markDirty();
     renderDefects();
   }
 }
-
 function addDefect() {
-  if(activeDefects.length >= 2) {
-    alert("Currently, the system only supports tracking up to 2 sequential Formality Defects per record.");
+  if (activeDefects.length >= 2) {
+    alert('The system currently supports tracking up to 2 sequential Formality Defects per record.');
     return;
   }
   activeDefects.push({ date: new Date().toISOString().split('T')[0], confirmed: false });
+  markDirty();
   renderDefects();
 }
 
-function confirmDefect(index) {
-  if(activeDefects[index]) {
-    activeDefects[index].confirmed = true;
-    renderDefects();
-  }
+/* ── RESOLVE DEFECT MODAL ── */
+function openResolveModal(index) {
+  resolveIndex = index;
+  const defect         = activeDefects[index];
+  const complianceDate = addMonths(defect.date, 2);
+  document.getElementById('resolve-notice-num').textContent     = `Notice #${index + 1}`;
+  document.getElementById('resolve-notice-date').textContent    = toReadableDate(defect.date);
+  document.getElementById('resolve-compliance-date').textContent = toReadableDate(complianceDate);
+  document.getElementById('resolve-modal').style.display = 'flex';
+}
+function closeResolveModal() {
+  document.getElementById('resolve-modal').style.display = 'none';
+  resolveIndex = null;
+}
+function executeResolve() {
+  if (resolveIndex === null) return;
+  activeDefects[resolveIndex].confirmed = true;
+  closeResolveModal();
+  markDirty();
+
+  // Animate the resolved card
+  const card = document.getElementById(`defect-card-${resolveIndex}`);
+  renderDefects();
+  requestAnimationFrame(() => {
+    const newCard = document.getElementById(`defect-card-${resolveIndex}`);
+    if (newCard) newCard.classList.add('resolved-pop');
+  });
+
+  showToastMsg('Defect marked as resolved', 'Remember to save your changes.');
 }
 
-/* STATUS STYLES */
+/* ── STATUS STYLES ── */
 const statusMeta = {
-  'Submitted to IPO': { cls: 'badge-submitted', label: 'Submitted to IPO' },
-  'Received E-SOA':   { cls: 'badge-esoa',      label: 'Received E-SOA'   },
-  'Paid':             { cls: 'badge-paid',      label: 'Paid'             },
-  'Approved':         { cls: 'badge-approved',  label: 'Approved'         },
+  'Submitted to IPO': { cls:'badge-submitted' },
+  'Received E-SOA':   { cls:'badge-esoa'      },
+  'Paid':             { cls:'badge-paid'       },
+  'Approved':         { cls:'badge-approved'   },
 };
-
 function statusBadgeHTML(status) {
-  const m = statusMeta[status] || { cls: 'badge-default', label: status || '—' };
-  return `<span class="status-badge ${m.cls}">${m.label}</span>`;
+  const m = statusMeta[status] || { cls:'badge-default' };
+  return `<span class="status-badge ${m.cls}">${status || '—'}</span>`;
 }
-
 function flagBadgeHTML(flags) {
   let badges = '';
-  if (flags.isUrgentCompliance) badges += `<span class="status-badge badge-urgent-red"><i class="ti ti-alert-triangle" style="font-size:12px;"></i> Defect Due</span> `;
-  if (flags.isUrgentSubstantive) badges += `<span class="status-badge badge-urgent-pink"><i class="ti ti-clock-exclamation" style="font-size:12px;"></i> Exam Due</span>`;
-  return badges || '<span class="text-[11px] text-outline">No alerts</span>';
+  if (flags.isUrgentCompliance)  badges += `<span class="status-badge badge-urgent-red"><i class="ti ti-alert-triangle" style="font-size:11px;"></i>Defect Due</span> `;
+  if (flags.isUrgentSubstantive) badges += `<span class="status-badge badge-urgent-pink"><i class="ti ti-clock-exclamation" style="font-size:11px;"></i>Exam Due</span>`;
+  return badges || '<span class="text-[11px] text-outline">—</span>';
 }
-
 const statusHero = {
   'Submitted to IPO': { border:'#93c5fd', bg:'#eff6ff', color:'#1d4ed8' },
   'Received E-SOA':   { border:'#a5b4fc', bg:'#eef2ff', color:'#4338ca' },
   'Paid':             { border:'#6ee7b7', bg:'#ecfdf5', color:'#065f46' },
   'Approved':         { border:'#fcd34d', bg:'#fffbeb', color:'#92400e' },
 };
-
 function updateStatusStyle(sel) {
   const s = statusHero[sel.value] || { border:'#e2e8f0', bg:'#f8fafc', color:'#334155' };
   sel.style.borderColor     = s.border;
@@ -700,19 +990,71 @@ function updateStatusStyle(sel) {
   sel.style.color           = s.color;
 }
 
+/* ── STAT CARDS ── */
 function updateStats() {
   document.getElementById('stat-total').textContent    = ALL_RECORDS.length;
   document.getElementById('stat-approved').textContent = ALL_RECORDS.filter(r => r.status === 'Approved').length;
   document.getElementById('stat-pending').textContent  = ALL_RECORDS.filter(r => r.status !== 'Approved').length;
 
-  const urgentCount = ALL_RECORDS.filter(r => {
-    const flags = computeRecordFlags(r);
-    return flags.isUrgentSubstantive || flags.isUrgentCompliance;
-  }).length;
-  document.getElementById('stat-urgent').textContent = urgentCount;
+  let serCount = 0, fdCount = 0;
+  ALL_RECORDS.forEach(r => {
+    const f = computeRecordFlags(r);
+    if (f.isUrgentSubstantive) serCount++;
+    if (f.isUrgentCompliance)  fdCount++;
+  });
+  const totalUrgent = serCount + fdCount;
+
+  document.getElementById('stat-urgent').textContent = totalUrgent;
+
+  const card     = document.getElementById('alert-card');
+  const icon     = document.getElementById('alert-icon');
+  const glyph    = document.getElementById('alert-icon-glyph');
+  const label    = document.getElementById('alert-label');
+  const chips    = document.getElementById('alert-chips');
+  const calmSub  = document.getElementById('alert-calm-sub');
+  const chipSer  = document.getElementById('chip-ser');
+  const chipFd   = document.getElementById('chip-fd');
+
+  if (totalUrgent === 0) {
+    // ── CALM STATE ──
+    card.classList.remove('alert-card-urgent');
+    card.classList.add('alert-card-calm');
+    icon.classList.remove('alert-icon-urgent');
+    icon.classList.add('alert-icon-calm');
+    glyph.className = 'ti ti-shield-check';
+    label.textContent = 'All Clear';
+    label.className = 'text-[10px] font-bold uppercase tracking-widest text-emerald-700 transition-colors duration-500';
+    chips.classList.add('hidden');
+    calmSub.classList.remove('hidden');
+  } else {
+    // ── URGENT STATE ──
+    card.classList.remove('alert-card-calm');
+    card.classList.add('alert-card-urgent');
+    icon.classList.remove('alert-icon-calm');
+    icon.classList.add('alert-icon-urgent');
+    glyph.className = 'ti ti-alert-triangle';
+    label.textContent = 'Action Required';
+    label.className = 'text-[10px] font-bold uppercase tracking-widest text-rose-700 transition-colors duration-500';
+    chips.classList.remove('hidden');
+    calmSub.classList.add('hidden');
+
+    // Update chip labels — hide chip if count is 0
+    document.getElementById('chip-ser-label').textContent = `${serCount} SER`;
+    document.getElementById('chip-fd-label').textContent  = `${fdCount} Defect${fdCount !== 1 ? 's' : ''}`;
+    chipSer.style.display = serCount > 0 ? '' : 'none';
+    chipFd.style.display  = fdCount  > 0 ? '' : 'none';
+  }
 }
 
-/* FILTER DROPDOWN */
+/* ── QUICK FILTER from alert chips ── */
+function quickFilter(type) {
+  const val = type === 'ser' ? 'Urgent Substantive' : 'Defect Compliance';
+  applyStatusFilter(val);
+  // Smooth scroll to table
+  document.querySelector('section.bg-white.rounded-2xl')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ── FILTER DROPDOWN ── */
 function toggleFilterMenu() {
   const menu    = document.getElementById('filter-menu');
   const chevron = document.getElementById('filter-chevron');
@@ -720,35 +1062,30 @@ function toggleFilterMenu() {
   menu.classList.toggle('hidden', isOpen);
   chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
 }
-
 function applyStatusFilter(val) {
   activeStatusFilter = val;
   document.querySelectorAll('.filter-val').forEach(btn =>
     btn.querySelector('i').classList.toggle('hidden', btn.dataset.val !== val));
-  
-  let displayLabel = val;
-  if(val === 'All') displayLabel = 'All Status';
-  document.getElementById('filter-label').textContent = displayLabel;
+  document.getElementById('filter-label').textContent = val === 'All' ? 'All Status' : val;
   document.getElementById('filter-menu').classList.add('hidden');
   document.getElementById('filter-chevron').style.transform = '';
   filterAndRender();
 }
-
 document.addEventListener('click', e => {
   const w = document.getElementById('filter-wrapper');
   if (w && !w.contains(e.target)) document.getElementById('filter-menu').classList.add('hidden');
 });
 
+/* ── SEARCH + FILTER ── */
 function filterAndRender() {
   const q = document.getElementById('search-input').value.toLowerCase().trim();
   filteredRecords = ALL_RECORDS.filter(r => {
     const flags = computeRecordFlags(r);
     let matchStatus = false;
-    
-    if (activeStatusFilter === 'All') { matchStatus = true; }
-    else if (activeStatusFilter === 'Urgent Substantive') { matchStatus = flags.isUrgentSubstantive; }
-    else if (activeStatusFilter === 'Defect Compliance')  { matchStatus = flags.isUrgentCompliance; }
-    else { matchStatus = r.status === activeStatusFilter; }
+    if      (activeStatusFilter === 'All')               matchStatus = true;
+    else if (activeStatusFilter === 'Urgent Substantive') matchStatus = flags.isUrgentSubstantive;
+    else if (activeStatusFilter === 'Defect Compliance')  matchStatus = flags.isUrgentCompliance;
+    else                                                  matchStatus = r.status === activeStatusFilter;
 
     const matchSearch = !q ||
       (r.referenceNo || '').toLowerCase().includes(q) ||
@@ -756,14 +1093,13 @@ function filterAndRender() {
       (r.author      || '').toLowerCase().includes(q) ||
       (r.dept        || '').toLowerCase().includes(q) ||
       (r.status      || '').toLowerCase().includes(q);
-      
     return matchStatus && matchSearch;
   });
   currentPage = 1;
   render();
 }
 
-/* MAIN TABLE RENDER */
+/* ── RENDER TABLE ── */
 function render() {
   const tbody      = document.getElementById('table-body');
   const emptyEl    = document.getElementById('empty-state');
@@ -781,30 +1117,26 @@ function render() {
     tbody.innerHTML = page.map(r => {
       const flags = computeRecordFlags(r);
       let rowClass = '';
-      if (flags.isUrgentCompliance) rowClass = 'row-urgent-red';
+      if (flags.isUrgentCompliance)  rowClass = 'row-urgent-red';
       else if (flags.isUrgentSubstantive) rowClass = 'row-urgent-pink';
 
-      let collegeText = "";
-      let deptText = r.dept || "N/A";
-      if (r.dept && r.dept.includes(" — ")) {
-        const parts = r.dept.split(" — ");
-        collegeText = parts[0];
-        deptText = parts[1];
+      let deptText = r.dept || 'N/A', collegeText = '';
+      if (r.dept && r.dept.includes(' — ')) {
+        [collegeText, deptText] = r.dept.split(' — ');
       }
-
       return `
-        <tr class="${rowClass} hover:bg-slate-50/70 transition-colors border-b border-slate-100 last:border-0">
+        <tr class="${rowClass} hover:bg-slate-50/70 transition-colors">
           <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide">${r.referenceNo || '—'}</td>
           <td class="px-5 py-4 text-[13px] text-on-surface font-medium max-w-[200px] truncate">${r.title || ''}</td>
           <td class="px-5 py-4 text-[12px] text-on-surface-variant">${r.author || ''}</td>
-          <td class="px-5 py-4 text-[13px] text-on-surface font-medium">
-            <div>${deptText}</div>
-            ${collegeText ? `<div class="text-[11px] text-outline font-normal mt-0.5">${collegeText}</div>` : ''}
+          <td class="px-5 py-4">
+            <div class="text-[13px] font-medium text-on-surface">${deptText}</div>
+            ${collegeText ? `<div class="text-[11px] text-outline mt-0.5">${collegeText}</div>` : ''}
           </td>
           <td class="px-5 py-4">${statusBadgeHTML(r.status)}</td>
           <td class="px-5 py-4 text-[12px] text-on-surface-variant tabular-nums">${toReadableDate(r.dateOfFiling)}</td>
-          <td class="px-5 py-4 whitespace-nowrap flex flex-col gap-1 justify-center pt-3.5">
-            ${flagBadgeHTML(flags)}
+          <td class="px-5 py-4 whitespace-nowrap">
+            <div class="flex flex-col gap-1">${flagBadgeHTML(flags)}</div>
           </td>
           <td class="px-5 py-4 text-center">
             <button onclick="openResearchModal('${r._id}')" class="btn-view">
@@ -820,6 +1152,7 @@ function render() {
   renderPagination(totalPages);
 }
 
+/* ── PAGINATION ── */
 function renderPagination(totalPages) {
   const ctrl = document.getElementById('pagination-controls');
   ctrl.innerHTML = '';
@@ -836,7 +1169,7 @@ function renderPagination(totalPages) {
   makeBtn('chevron_right', currentPage + 1, currentPage === totalPages, false, true);
 }
 
-/* MAP RAW DATA FROM SERVER */
+/* ── MAP RAW API ITEM ── */
 function mapRecord(item) {
   const title =
     (item.researchTitle && item.researchTitle.trim()) ||
@@ -844,13 +1177,13 @@ function mapRecord(item) {
 
   let author = 'Unknown';
   if (Array.isArray(item.authors) && item.authors.length > 0) author = item.authors.join(', ');
-  else if (typeof item.author === 'string' && item.author.trim()) author = item.author.trim();
+  else if (typeof item.author   === 'string' && item.author.trim())   author = item.author.trim();
   else if (typeof item.inventor === 'string' && item.inventor.trim()) author = item.inventor.trim();
 
   const dept = item.department || item.dept || 'N/A';
 
   let dateOfFiling = '';
-  if (item.date)             dateOfFiling = item.date.split('T')[0];
+  if (item.date)           dateOfFiling = item.date.split('T')[0];
   else if (item.dateApplied) dateOfFiling = item.dateApplied.split('T')[0];
   else if (item.createdAt)   dateOfFiling = item.createdAt.split('T')[0];
 
@@ -862,52 +1195,51 @@ function mapRecord(item) {
     title, author, dept,
     status: item.status || 'Submitted to IPO',
     dateOfFiling,
-    defectNoticeDate: item.defectNoticeDate ? item.defectNoticeDate.split('T')[0] : null,
-    defectNoticeDate2: item.defectNoticeDate2 ? item.defectNoticeDate2.split('T')[0] : null
+    defectNoticeDate:  item.defectNoticeDate  ? item.defectNoticeDate.split('T')[0]  : null,
+    defectNoticeDate2: item.defectNoticeDate2 ? item.defectNoticeDate2.split('T')[0] : null,
   };
 }
 
+/* ── FETCH DATA ── */
 async function fetchPatents() {
   try {
-    const res = await fetch(API_URL);
+    const res  = await fetch(API_URL);
     const data = await res.json();
     const records = Array.isArray(data) ? data : (data.data ?? []);
     const patents = records.filter(item => (item.category || '').toLowerCase() === CATEGORY);
-    ALL_RECORDS = patents.map(mapRecord);
+    ALL_RECORDS     = patents.map(mapRecord);
     filteredRecords = [...ALL_RECORDS];
     updateStats();
     render();
   } catch (err) {
     console.error('Failed to fetch patents:', err);
-    document.getElementById('table-body').innerHTML = `<tr><td colspan="8" class="text-center py-8 text-red-500 text-[13px]">Failed to load records. Make sure the API is running.</td></tr>`;
+    document.getElementById('table-body').innerHTML =
+      `<tr><td colspan="8" class="text-center py-8 text-red-500 text-[13px]">Failed to load records. Make sure the API is running.</td></tr>`;
   }
 }
 
-/* OPEN MAIN FORM DETAILS */
+/* ── OPEN MODAL ── */
 function openResearchModal(mongoId) {
   const rec = ALL_RECORDS.find(r => r._id === String(mongoId));
   if (!rec) return;
   activeMongoId  = rec._id;
   activeSnapshot = { ...rec };
 
-  document.getElementById('modal-subtitle-id').textContent = rec.referenceNo || rec._id;
-  document.getElementById('field-ref').value      = rec.referenceNo || '';
-  document.getElementById('field-title').value    = rec.title || '';
-  document.getElementById('field-author').value   = rec.author || '';
-  document.getElementById('field-date-filing').value = rec.dateOfFiling || '';
-  
-  // Set up dynamic defects list based on payload mapping
+  document.getElementById('modal-subtitle-id').textContent   = rec.referenceNo || rec._id;
+  document.getElementById('field-ref').value                 = rec.referenceNo || '';
+  document.getElementById('field-title').value               = rec.title || '';
+  document.getElementById('field-author').value              = rec.author || '';
+  document.getElementById('field-date-filing').value         = rec.dateOfFiling || '';
+
   activeDefects = [];
-  if(rec.defectNoticeDate) activeDefects.push({ date: rec.defectNoticeDate, confirmed: false });
-  if(rec.defectNoticeDate2) activeDefects.push({ date: rec.defectNoticeDate2, confirmed: false });
+  if (rec.defectNoticeDate)  activeDefects.push({ date: rec.defectNoticeDate,  confirmed: false });
+  if (rec.defectNoticeDate2) activeDefects.push({ date: rec.defectNoticeDate2, confirmed: false });
 
   const parts   = rec.dept ? rec.dept.split(' — ') : [];
   const college = parts[0] || rec.dept || '';
   const dept    = parts[1] || '';
-
   const collegeSel = document.getElementById('field-college');
   [...collegeSel.options].forEach(o => o.selected = o.value === college);
-
   updateModalDeptOptions();
   const deptSel = document.getElementById('field-dept');
   [...deptSel.options].forEach(o => o.selected = o.value === dept);
@@ -917,6 +1249,7 @@ function openResearchModal(mongoId) {
   updateStatusStyle(statusSel);
 
   recalcSubstantive();
+  clearDirty();
   setViewMode();
   document.getElementById('research-modal').style.display = 'flex';
 }
@@ -924,37 +1257,26 @@ function openResearchModal(mongoId) {
 function closeModal() {
   document.getElementById('research-modal').style.display = 'none';
   activeMongoId = null; activeSnapshot = null;
+  clearDirty();
 }
 
-/* DYNAMIC VIEW & EDIT CONTROLS */
-const EDITABLE_FIELDS  = ['field-title', 'field-author'];
-const EDITABLE_SELECTS = ['field-dept', 'field-status', 'field-college'];
+/* ── VIEW / EDIT MODE ── */
+const EDITABLE_FIELDS  = ['field-title','field-author'];
+const EDITABLE_SELECTS = ['field-dept','field-status','field-college'];
 
 function setViewMode() {
   isEditModeActive = false;
-  
   EDITABLE_FIELDS.forEach(id => document.getElementById(id).disabled = true);
   EDITABLE_SELECTS.forEach(id => {
     const el = document.getElementById(id);
     el.disabled = true;
-    if (id === 'field-status') {
-      updateStatusStyle(el);
-      el.style.backgroundImage    = 'none';
-      el.style.cursor             = 'default';
-    } else {
-      el.style.backgroundImage = 'none';
-    }
+    if (id === 'field-status') { updateStatusStyle(el); el.style.backgroundImage = 'none'; el.style.cursor = 'default'; }
+    else el.style.backgroundImage = 'none';
   });
-
-  // Handle Date of filing swap
   document.getElementById('field-date-filing').classList.add('hidden');
   document.getElementById('display-date-filing').classList.remove('hidden');
-
-  // Handle Defects add button
   document.getElementById('btn-add-defect').classList.add('hidden');
-
   renderDefects();
-
   document.getElementById('btn-edit').classList.remove('hidden');
   document.getElementById('btn-cancel-edit').classList.add('hidden');
   document.getElementById('btn-save').classList.add('hidden');
@@ -962,10 +1284,8 @@ function setViewMode() {
 
 function enterEditMode() {
   isEditModeActive = true;
-
   EDITABLE_FIELDS.forEach(id => document.getElementById(id).disabled = false);
   document.getElementById('field-date-filing').disabled = false;
-
   EDITABLE_SELECTS.forEach(id => {
     const el = document.getElementById(id);
     el.disabled = false;
@@ -982,30 +1302,23 @@ function enterEditMode() {
       el.style.removeProperty('padding-right');
     }
   });
-
-  // Swap Date display
   document.getElementById('field-date-filing').classList.remove('hidden');
   document.getElementById('display-date-filing').classList.add('hidden');
-
   document.getElementById('btn-add-defect').classList.remove('hidden');
   renderDefects();
-
   document.getElementById('btn-edit').classList.add('hidden');
   document.getElementById('btn-cancel-edit').classList.remove('hidden');
   document.getElementById('btn-save').classList.remove('hidden');
 }
 
-function exitEditMode() {
+function exitEditMode(force = false) {
   if (activeSnapshot) {
-    document.getElementById('field-title').value         = activeSnapshot.title || '';
-    document.getElementById('field-author').value        = activeSnapshot.author || '';
-    document.getElementById('field-date-filing').value   = activeSnapshot.dateOfFiling || '';
-    
-    // Restore array mapping
+    document.getElementById('field-title').value       = activeSnapshot.title || '';
+    document.getElementById('field-author').value      = activeSnapshot.author || '';
+    document.getElementById('field-date-filing').value = activeSnapshot.dateOfFiling || '';
     activeDefects = [];
-    if(activeSnapshot.defectNoticeDate) activeDefects.push({ date: activeSnapshot.defectNoticeDate, confirmed: false });
-    if(activeSnapshot.defectNoticeDate2) activeDefects.push({ date: activeSnapshot.defectNoticeDate2, confirmed: false });
-
+    if (activeSnapshot.defectNoticeDate)  activeDefects.push({ date: activeSnapshot.defectNoticeDate,  confirmed: false });
+    if (activeSnapshot.defectNoticeDate2) activeDefects.push({ date: activeSnapshot.defectNoticeDate2, confirmed: false });
     const parts   = activeSnapshot.dept ? activeSnapshot.dept.split(' — ') : [];
     const college = parts[0] || activeSnapshot.dept || '';
     const dept    = parts[1] || '';
@@ -1014,67 +1327,61 @@ function exitEditMode() {
     updateModalDeptOptions();
     const deptSel = document.getElementById('field-dept');
     [...deptSel.options].forEach(o => o.selected = o.value === dept);
-
     const statusSel = document.getElementById('field-status');
     [...statusSel.options].forEach(o => o.selected = o.value === activeSnapshot.status);
     updateStatusStyle(statusSel);
-
     recalcSubstantive();
   }
+  clearDirty();
   setViewMode();
 }
 
+/* ── CONFIRM + SAVE ── */
 function openConfirmation()  { document.getElementById('confirm-modal').style.display = 'flex'; }
 function closeConfirmation() { document.getElementById('confirm-modal').style.display = 'none'; }
 
-/* SAVE ACTIONS (PUT) */
 async function confirmSave() {
   if (!activeMongoId) return;
 
-  const college = document.getElementById('field-college').value;
-  const deptVal = document.getElementById('field-dept').value;
+  const college    = document.getElementById('field-college').value;
+  const deptVal    = document.getElementById('field-dept').value;
   const department = college && deptVal ? `${college} — ${deptVal}` : college || deptVal;
 
-  // Pull dynamically populated defect arrays back into original backend structure
-  const defectNoticeDate = activeDefects[0] ? activeDefects[0].date : '';
+  const defectNoticeDate  = activeDefects[0] ? activeDefects[0].date : '';
   const defectNoticeDate2 = activeDefects[1] ? activeDefects[1].date : '';
 
   const payload = {
-    researchTitle: document.getElementById('field-title').value.trim(),
+    researchTitle:    document.getElementById('field-title').value.trim(),
     department,
-    status:        document.getElementById('field-status').value,
-    date:          document.getElementById('field-date-filing').value,
-    referenceId:   document.getElementById('field-ref').value.trim(),
-    authors: document.getElementById('field-author').value
-               .split(',').map(a => a.trim()).filter(Boolean),
+    status:           document.getElementById('field-status').value,
+    date:             document.getElementById('field-date-filing').value,
+    referenceId:      document.getElementById('field-ref').value.trim(),
+    authors:          document.getElementById('field-author').value.split(',').map(a => a.trim()).filter(Boolean),
     defectNoticeDate,
-    defectNoticeDate2
+    defectNoticeDate2,
   };
 
   const confirmBtn = document.getElementById('btn-confirm-save');
-  confirmBtn.disabled    = true;
-  confirmBtn.textContent = 'Saving…';
+  confirmBtn.disabled = true; confirmBtn.textContent = 'Saving…';
 
   try {
     const res = await fetch(`${API_URL}/${activeMongoId}`, {
-      method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      method: 'PUT', headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error(`PUT ${res.status}: ${await res.text()}`);
 
     const updated = await res.json();
     const merged  = {
-      ...updated,
-      _id:              activeMongoId,
-      referenceId:      payload.referenceId   || updated.referenceId  || activeSnapshot.referenceNo,
-      researchTitle:    payload.researchTitle || updated.researchTitle || updated.title,
-      department:       payload.department    || updated.department,
-      status:           payload.status        || updated.status,
-      date:             payload.date          || updated.date,
-      defectNoticeDate: payload.defectNoticeDate || updated.defectNoticeDate,
+      ...updated, _id: activeMongoId,
+      referenceId:       payload.referenceId   || updated.referenceId,
+      researchTitle:     payload.researchTitle  || updated.researchTitle,
+      department:        payload.department     || updated.department,
+      status:            payload.status         || updated.status,
+      date:              payload.date           || updated.date,
+      defectNoticeDate:  payload.defectNoticeDate  || updated.defectNoticeDate,
       defectNoticeDate2: payload.defectNoticeDate2 || updated.defectNoticeDate2,
-      authors:          Array.isArray(updated.authors) && updated.authors.length > 0
-                          ? updated.authors : payload.authors,
+      authors: Array.isArray(updated.authors) && updated.authors.length ? updated.authors : payload.authors,
     };
 
     const mapped = mapRecord(merged);
@@ -1084,96 +1391,40 @@ async function confirmSave() {
 
     updateStats();
     filterAndRender();
+    clearDirty();
     setViewMode();
 
-    document.getElementById('confirm-modal').style.display = 'none';
-    document.getElementById('research-modal').style.display = 'none';
-    activeMongoId = null;
-    activeSnapshot = null;
-
-    showToast();
+    closeConfirmation();
+    closeModal();
+    showToastMsg('Record saved successfully', 'All changes have been applied.');
   } catch (err) {
     console.error('Save failed:', err);
     alert('Failed to save changes. Please check the console and try again.');
   } finally {
-    confirmBtn.disabled    = false;
-    confirmBtn.textContent = 'Confirm';
+    confirmBtn.disabled = false; confirmBtn.textContent = 'Confirm';
   }
 }
 
-/* URGENT LIST POP UP LOGIC */
-function openUrgentModal() {
-  const tbody = document.getElementById('urgent-table-body');
-  
-  const urgentRecords = ALL_RECORDS.filter(r => {
-    const flags = computeRecordFlags(r);
-    return flags.isUrgentSubstantive || flags.isUrgentCompliance;
-  });
-
-  if (urgentRecords.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="5" class="text-center py-16">
-          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 mb-3">
-            <i class="ti ti-check text-slate-300" style="font-size:32px;"></i>
-          </div>
-          <p class="text-[14px] text-outline font-semibold">All clear!</p>
-          <p class="text-[12px] text-outline mt-1">There are no urgent records requiring action right now.</p>
-        </td>
-      </tr>`;
-  } else {
-    tbody.innerHTML = urgentRecords.map(r => {
-      const flags = computeRecordFlags(r);
-      let rowClass = flags.isUrgentCompliance ? 'row-urgent-red' : 'row-urgent-pink';
-
-      return `
-        <tr class="${rowClass} hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
-          <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide">${r.referenceNo || '—'}</td>
-          <td class="px-5 py-4 text-[13px] text-on-surface font-medium max-w-[200px] truncate">${r.title || ''}</td>
-          <td class="px-5 py-4 text-[12px] text-on-surface-variant">${r.author || ''}</td>
-          <td class="px-5 py-4 whitespace-nowrap flex flex-col gap-1 justify-center pt-3.5">
-            ${flagBadgeHTML(flags)}
-          </td>
-          <td class="px-5 py-4 text-center">
-            <button onclick="viewFromUrgent('${r._id}')" class="btn-view">
-              <i class="ti ti-eye" style="font-size:13px;"></i><span>View</span>
-            </button>
-          </td>
-        </tr>`;
-    }).join('');
-  }
-
-  document.getElementById('urgent-modal').style.display = 'flex';
-}
-
-function closeUrgentModal() {
-  document.getElementById('urgent-modal').style.display = 'none';
-}
-
-function viewFromUrgent(mongoId) {
-  closeUrgentModal();
-  openResearchModal(mongoId);
-}
-
-/* SUCCESS TOAST BAR */
-function showToast() {
+/* ── TOAST ── */
+function showToastMsg(title, body) {
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-body').textContent  = body;
   const toast = document.getElementById('success-toast');
   const bar   = document.getElementById('toast-bar');
-  bar.style.transition = 'none';
-  bar.style.width      = '100%';
-  toast.style.opacity   = '1';
-  toast.style.transform = 'translateY(0)';
+  bar.style.transition = 'none'; bar.style.width = '100%';
+  toast.style.opacity = '1'; toast.style.transform = 'translateY(0)';
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    bar.style.transition = 'width 3s linear';
-    bar.style.width      = '0%';
+    bar.style.transition = 'width 3s linear'; bar.style.width = '0%';
   }));
-  setTimeout(() => {
-    toast.style.opacity   = '0';
-    toast.style.transform = 'translateY(12px)';
-  }, 3300);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(12px)'; }, 3300);
 }
 
-/* INIT */
+/* ── BROWSER BACK / UNLOAD GUARD ── */
+window.addEventListener('beforeunload', e => {
+  if (isDirty) { e.preventDefault(); e.returnValue = ''; }
+});
+
+/* ── INIT ── */
 document.addEventListener('DOMContentLoaded', fetchPatents);
 </script>
 </body>
