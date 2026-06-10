@@ -559,7 +559,10 @@ function render() {
         <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide">${r.referenceNo || '—'}</td>
         <td class="px-5 py-4 text-[13px] text-on-surface font-medium max-w-[200px] truncate">${r.title || ''}</td>
         <td class="px-5 py-4 text-[12px] text-on-surface-variant">${r.author || ''}</td>
-        <td class="px-5 py-4 text-[12px] text-on-surface-variant">${r.dept || ''}</td>
+        <td class="px-5 py-4">
+          <div class="text-[13px] font-semibold text-on-surface leading-tight">${r.dept ? r.dept.split(' — ')[1] || r.dept : '—'}</div>
+          <div class="text-[11px] text-on-surface-variant mt-0.5">${r.dept ? r.dept.split(' — ')[0] : ''}</div>
+        </td>
         <td class="px-5 py-4">${statusBadgeHTML(r.status)}</td>
         <td class="px-5 py-4 text-[12px] text-on-surface-variant tabular-nums">${r.dateApplied || ''}</td>
         <td class="px-5 py-4 text-center">
