@@ -891,7 +891,7 @@ function runSearch() {
         <span class="text-[13px] font-semibold text-on-surface truncate">${title}</span>
         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-surface-container-highest text-primary whitespace-nowrap ml-2">${catLabel}</span>
       </div>
-      <span class="text-[11px] text-on-surface-variant truncate">${r.referenceId || 'No ID'} • ${r.college || 'No College'}</span>
+      <span class="text-[11px] text-on-surface-variant truncate">${r.referenceId || 'No ID'} • ${r.college||(r.department?r.department.split('—')[0].split('--')[0].trim():'')||'—'}</span>
     `;
     
     // REDIRECT AND HIGHLIGHT FROM SEARCH
@@ -939,7 +939,7 @@ async function loadDashboardData() {
     window._lastStats = stats;
 
     const recent = [..._allRecords]
-      .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+      .sort((a,b)=>new Date(b.createdAt||b.date||0)-new Date(a.createdAt||a.date||0))
       .slice(0, 5);
 
     renderStatCards(stats);
@@ -969,8 +969,8 @@ function aggregateClientSide(records) {
     const cat = (r.category||'').toLowerCase().trim().replace(/\s+/g,'-');
     if (catCounts[cat] !== undefined) catCounts[cat]++;
 
-    const college = r.college || (r.department ? r.department.split(' — ')[0].split(' -- ')[0] : '') || 'Other';
-    const collegeKey = college.trim() || 'Other';
+    const college = (r.college||(r.department?r.department.split('—')[0].split('--')[0].trim():'')||'').trim();
+    const collegeKey = college || 'Unknown College';
     collegeCounts[collegeKey] = (collegeCounts[collegeKey] || 0) + 1;
 
     const rawDate = r.date || r.dateOfApplication || r.createdAt;
@@ -1108,6 +1108,8 @@ document.querySelectorAll('.chart-filter-btn').forEach(btn => {
    RENDER: PIE CHART
 ═══════════════════════════════════════════ */
 const PIE_COLORS = ['#0058be','#6b38d4','#924700','#10b981','#e24b4a','#f59e0b','#8b5cf6'];
+const COLLEGE_COLORS = {'College of Computer Studies':'#6b7280','College of Engineering':'#ef4444','College of Business':'#eab308','College of Accounting':'#22c55e','College of Accountancy':'#22c55e','College of Education':'#3b82f6'};
+function getPieColor(label,i){return COLLEGE_COLORS[label]||PIE_COLORS[i%PIE_COLORS.length];}
 
 function renderPieChart(stats) {
   hide('pieChartLoading');
@@ -1126,7 +1128,7 @@ function renderPieChart(stats) {
     const pct = total ? Math.round(val/total*100) : 0;
     const div = document.createElement('div');
     div.className = 'pie-legend-item';
-    div.innerHTML = `<span class="pie-legend-sq" style="background:${PIE_COLORS[i%PIE_COLORS.length]}"></span><span style="font-size:12px;">${label}</span><span class="pie-legend-pct">${pct}%</span>`;
+    div.innerHTML = `<span class="pie-legend-sq" style="background:${getPieColor(label,i)}"></span><span style="font-size:12px;">${label}</span><span class="pie-legend-pct">${pct}%</span>`;
     legendEl.appendChild(div);
   });
 
@@ -1135,7 +1137,7 @@ function renderPieChart(stats) {
     type:'doughnut',
     data:{
       labels: entries.map(([l])=>l),
-      datasets:[{ data:entries.map(([,v])=>v), backgroundColor:entries.map((_,i)=>PIE_COLORS[i%PIE_COLORS.length]), borderWidth:3, borderColor:'#ffffff', hoverOffset:8 }]
+      datasets:[{ data:entries.map(([,v])=>v), backgroundColor:entries.map(([l],i)=>getPieColor(l,i)), borderWidth:3, borderColor:'#ffffff', hoverOffset:8 }]
     },
     options:{ responsive:true, maintainAspectRatio:false, cutout:'62%', plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}`}} } }
   });

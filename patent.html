@@ -53,14 +53,10 @@
   .stat-card:hover { transform: translateY(-2px); }
   tbody tr { transition: background 0.12s; }
 
-  /* Modified Table Row Status Colors */
   .row-urgent-pink { background-color: #fdf2f8 !important; }
   .row-urgent-pink:hover { background-color: #fce7f3 !important; }
   .row-urgent-red { background-color: #fef2f2 !important; }
   .row-urgent-red:hover { background-color: #fee2e2 !important; }
-  /* NEW: Orange row warning for 1-month defect deadline */
-  .row-warning-orange { background-color: #fff7ed !important; }
-  .row-warning-orange:hover { background-color: #ffedd5 !important; }
 
   .page-btn {
     width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
@@ -220,6 +216,14 @@
   td.status-col, th.status-col { min-width: 148px; white-space: nowrap; }
   td.action-col, th.action-col { min-width: 88px; white-space: nowrap; }
 
+  /* ── Highlight animation ── */
+  @keyframes highlightGlow {
+    0%   { background-color: #bfdbfe; transform: scale(1); box-shadow: 0 0 10px #bfdbfe; }
+    30%  { background-color: #93c5fd; transform: scale(1.005); box-shadow: 0 0 15px #93c5fd; }
+    100% { background-color: transparent; transform: scale(1); box-shadow: none; }
+  }
+  .highlight-row { animation: highlightGlow 2.5s ease-out !important; }
+  
   @media (max-width: 1023px) {
     #sidebar { transform: translateX(-100%); transition: transform 0.25s ease; }
     #sidebar.open { transform: translateX(0); }
@@ -240,16 +244,16 @@
     </div>
   </div>
   <nav class="flex-1 overflow-y-auto px-3 pt-3 pb-2 space-y-2">
-    <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></a>
+    <a class="nav-item" href="dashboard.html" onclick="handleNavAway('dashboard.html'); return false;"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></a>
     <div class="nav-section-label">IP Modules</div>
-    <a class="nav-item" href="copyright.html"><i class="ti ti-copyright"></i><span>Copyright</span></a>
-    <a class="nav-item active" href="patent.html"><i class="ti ti-file-description"></i><span>Patent</span></a>
-    <a class="nav-item" href="trademark.html"><i class="ti ti-shield-check"></i><span>Trademark</span></a>
-    <a class="nav-item" href="utility-model.html"><i class="ti ti-settings-2"></i><span>Utility Model</span></a>
-    <a class="nav-item" href="industrial-design.html"><i class="ti ti-vector-bezier-2"></i><span>Industrial Design</span></a>
+    <a class="nav-item" href="copyright.html" onclick="handleNavAway('copyright.html'); return false;"><i class="ti ti-copyright"></i><span>Copyright</span></a>
+    <a class="nav-item active" href="patent.html" onclick="handleNavAway('patent.html'); return false;"><i class="ti ti-file-description"></i><span>Patent</span></a>
+    <a class="nav-item" href="trademark.html" onclick="handleNavAway('trademark.html'); return false;"><i class="ti ti-shield-check"></i><span>Trademark</span></a>
+    <a class="nav-item" href="utility-model.html" onclick="handleNavAway('utility-model.html'); return false;"><i class="ti ti-settings-2"></i><span>Utility Model</span></a>
+    <a class="nav-item" href="industrial-design.html" onclick="handleNavAway('industrial-design.html'); return false;"><i class="ti ti-vector-bezier-2"></i><span>Industrial Design</span></a>
     <div class="border-t border-slate-100 my-5"></div>
     <div class="nav-section-label">General</div>
-    <a class="nav-item" href="event.html"><i class="ti ti-calendar-event"></i><span>Event</span></a>
+    <a class="nav-item" href="event.html" onclick="handleNavAway('event.html'); return false;"><i class="ti ti-calendar-event"></i><span>Event</span></a>
   </nav>
   <div class="p-4 border-t border-outline-variant">
     <button onclick="handleNavAway('index.html')"
@@ -643,7 +647,7 @@
   </div>
 </div>
 
-<div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-on-surface/50 backdrop-blur-sm"
+<div class="fixed inset-0 z-[70] items-center justify-center p-4 bg-on-surface/50 backdrop-blur-sm"
   id="confirm-modal" style="display:none;">
   <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center modal-enter">
     <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-5">
@@ -658,7 +662,7 @@
   </div>
 </div>
 
-<div class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-on-surface/60 backdrop-blur-sm"
+<div class="fixed inset-0 z-[80] items-center justify-center p-4 bg-on-surface/60 backdrop-blur-sm"
   id="unsaved-modal" style="display:none;">
   <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden modal-enter">
     <div class="bg-amber-50 border-b border-amber-200 px-7 py-5 flex items-center gap-4">
@@ -686,7 +690,7 @@
   </div>
 </div>
 
-<div class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-on-surface/60 backdrop-blur-sm"
+<div class="fixed inset-0 z-[80] items-center justify-center p-4 bg-on-surface/60 backdrop-blur-sm"
   id="resolve-modal" style="display:none;">
   <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden modal-enter">
     <div class="bg-emerald-50 border-b border-emerald-200 px-7 py-5 flex items-center gap-4">
@@ -721,6 +725,30 @@
       <button onclick="closeResolveModal()" class="flex-1 py-3 text-[13px] font-bold text-on-surface-variant bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Cancel</button>
       <button onclick="executeResolve()" class="flex-1 py-3 text-[13px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
         <i class="ti ti-circle-check" style="font-size:16px;"></i> Confirm & Resolve
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="fixed inset-0 z-[85] items-center justify-center p-4 bg-on-surface/60 backdrop-blur-sm"
+  id="delete-defect-modal" style="display:none;">
+  <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden modal-enter">
+    <div class="bg-red-50 border-b border-red-200 px-7 py-5 flex items-center gap-4">
+      <div class="w-11 h-11 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
+        <i class="ti ti-trash text-red-600" style="font-size:22px;"></i>
+      </div>
+      <div>
+        <h3 class="text-[16px] font-bold text-red-900">Remove Defect Notice</h3>
+        <p class="text-[12px] text-red-700 font-medium mt-0.5" id="delete-defect-subtitle">Defect Notice #1</p>
+      </div>
+    </div>
+    <div class="px-7 py-6">
+      <p class="text-[14px] text-on-surface leading-relaxed">Are you sure you want to remove this defect notice? This action cannot be undone.</p>
+    </div>
+    <div class="px-7 pb-7 flex gap-3">
+      <button onclick="closeDeleteDefectModal()" class="flex-1 py-2.5 text-[13px] font-bold text-on-surface-variant bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Cancel</button>
+      <button onclick="confirmDeleteDefect()" class="flex-1 py-2.5 text-[13px] font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
+        <i class="ti ti-trash" style="font-size:15px;"></i> Remove
       </button>
     </div>
   </div>
@@ -787,7 +815,7 @@ function formatAuthors(authorString) {
   const shown     = parts.slice(0, 2).join(', ');
   const remaining = parts.length - 2;
   return {
-    html: `${shown} <span style="display:inline-flex;align-items:center;font-size:10px;font-weight:700;color:#0058be;background:#eff6ff;border:1px solid #bfdbfe;padding:1px 7px;border-radius:20px;margin-left:2px;">+${remaining} more</span>`,
+    html: `${shown} <span style="display:inline-flex;align-items:center;font-size:10px;font-weight:600;color:#9ca3af;background:#f3f4f6;border:1px solid #e5e7eb;padding:1px 6px;border-radius:20px;margin-left:2px;">+${remaining}</span>`,
     full: parts.join(', '),
     hasMore: true,
     count: remaining,
@@ -837,7 +865,7 @@ function clearDirty() { isDirty = false; document.getElementById('unsaved-indica
 /* ── UNSAVED GUARD ── */
 function requestModalClose()  { isDirty ? showUnsavedModal(() => { clearDirty(); closeModal(); })           : closeModal(); }
 function requestCancelEdit()  { isDirty ? showUnsavedModal(() => { clearDirty(); exitEditMode(true); })     : exitEditMode(true); }
-function handleNavAway(url)   { isDirty ? showUnsavedModal(() => { window.location.href = url; })           : (window.location.href = url); }
+function handleNavAway(url)   { isDirty ? showUnsavedModal(() => { window.location.href = url; }) : (window.location.href = url); }
 function showUnsavedModal(fn) { pendingAction = fn; document.getElementById('unsaved-modal').style.display = 'flex'; }
 function closeUnsavedModal()  { document.getElementById('unsaved-modal').style.display = 'none'; pendingAction = null; }
 function discardChangesAndProceed() { document.getElementById('unsaved-modal').style.display = 'none'; if (pendingAction) { pendingAction(); pendingAction = null; } }
@@ -855,19 +883,31 @@ function getDaysRemaining(ds) {
 }
 function computeRecordFlags(r) {
   const substantiveDeadline = addMonths(r.dateOfFiling, 18);
+
+  // Use defects array if available, else fall back to legacy fields
+  // Only count defects that are NOT resolved (confirmed = false/undefined)
+  let activeDeadlines = [];
+  if (Array.isArray(r.defects) && r.defects.length > 0) {
+    r.defects.forEach(d => {
+      if (!d.confirmed && d.date) activeDeadlines.push(addMonths(d.date, 2));
+    });
+  } else {
+    if (r.defectNoticeDate  && !r.defectConfirmed1) activeDeadlines.push(addMonths(r.defectNoticeDate,  2));
+    if (r.defectNoticeDate2 && !r.defectConfirmed2) activeDeadlines.push(addMonths(r.defectNoticeDate2, 2));
+  }
+
   const complianceDeadline  = r.defectNoticeDate  ? addMonths(r.defectNoticeDate,  2) : null;
   const complianceDeadline2 = r.defectNoticeDate2 ? addMonths(r.defectNoticeDate2, 2) : null;
-  
-  // Notice the resolved checks so it doesn't trigger alerts for resolved ones
-  const sd  = getDaysRemaining(substantiveDeadline);
-  const cd  = r.isDefect1Resolved ? null : getDaysRemaining(complianceDeadline);
-  const cd2 = r.isDefect2Resolved ? null : getDaysRemaining(complianceDeadline2);
-  
-  const isUrgentSubstantive = sd  !== null && sd  <= 60 && r.status !== 'Approved';
-  const isUrgentCompliance  = ((cd  !== null && cd  <= 14) || (cd2 !== null && cd2 <= 14)) && r.status !== 'Approved';
-  // Warning glow: between 14 and 30 days left
-  const isComplianceWarning = ((cd  !== null && cd  > 14 && cd  <= 30) || (cd2 !== null && cd2 > 14 && cd2 <= 30)) && r.status !== 'Approved';
-  
+
+  const sd = getDaysRemaining(substantiveDeadline);
+  const compDays = activeDeadlines.map(d => getDaysRemaining(d)).filter(d => d !== null);
+
+  const isUrgentSubstantive = sd !== null && sd <= 60 && r.status !== 'Approved';
+  // Red: 30 days or less on any unresolved defect
+  const isUrgentCompliance  = compDays.some(d => d <= 30) && r.status !== 'Approved';
+  // Orange: 31–60 days on any unresolved defect
+  const isComplianceWarning = !isUrgentCompliance && compDays.some(d => d > 30 && d <= 60) && r.status !== 'Approved';
+
   return { substantiveDeadline, complianceDeadline, complianceDeadline2, isUrgentSubstantive, isUrgentCompliance, isComplianceWarning };
 }
 
@@ -889,8 +929,8 @@ function renderDefects() {
     const daysLeft       = getDaysRemaining(complianceDate);
     const isResolved     = defect.confirmed;
     const isOverdue      = !isResolved && daysLeft !== null && daysLeft  <= 0;
-    const isWarning      = !isResolved && daysLeft !== null && daysLeft  >  0 && daysLeft <= 30;
-    const isUrgent       = !isResolved && daysLeft !== null && daysLeft  >  0 && daysLeft <= 14;
+    const isWarning      = !isResolved && daysLeft !== null && daysLeft >  0 && daysLeft <= 30;
+    const isUrgent       = !isResolved && daysLeft !== null && daysLeft >  0 && daysLeft <= 7;
 
     let cardClass = 'bg-white border-slate-200 shadow-sm';
     if      (isResolved) cardClass = 'bg-emerald-50/60 border-emerald-200';
@@ -912,17 +952,29 @@ function renderDefects() {
       ? `<div class="mt-3 pt-3 border-t ${isWarning ? 'border-rose-100' : 'border-slate-100'} flex items-center gap-2">
            <i class="ti ti-${daysLeft < 0 ? 'alert-triangle text-red-500' : daysLeft <= 7 ? 'flame text-orange-500' : daysLeft <= 30 ? 'clock-exclamation text-rose-500' : 'clock text-slate-400'}" style="font-size:13px;"></i>
            <span class="text-[12px] font-semibold ${daysLeft < 0 ? 'text-red-600' : daysLeft <= 7 ? 'text-orange-600' : daysLeft <= 30 ? 'text-rose-600' : 'text-outline'}">
-             ${daysLeft < 0 ? `${Math.abs(daysLeft)} days overdue` : daysLeft === 0 ? 'Due today — act immediately' : daysLeft <= 30 ? `⚠ Due in ${daysLeft} days — act soon` : `${daysLeft} days remaining`}
+             ${daysLeft < 0 ? `${Math.abs(daysLeft)} days overdue` : daysLeft === 0 ? 'Due today — act immediately' : daysLeft <= 30 ? `⚠ Due in ${daysLeft} days` : `${daysLeft} days remaining`}
            </span>
          </div>` : '';
 
-    const resolveBtn = !isResolved
-      ? `<div class="mt-4 flex justify-end">
-           <button onclick="openResolveModal(${i})"
-             class="px-4 py-2 bg-emerald-600 text-white text-[11px] font-bold rounded-lg hover:bg-emerald-700 transition-all hover:-translate-y-0.5 flex items-center gap-1.5">
-             <i class="ti ti-circle-check" style="font-size:14px;"></i> Mark as Resolved
-           </button>
-         </div>` : '';
+    const resolveBtn = isEditModeActive
+      ? (!isResolved
+          ? `<div class="mt-4 flex justify-end gap-2">
+               <button onclick="openDeleteDefectModal(${i})" title="Remove defect"
+                 class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 border border-red-200 rounded-lg hover:bg-red-100 transition-all hover:-translate-y-0.5">
+                 <i class="ti ti-trash" style="font-size:15px;"></i>
+               </button>
+               <button onclick="openResolveModal(${i})"
+                 class="px-4 py-2 bg-emerald-600 text-white text-[11px] font-bold rounded-lg hover:bg-emerald-700 transition-all hover:-translate-y-0.5 flex items-center gap-1.5">
+                 <i class="ti ti-circle-check" style="font-size:14px;"></i> Mark as Resolved
+               </button>
+             </div>`
+          : `<div class="mt-4 flex justify-end">
+               <button onclick="openDeleteDefectModal(${i})" title="Remove defect"
+                 class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 border border-red-200 rounded-lg hover:bg-red-100 transition-all hover:-translate-y-0.5">
+                 <i class="ti ti-trash" style="font-size:15px;"></i>
+               </button>
+             </div>`)
+      : '';
 
     const iconEl = isResolved
       ? `<div class="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center"><svg width="14" height="14" viewBox="0 0 14 14"><polyline points="3,7 6,10 11,4" stroke="#059669" stroke-width="2" stroke-linecap="round" fill="none"/></svg></div>`
@@ -958,7 +1010,7 @@ function renderDefects() {
 
 function updateDefectDate(i, val) { if (activeDefects[i]) { activeDefects[i].date = val; markDirty(); renderDefects(); } }
 function addDefect() {
-  if (activeDefects.length >= 2) { alert('Maximum 2 Formality Defects per record.'); return; }
+  if (activeDefects.length >= 10) { alert('Maximum 10 Formality Defects per record.'); return; }
   activeDefects.push({ date: new Date().toISOString().split('T')[0], confirmed: false });
   markDirty(); renderDefects();
 }
@@ -991,9 +1043,9 @@ const statusMeta = {
 function statusBadgeHTML(s) { const m = statusMeta[s] || { cls:'badge-default' }; return `<span class="status-badge ${m.cls}">${s || '—'}</span>`; }
 function flagBadgeHTML(f) {
   let b = '';
-  if (f.isUrgentCompliance)       b += `<span class="status-badge badge-urgent-red"><i class="ti ti-alert-triangle" style="font-size:11px;"></i>Defect Due</span> `;
-  if (f.isUrgentSubstantive)      b += `<span class="status-badge badge-urgent-pink"><i class="ti ti-clock-exclamation" style="font-size:11px;"></i>Exam Due</span>`;
-  if (!b && f.isComplianceWarning) b = `<span class="status-badge badge-urgent-pink"><i class="ti ti-clock" style="font-size:11px;"></i>Deadline Soon</span>`;
+  if (f.isUrgentCompliance)        b += `<span class="status-badge badge-urgent-red"><i class="ti ti-alert-triangle" style="font-size:11px;"></i>Defect Due</span> `;
+  if (f.isUrgentSubstantive)       b += `<span class="status-badge badge-urgent-pink"><i class="ti ti-clock-exclamation" style="font-size:11px;"></i>Exam Due</span>`;
+  if (!b && f.isComplianceWarning) b  = `<span class="status-badge" style="background:#fff7ed;color:#c2410c;border-color:#fed7aa;"><i class="ti ti-clock" style="font-size:11px;"></i>Deadline Soon</span>`;
   return b || '<span class="text-[11px] text-outline">—</span>';
 }
 const statusHero = {
@@ -1058,11 +1110,19 @@ function applyStatusFilter(val) {
 }
 document.addEventListener('click', e => { const w = document.getElementById('filter-wrapper'); if (w && !w.contains(e.target)) document.getElementById('filter-menu').classList.add('hidden'); });
 
-/* ── SORT helper ── */
+/* ── SORT helper ──
+   Priority: createdAt (full ISO) > MongoDB _id timestamp > dateOfFiling
+   Most recently ADDED record appears first, accurate to the second.
+── */
+function mongoIdToDate(id) {
+  try { return new Date(parseInt(String(id).substring(0, 8), 16) * 1000); }
+  catch (e) { return new Date(0); }
+}
 function sortByDateDesc(arr) {
   return [...arr].sort((a, b) => {
-    const da = a.dateOfFiling ? new Date(a.dateOfFiling) : new Date(0);
-    const db = b.dateOfFiling ? new Date(b.dateOfFiling) : new Date(0);
+    // Use full ISO createdAt/date if available, else decode MongoDB ObjectId timestamp
+    const da = a._rawDateTime ? new Date(a._rawDateTime) : mongoIdToDate(a._id);
+    const db = b._rawDateTime ? new Date(b._rawDateTime) : mongoIdToDate(b._id);
     return db - da;
   });
 }
@@ -1085,6 +1145,7 @@ function filterAndRender() {
   filteredRecords = sortByDateDesc(filteredRecords);
   currentPage = 1;
   render();
+  checkAndHighlightResearch();
 }
 
 /* ── RENDER TABLE ── */
@@ -1106,10 +1167,7 @@ function render() {
     tbody.innerHTML = page.map(r => {
       const flags = computeRecordFlags(r);
       let rc = '';
-      
-      // NEW: Applied the orange warning logic here!
       if      (flags.isUrgentCompliance)  rc = 'row-urgent-red';
-      else if (flags.isComplianceWarning) rc = 'row-warning-orange';
       else if (flags.isUrgentSubstantive) rc = 'row-urgent-pink';
 
       let deptText = r.dept || 'N/A', collegeText = '';
@@ -1117,7 +1175,7 @@ function render() {
 
       const au = formatAuthors(r.author);
       return `
-        <tr class="${rc} hover:bg-slate-50/70 transition-colors">
+        <tr data-id="${r.referenceNo}" class="${rc} hover:bg-slate-50/70 transition-colors">
           <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide whitespace-nowrap">${r.referenceNo || '—'}</td>
           <td class="px-5 py-4 text-[13px] text-on-surface font-medium" style="max-width:210px;"><div class="truncate" title="${(r.title||'').replace(/"/g,'"')}">${r.title || ''}</div></td>
           <td class="px-5 py-4 text-[12px] text-on-surface-variant">
@@ -1180,26 +1238,35 @@ function renderPagination(totalPages) {
 function mapRecord(item) {
   const title = (item.researchTitle?.trim()) || (item.title?.trim()) || 'No Title';
   let author = 'Unknown';
-  if (Array.isArray(item.authors) && item.authors.length)        author = item.authors.join(', ');
+  if (Array.isArray(item.authors) && item.authors.length)            author = item.authors.join(', ');
   else if (typeof item.author   === 'string' && item.author.trim())   author = item.author.trim();
   else if (typeof item.inventor === 'string' && item.inventor.trim()) author = item.inventor.trim();
   const dept = item.department || item.dept || 'N/A';
+
+  // _rawDateTime: use createdAt first (has full time), then date/dateApplied
+  // dateOfFiling: date-only for display — time never shown in UI
+  let rawDateTime  = item.createdAt || null;  // most accurate: MongoDB insertion timestamp
   let dateOfFiling = '';
-  if      (item.date)        dateOfFiling = item.date.split('T')[0];
+  if (item.date)            dateOfFiling = item.date.split('T')[0];
   else if (item.dateApplied) dateOfFiling = item.dateApplied.split('T')[0];
   else if (item.createdAt)   dateOfFiling = item.createdAt.split('T')[0];
-  
-  // NEW: Read the defect status correctly
+
   return {
     _id: String(item._id),
+    _rawDateTime: rawDateTime,
     referenceNo: item.referenceId || item.referenceNo || item.refNo || String(item._id),
     title, author, dept,
     status: item.status || 'Submitted to IPO',
     dateOfFiling,
-    defectNoticeDate:  item.defectNoticeDate  ? item.defectNoticeDate.split('T')[0]  : null,
-    defectNoticeDate2: item.defectNoticeDate2 ? item.defectNoticeDate2.split('T')[0] : null,
-    isDefect1Resolved: item.isDefect1Resolved || false,
-    isDefect2Resolved: item.isDefect2Resolved || false,
+
+    // Add mapping for the new defects array
+    defects: Array.isArray(item.defects) ? item.defects : [],
+
+    // Kept for legacy backend support
+    defectNoticeDate:  (item.defectNoticeDate  && item.defectNoticeDate  !== "null") ? String(item.defectNoticeDate).split("T")[0]  : null,
+    defectNoticeDate2: (item.defectNoticeDate2 && item.defectNoticeDate2 !== "null") ? String(item.defectNoticeDate2).split("T")[0] : null,
+    defectConfirmed1:  !!item.defectConfirmed1,
+    defectConfirmed2:  !!item.defectConfirmed2,
   };
 }
 
@@ -1209,9 +1276,11 @@ async function fetchPatents() {
     const res  = await fetch(API_URL);
     const data = await res.json();
     const raw  = Array.isArray(data) ? data : (data.data ?? []);
+    console.log('🔄 Fetched records sample:', raw.slice(0,2).map(r => ({ id: r._id, defects: r.defects, defectNoticeDate: r.defectNoticeDate, defectConfirmed1: r.defectConfirmed1 })));
     ALL_RECORDS     = raw.filter(i => (i.category || '').toLowerCase() === CATEGORY).map(mapRecord);
     filteredRecords = sortByDateDesc([...ALL_RECORDS]);
     updateStats(); render();
+    checkAndHighlightResearch();
   } catch (err) {
     console.error('Fetch failed:', err);
     document.getElementById('table-body').innerHTML =
@@ -1229,12 +1298,13 @@ function openResearchModal(mongoId) {
   document.getElementById('field-title').value             = rec.title || '';
   document.getElementById('field-author').value            = rec.author || '';
   document.getElementById('field-date-filing').value       = rec.dateOfFiling || '';
-  
-  // NEW: Don't hardcode confirmed to false anymore, read from 'rec'
   activeDefects = [];
-  if (rec.defectNoticeDate)  activeDefects.push({ date: rec.defectNoticeDate,  confirmed: rec.isDefect1Resolved });
-  if (rec.defectNoticeDate2) activeDefects.push({ date: rec.defectNoticeDate2, confirmed: rec.isDefect2Resolved });
-  
+  if (rec.defects && rec.defects.length > 0) {
+    activeDefects = JSON.parse(JSON.stringify(rec.defects));
+  } else {
+    if (rec.defectNoticeDate)  activeDefects.push({ date: rec.defectNoticeDate,  confirmed: !!rec.defectConfirmed1 });
+    if (rec.defectNoticeDate2) activeDefects.push({ date: rec.defectNoticeDate2, confirmed: !!rec.defectConfirmed2 });
+  }
   const parts  = rec.dept ? rec.dept.split(' — ') : [];
   const col    = parts[0] || rec.dept || '';
   const dpt    = parts[1] || '';
@@ -1295,12 +1365,13 @@ function exitEditMode() {
     document.getElementById('field-title').value       = activeSnapshot.title || '';
     document.getElementById('field-author').value      = activeSnapshot.author || '';
     document.getElementById('field-date-filing').value = activeSnapshot.dateOfFiling || '';
-    
-    // NEW: Restore correct defect statuses
     activeDefects = [];
-    if (activeSnapshot.defectNoticeDate)  activeDefects.push({ date: activeSnapshot.defectNoticeDate,  confirmed: activeSnapshot.isDefect1Resolved });
-    if (activeSnapshot.defectNoticeDate2) activeDefects.push({ date: activeSnapshot.defectNoticeDate2, confirmed: activeSnapshot.isDefect2Resolved });
-    
+    if (activeSnapshot.defects && activeSnapshot.defects.length > 0) {
+      activeDefects = JSON.parse(JSON.stringify(activeSnapshot.defects));
+    } else {
+      if (activeSnapshot.defectNoticeDate)  activeDefects.push({ date: activeSnapshot.defectNoticeDate,  confirmed: !!activeSnapshot.defectConfirmed1 });
+      if (activeSnapshot.defectNoticeDate2) activeDefects.push({ date: activeSnapshot.defectNoticeDate2, confirmed: !!activeSnapshot.defectConfirmed2 });
+    }
     const parts = activeSnapshot.dept ? activeSnapshot.dept.split(' — ') : [];
     const col   = parts[0] || activeSnapshot.dept || '', dpt = parts[1] || '';
     const cSel  = document.getElementById('field-college');
@@ -1324,28 +1395,32 @@ async function confirmSave() {
   const college   = document.getElementById('field-college').value;
   const deptVal   = document.getElementById('field-dept').value;
   const dept      = college && deptVal ? `${college} — ${deptVal}` : college || deptVal;
-  
-  // NEW: Add the resolved status dynamically to the payload
   const payload = {
-    researchTitle:    document.getElementById('field-title').value.trim(),
-    department:       dept,
-    status:           document.getElementById('field-status').value,
-    date:             document.getElementById('field-date-filing').value,
-    referenceId:      document.getElementById('field-ref').value.trim(),
-    authors:          document.getElementById('field-author').value.split(',').map(a => a.trim()).filter(Boolean),
-    defectNoticeDate:  activeDefects[0]?.date || '',
-    defectNoticeDate2: activeDefects[1]?.date || '',
-    isDefect1Resolved: activeDefects[0]?.confirmed || false,
-    isDefect2Resolved: activeDefects[1]?.confirmed || false,
+    researchTitle:     document.getElementById('field-title').value.trim(),
+    department:        dept,
+    status:            document.getElementById('field-status').value,
+    date:              document.getElementById('field-date-filing').value,
+    referenceId:       document.getElementById('field-ref').value.trim(),
+    authors:           document.getElementById('field-author').value.split(',').map(a => a.trim()).filter(Boolean),
+
+    // Pass the full array for the backend to handle > 2 defects
+    defects:           activeDefects,
+
+    // Kept for backwards compatibility with your current schema
+    defectNoticeDate:  activeDefects[0]?.date || null,
+    defectNoticeDate2: activeDefects[1]?.date || null,
+    defectConfirmed1:  !!activeDefects[0]?.confirmed,
+    defectConfirmed2:  !!activeDefects[1]?.confirmed,
   };
-  
   const btn = document.getElementById('btn-confirm-save');
   btn.disabled = true; btn.textContent = 'Saving…';
   try {
+    console.log('🔵 Sending payload:', JSON.stringify(payload, null, 2));
     const res = await fetch(`${API_URL}/${activeMongoId}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
     if (!res.ok) throw new Error(await res.text());
     const updated = await res.json();
-    const merged  = mapRecord({ ...updated, _id: activeMongoId, ...payload, authors: updated.authors?.length ? updated.authors : payload.authors });
+    console.log('🟢 API response:', JSON.stringify(updated, null, 2));
+    const merged  = mapRecord({ ...updated, _id: activeMongoId, ...payload, authors: updated.authors?.length ? updated.authors : payload.authors, defectConfirmed1: payload.defectConfirmed1, defectConfirmed2: payload.defectConfirmed2 });
     const idx     = ALL_RECORDS.findIndex(r => r._id === activeMongoId);
     if (idx !== -1) ALL_RECORDS[idx] = merged;
     activeSnapshot = { ...merged };
@@ -1417,7 +1492,7 @@ function refreshPreview() {
     const flags   = computeRecordFlags(r);
     const sc      = previewSC[r.status] || { bg:'#f1f5f9', color:'#475569', border:'#cbd5e1' };
     const au      = formatAuthors(r.author);
-    const auText  = au.hasMore ? `${r.author.split(',').slice(0,2).join(', ')} +${au.count} more` : (r.author || '—');
+    const auText  = au.hasMore ? `${r.author.split(',').slice(0,2).join(', ')} +${au.count}` : (r.author || '—');
     const ser     = r.dateOfFiling ? toShortDate(addMonths(r.dateOfFiling, 18)) : '—';
     const alert   = flags.isUrgentCompliance ? '🔴 Defect Due' : flags.isUrgentSubstantive ? '🔴 Exam Due' : flags.isComplianceWarning ? '🟡 Deadline Soon' : '—';
     const rowBg   = idx % 2 === 0 ? '#fff' : '#f8fafc';
@@ -1530,6 +1605,47 @@ function showToastMsg(title, body) {
   toast.style.opacity = '1'; toast.style.transform = 'translateY(0)';
   requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = 'width 3s linear'; bar.style.width = '0%'; }));
   setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(12px)'; }, 3300);
+}
+
+/* ── DELETE DEFECT MODAL ── */
+let deleteDefectIndex = null;
+function openDeleteDefectModal(i) {
+  deleteDefectIndex = i;
+  document.getElementById('delete-defect-subtitle').textContent = `Defect Notice #${i + 1}`;
+  document.getElementById('delete-defect-modal').style.display = 'flex';
+}
+function closeDeleteDefectModal() {
+  document.getElementById('delete-defect-modal').style.display = 'none';
+  deleteDefectIndex = null;
+}
+function confirmDeleteDefect() {
+  if (deleteDefectIndex === null) return;
+  activeDefects.splice(deleteDefectIndex, 1);
+  closeDeleteDefectModal();
+  markDirty();
+  renderDefects();
+  showToastMsg('Defect notice removed', 'Remember to save your changes.');
+}
+
+/* ── HIGHLIGHT LOGIC ── */
+function checkAndHighlightResearch() {
+  const highlightId = sessionStorage.getItem('highlightResearchId');
+  if (!highlightId) return;
+
+  const targetElement = document.querySelector(`[data-id="${highlightId}"]`);
+  
+  if (targetElement) {
+    setTimeout(() => {
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      targetElement.classList.add('highlight-row');
+      
+      setTimeout(() => {
+        targetElement.classList.remove('highlight-row');
+      }, 2500);
+    }, 100);
+    
+    sessionStorage.removeItem('highlightResearchId');
+  }
 }
 
 window.addEventListener('beforeunload', e => { if (isDirty) { e.preventDefault(); e.returnValue = ''; } });
