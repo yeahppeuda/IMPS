@@ -10,6 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
   tailwind.config = {
     theme: {
@@ -42,7 +44,6 @@
   .nav-item.active { background-color: #e8f0fd; color: #0058be; font-weight: 500; transform: none; }
   .nav-item.active i { color: #0058be; }
   .nav-item i { font-size: 18px; width: 20px; text-align: center; flex-shrink: 0; }
-
   .nav-section-label {
     font-size: 10px; font-weight: 600; color: #727785;
     text-transform: uppercase; letter-spacing: 0.08em; padding: 0 12px; margin: 12px 0 4px;
@@ -60,64 +61,101 @@
   .page-btn:hover:not(.active):not(:disabled) { background: #f1f5f9; }
   .page-btn.active { background: #0058be; color: #fff; font-weight: 700; }
   .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .page-ellipsis { width:32px; height:32px; display:flex; align-items:center; justify-content:center; color:#727785; font-size:14px; }
 
   .modal-field:not(:disabled) {
-    background: #ffffff !important;
-    border-color: #93c5fd !important;
-    cursor: text !important;
+    background: #ffffff !important; border-color: #93c5fd !important; cursor: text !important;
   }
   .modal-field-select:not(:disabled) {
-    background: #ffffff !important;
-    border-color: #93c5fd !important;
-    cursor: pointer !important;
+    background: #ffffff !important; border-color: #93c5fd !important; cursor: pointer !important;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
-    background-repeat: no-repeat !important;
-    background-position: right 0.75rem center !important;
-    background-size: 1.25em 1.25em !important;
-    padding-right: 2.5rem !important;
+    background-repeat: no-repeat !important; background-position: right 0.75rem center !important;
+    background-size: 1.25em 1.25em !important; padding-right: 2.5rem !important;
   }
 
   .status-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 4px 10px 4px 8px; border-radius: 20px;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.01em;
+    display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px 4px 8px;
+    border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.01em;
     border-width: 1px; border-style: solid; white-space: nowrap;
   }
-  .badge-submitted { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af; border-color: #bfdbfe; }
-  .badge-esoa      { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); color: #4338ca; border-color: #c4b5fd; }
-  .badge-paid      { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); color: #065f46; border-color: #6ee7b7; }
-  .badge-approved  { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); color: #92400e; border-color: #fcd34d; }
-  .badge-default   { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); color: #475569; border-color: #cbd5e1; }
+  .badge-submitted { background: linear-gradient(135deg,#eff6ff,#dbeafe); color:#1e40af; border-color:#bfdbfe; }
+  .badge-esoa      { background: linear-gradient(135deg,#f5f3ff,#ede9fe); color:#4338ca; border-color:#c4b5fd; }
+  .badge-paid      { background: linear-gradient(135deg,#ecfdf5,#d1fae5); color:#065f46; border-color:#6ee7b7; }
+  .badge-approved  { background: linear-gradient(135deg,#fffbeb,#fef3c7); color:#92400e; border-color:#fcd34d; }
+  .badge-default   { background: linear-gradient(135deg,#f8fafc,#f1f5f9); color:#475569; border-color:#cbd5e1; }
 
   .btn-view {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 5px 12px 5px 10px; border-radius: 8px;
-    font-size: 12px; font-weight: 600; color: #0058be;
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    border: 1px solid #bfdbfe; cursor: pointer;
-    transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s, box-shadow 0.18s;
+    display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px 5px 10px;
+    border-radius: 8px; font-size: 12px; font-weight: 600; color: #0058be;
+    background: linear-gradient(135deg,#eff6ff,#dbeafe); border: 1px solid #bfdbfe;
+    cursor: pointer; transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s, box-shadow 0.18s;
     position: relative; overflow: hidden;
   }
   .btn-view::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, #0058be 0%, #1d4ed8 100%);
-    opacity: 0; transition: opacity 0.18s; border-radius: inherit;
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg,#0058be,#1d4ed8);
+    opacity:0; transition:opacity 0.18s; border-radius:inherit;
   }
-  .btn-view:hover::before { opacity: 1; }
-  .btn-view:hover { color: #fff; border-color: #0058be; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,88,190,0.25); }
-  .btn-view:active { transform: translateY(0); box-shadow: none; }
-  .btn-view i, .btn-view span { position: relative; z-index: 1; }
+  .btn-view:hover::before { opacity:1; }
+  .btn-view:hover { color:#fff; border-color:#0058be; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,88,190,0.25); }
+  .btn-view:active { transform:translateY(0); box-shadow:none; }
+  .btn-view i, .btn-view span { position:relative; z-index:1; }
 
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
   .page-fade { animation: fadeIn 0.4s ease both; }
+  @keyframes modalIn {
+    from{opacity:0;transform:translateY(-12px) scale(0.97);}
+    to{opacity:1;transform:translateY(0) scale(1);}
+  }
+  .modal-enter { animation: modalIn 0.22s cubic-bezier(0.34,1.3,0.64,1) both; }
+  @keyframes checkDraw { from{stroke-dashoffset:50;}to{stroke-dashoffset:0;} }
+  .check-draw { stroke-dasharray:50; stroke-dashoffset:50; animation:checkDraw 0.4s 0.1s ease forwards; }
 
-  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .unsaved-dot {
+    display:inline-block; width:7px; height:7px; background:#f59e0b;
+    border-radius:50%; margin-left:6px; vertical-align:middle;
+    animation:pulse-dot 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);} }
+
+  /* Author tooltip */
+  .author-cell { position:relative; cursor:default; }
+  .author-tooltip {
+    position:absolute; bottom:calc(100% + 6px); left:0; z-index:100;
+    background:#1e293b; color:#fff; font-size:11px; font-weight:500;
+    padding:6px 10px; border-radius:8px; white-space:nowrap;
+    pointer-events:none; opacity:0; transform:translateY(4px);
+    transition:opacity 0.15s,transform 0.15s; box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  }
+  .author-tooltip::after {
+    content:''; position:absolute; top:100%; left:14px;
+    border:5px solid transparent; border-top-color:#1e293b;
+  }
+  .author-cell:hover .author-tooltip { opacity:1; transform:translateY(0); }
+
+  /* Status col guard */
+  td.status-col, th.status-col { min-width:148px; white-space:nowrap; }
+  td.action-col, th.action-col { min-width:88px; white-space:nowrap; }
+
+  /* PDF preview table */
+  .preview-table { border-collapse:collapse; width:100%; font-size:11px; font-family:Inter,sans-serif; }
+  .preview-table th {
+    background:#0058be; color:#fff; padding:8px 10px; text-align:left;
+    font-weight:700; font-size:9.5px; text-transform:uppercase; letter-spacing:0.06em; border:1px solid #1d4ed8;
+  }
+  .preview-table td { padding:6px 10px; border:1px solid #e2e8f0; color:#191b23; vertical-align:middle; }
+
+  @media (max-width:1023px) {
+    #sidebar { transform:translateX(-100%); transition:transform 0.25s ease; }
+    #sidebar.open { transform:translateX(0); }
+    #main-content { margin-left:0 !important; }
+  }
 </style>
 </head>
 <body class="bg-surface text-on-surface font-sans antialiased flex min-h-screen">
 
 <!-- SIDEBAR -->
-<aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-white flex flex-col z-50">
+<aside id="sidebar" class="w-[260px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-white flex flex-col z-50">
   <div class="flex items-center gap-3 px-5 py-5 border-b border-outline-variant">
     <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white flex-shrink-0">
       <i class="ti ti-building-bank" style="font-size:18px;"></i>
@@ -127,51 +165,54 @@
       <p class="text-[10px] text-on-surface-variant font-semibold tracking-widest uppercase">System</p>
     </div>
   </div>
-  <nav class="flex-1 overflow-y-auto px-3 pt-3 pb-2 space-y-2" aria-label="Primary navigation">
-    <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></a>
+  <nav class="flex-1 overflow-y-auto px-3 pt-3 pb-2 space-y-2">
+    <a class="nav-item" href="dashboard.html" onclick="handleNavAway('dashboard.html');return false;"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></a>
     <div class="nav-section-label">IP Modules</div>
-    <a class="nav-item" href="copyright.html"><i class="ti ti-copyright"></i><span>Copyright</span></a>
-    <a class="nav-item" href="patent.html"><i class="ti ti-file-description"></i><span>Patent</span></a>
+    <a class="nav-item" href="copyright.html" onclick="handleNavAway('copyright.html');return false;"><i class="ti ti-copyright"></i><span>Copyright</span></a>
+    <a class="nav-item" href="patent.html" onclick="handleNavAway('patent.html');return false;"><i class="ti ti-file-description"></i><span>Patent</span></a>
     <a class="nav-item active" href="trademark.html"><i class="ti ti-shield-check"></i><span>Trademark</span></a>
-    <a class="nav-item" href="utility-model.html"><i class="ti ti-settings-2"></i><span>Utility Model</span></a>
-    <a class="nav-item" href="industrial-design.html"><i class="ti ti-vector-bezier-2"></i><span>Industrial Design</span></a>
+    <a class="nav-item" href="utility-model.html" onclick="handleNavAway('utility-model.html');return false;"><i class="ti ti-settings-2"></i><span>Utility Model</span></a>
+    <a class="nav-item" href="industrial-design.html" onclick="handleNavAway('industrial-design.html');return false;"><i class="ti ti-vector-bezier-2"></i><span>Industrial Design</span></a>
     <div class="border-t border-slate-100 my-5"></div>
     <div class="nav-section-label">General</div>
-    <a class="nav-item" href="event.html"><i class="ti ti-calendar-event"></i><span>Event</span></a>
+    <a class="nav-item" href="event.html" onclick="handleNavAway('event.html');return false;"><i class="ti ti-calendar-event"></i><span>Event</span></a>
   </nav>
   <div class="p-4 border-t border-outline-variant">
-    <button onclick="window.location.href='index.html'"
+    <button onclick="handleNavAway('index.html')"
       class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all duration-200">
       <i class="ti ti-logout" style="font-size:16px;"></i><span>Log Out</span>
     </button>
   </div>
 </aside>
 
-<!-- MAIN -->
-<main class="flex-1 ml-[260px] min-h-screen flex flex-col bg-surface page-fade">
+<div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/30 z-40 lg:hidden" onclick="closeSidebar()"></div>
 
-  <header class="h-[60px] flex items-center justify-end px-8 sticky top-0 bg-white/80 backdrop-blur-md z-40 border-b border-outline-variant">
-    <div class="flex items-center gap-4">
+<!-- MAIN -->
+<main id="main-content" class="flex-1 ml-[260px] min-h-screen flex flex-col bg-surface page-fade">
+  <header class="h-[60px] flex items-center justify-between px-5 lg:px-8 sticky top-0 bg-white/80 backdrop-blur-md z-40 border-b border-outline-variant">
+    <button class="lg:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors text-on-surface-variant" onclick="openSidebar()">
+      <i class="ti ti-menu-2" style="font-size:20px;"></i>
+    </button>
+    <div class="flex items-center gap-4 ml-auto">
       <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2">
         <i class="ti ti-clock text-outline" style="font-size:14px;"></i>
         <span id="live-time" class="text-[13px] font-semibold text-on-surface tabular-nums tracking-tight"></span>
         <span id="live-ampm" class="text-[10px] font-bold text-outline uppercase"></span>
       </div>
-      <div class="h-6 w-px bg-outline-variant"></div>
-      <div class="flex items-center gap-2.5 cursor-pointer group">
+      <div class="h-6 w-px bg-outline-variant hidden sm:block"></div>
+      <div class="hidden sm:flex items-center gap-2.5 cursor-pointer group">
         <div class="text-right">
           <p class="text-[13px] font-semibold text-on-surface leading-tight">Admin User</p>
           <p class="text-[10px] text-outline font-semibold uppercase tracking-wider">Administrator</p>
         </div>
         <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-outline-variant group-hover:border-primary transition-colors">
-          <img alt="Admin" class="w-full h-full object-cover"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDx_bTPkrRdfc88O-w03s2pnSwCgF7LgPrt2lE5zgClCgisqvjKap7jQtLQo5JfHmYYfYN_S1tls3bcQZm33u3_Zf3QUAC1Wiiqlkcmn2TPb_vUXoOL2pZk6vUZRwHiG4PeWqazSdhKyh7u9j1nGFRumZDUUsxqGVyoH7MlxUuof1YELsx_tRgynz5FeHpag_Fm_Tsi10ZsJfLPARtHOfqdTzKYdtwyZ5Nc4_YvnlmExHVdCrLOfjE3N43zOmlQJJ7MpuFfE7Gcrg"/>
+          <img alt="Admin" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDx_bTPkrRdfc88O-w03s2pnSwCgF7LgPrt2lE5zgClCgisqvjKap7jQtLQo5JfHmYYfYN_S1tls3bcQZm33u3_Zf3QUAC1Wiiqlkcmn2TPb_vUXoOL2pZk6vUZRwHiG4PeWqazSdhKyh7u9j1nGFRumZDUUsxqGVyoH7MlxUuof1YELsx_tRgynz5FeHpag_Fm_Tsi10ZsJfLPARtHOfqdTzKYdtwyZ5Nc4_YvnlmExHVdCrLOfjE3N43zOmlQJJ7MpuFfE7Gcrg"/>
         </div>
       </div>
     </div>
   </header>
 
-  <div class="p-8 space-y-7 flex-1">
+  <div class="p-5 lg:p-8 space-y-7 flex-1">
     <div><h2 class="text-2xl font-bold text-on-surface">Trademark Registry</h2></div>
 
     <!-- Stat Cards -->
@@ -210,14 +251,14 @@
       </div>
     </section>
 
-    <!-- Table Section -->
-    <section class="bg-white rounded-2xl border border-outline-variant shadow-sm overflow-hidden">
-      <div class="px-6 py-4 border-b border-outline-variant flex items-center gap-3">
-        <div class="relative flex-1">
+    <!-- Table -->
+    <section class="bg-white rounded-2xl border border-outline-variant shadow-sm" style="overflow:visible;">
+      <div class="px-5 py-4 border-b border-outline-variant flex flex-wrap items-center gap-2.5">
+        <div class="relative flex-1 min-w-[180px]">
           <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-outline" style="font-size:15px;"></i>
           <input id="search-input"
             class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-[13px] focus:ring-1 focus:ring-primary focus:bg-white focus:border-primary transition-all outline-none placeholder:text-outline"
-            placeholder="Search by title, owner, reference no., department, or status…"
+            placeholder="Search title, owner, reference, department, or status…"
             type="text" oninput="filterAndRender()"/>
         </div>
         <div class="relative shrink-0" id="filter-wrapper">
@@ -225,9 +266,9 @@
             class="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 text-on-surface-variant rounded-lg text-[13px] font-medium hover:bg-slate-100 transition-colors whitespace-nowrap">
             <i class="ti ti-filter" style="font-size:14px;"></i>
             <span id="filter-label">All Status</span>
-            <i class="ti ti-chevron-down text-outline" id="filter-chevron" style="font-size:12px; transition:transform 0.15s;"></i>
+            <i class="ti ti-chevron-down text-outline" id="filter-chevron" style="font-size:12px;transition:transform 0.15s;"></i>
           </button>
-          <div id="filter-menu" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-xl border border-slate-200 shadow-lg z-50 py-1.5 overflow-hidden">
+          <div id="filter-menu" class="hidden absolute right-0 mt-1 w-52 bg-white rounded-xl border border-slate-200 shadow-lg z-[200] py-1.5">
             <div class="px-3 py-1.5 text-[10px] font-bold text-outline uppercase tracking-widest">Filter by Status</div>
             <button onclick="applyStatusFilter('All')"              class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="All">All<i class="ti ti-check text-primary" style="font-size:13px;"></i></button>
             <button onclick="applyStatusFilter('Submitted to IPO')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Submitted to IPO">Submitted to IPO<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
@@ -236,25 +277,31 @@
             <button onclick="applyStatusFilter('Approved')"         class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Approved">Approved<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
           </div>
         </div>
-        <button title="Export" class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors shrink-0">
-          <i class="ti ti-download" style="font-size:16px;"></i>
+        <button onclick="openExportModal()" title="Export to PDF"
+          class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors shrink-0">
+          <i class="ti ti-file-type-pdf" style="font-size:17px;"></i>
         </button>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+      <div class="overflow-x-auto" style="overflow-y:visible;">
+        <table class="w-full text-left border-collapse" style="min-width:860px;">
           <thead>
             <tr class="bg-slate-50">
               <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Reference No.</th>
               <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Mark / Title</th>
-              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Owner</th>
-              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Department</th>
-              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Status</th>
+              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Owner(s)</th>
+              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">College / Department</th>
+              <th class="status-col px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Status</th>
               <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Date Applied</th>
-              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant text-center whitespace-nowrap">Action</th>
+              <th class="action-col px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant text-center">Action</th>
             </tr>
           </thead>
-          <tbody id="table-body" class="divide-y divide-slate-100"></tbody>
+          <tbody id="table-body" class="divide-y divide-slate-100">
+            <tr><td colspan="7" class="text-center py-10">
+              <i class="ti ti-loader animate-spin text-primary" style="font-size:24px;"></i>
+              <p class="mt-2 text-[12px] text-outline font-medium">Loading records…</p>
+            </td></tr>
+          </tbody>
         </table>
       </div>
 
@@ -265,32 +312,102 @@
 
       <div class="px-6 py-4 border-t border-outline-variant flex flex-col sm:flex-row items-center justify-between gap-3">
         <p id="pagination-info" class="text-[12px] text-outline"></p>
-        <div id="pagination-controls" class="flex items-center gap-1"></div>
+        <div id="pagination-controls" class="flex items-center gap-1 flex-wrap justify-center"></div>
       </div>
     </section>
   </div>
 </main>
 
-<!-- VIEW/EDIT MODAL -->
+<!-- PDF PREVIEW MODAL -->
+<div id="pdf-preview-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4"
+  style="display:none;background:rgba(15,23,42,0.75);backdrop-filter:blur(4px);"
+  onclick="handlePdfBackdrop(event)">
+  <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col modal-enter" style="max-height:92vh;">
+    <div class="px-7 py-5 border-b border-outline-variant flex items-center justify-between bg-white shrink-0">
+      <div>
+        <h2 class="text-[18px] font-bold text-on-surface flex items-center gap-2">
+          <i class="ti ti-file-type-pdf text-red-500" style="font-size:20px;"></i>Export — Print Preview
+        </h2>
+        <p class="text-[12px] text-outline mt-0.5">Set date range, preview, then download as PDF.</p>
+      </div>
+      <button onclick="closePdfModal()" class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline">
+        <span class="material-symbols-outlined text-[22px]">close</span>
+      </button>
+    </div>
+    <div class="px-7 py-4 bg-slate-50 border-b border-outline-variant flex flex-wrap items-end gap-4 shrink-0">
+      <div>
+        <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-1.5">Date Applied — Range</label>
+        <div class="flex items-center gap-2 flex-wrap">
+          <input type="date" id="export-date-from" onchange="refreshPreview()"
+            class="text-[12px] border border-slate-200 rounded-lg px-3 py-1.5 bg-white outline-none focus:border-primary transition-colors"/>
+          <span class="text-outline text-[12px] font-medium">to</span>
+          <input type="date" id="export-date-to" onchange="refreshPreview()"
+            class="text-[12px] border border-slate-200 rounded-lg px-3 py-1.5 bg-white outline-none focus:border-primary transition-colors"/>
+          <button onclick="clearDateRange()" class="text-[11px] text-outline hover:text-red-500 font-semibold px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:border-red-200 transition-colors whitespace-nowrap">All Records</button>
+        </div>
+      </div>
+      <div class="ml-auto flex items-center gap-3">
+        <span id="preview-count" class="text-[12px] text-outline font-semibold"></span>
+        <button onclick="downloadPDF()" class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-[13px] font-bold rounded-xl hover:bg-blue-700 transition-all hover:-translate-y-0.5 shadow-sm whitespace-nowrap">
+          <i class="ti ti-download" style="font-size:15px;"></i>Download PDF
+        </button>
+      </div>
+    </div>
+    <div class="overflow-auto flex-1 p-6">
+      <div class="mb-5 pb-4 border-b-2 border-slate-200">
+        <div class="flex items-start justify-between flex-wrap gap-3">
+          <div>
+            <h3 class="text-[17px] font-bold text-on-surface">Trademark Registry Report</h3>
+            <p class="text-[12px] text-outline mt-0.5">IP Management System — Trademark Module</p>
+          </div>
+          <div class="text-right text-[11px] text-outline space-y-0.5">
+            <p>Generated: <span id="preview-gen-date" class="font-semibold text-on-surface"></span></p>
+            <p>Period: <span id="preview-period" class="font-semibold text-on-surface">All Records</span></p>
+            <p>Total: <span id="preview-total-count" class="font-bold text-primary">0</span> record(s)</p>
+          </div>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="preview-table">
+          <thead>
+            <tr>
+              <th style="width:110px;">Reference No.</th>
+              <th style="min-width:160px;">Mark / Title</th>
+              <th style="min-width:130px;">Owner(s)</th>
+              <th style="min-width:120px;">Department</th>
+              <th style="width:120px;">Status</th>
+              <th style="width:100px;">Date Applied</th>
+            </tr>
+          </thead>
+          <tbody id="preview-table-body">
+            <tr><td colspan="6" style="text-align:center;padding:24px;color:#727785;font-style:italic;">No records for selected range.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
 <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm"
-  id="research-modal" style="display:none;">
-  <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+  id="research-modal" style="display:none;" onclick="handleMainModalBackdrop(event)">
+  <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col modal-enter">
     <div class="px-7 py-5 border-b border-outline-variant flex items-center justify-between">
       <div>
-        <h2 class="text-[17px] font-bold text-on-surface">Trademark Details</h2>
+        <h2 class="text-[17px] font-bold text-on-surface flex items-center gap-2">
+          Trademark Details
+          <span id="unsaved-indicator" class="hidden"><span class="unsaved-dot"></span></span>
+        </h2>
         <p class="text-[12px] text-primary font-semibold mt-0.5" id="modal-subtitle-id"></p>
       </div>
-      <button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline" onclick="closeModal()">
+      <button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline" onclick="requestModalClose()">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
     </div>
-
     <div class="p-7 space-y-5 overflow-y-auto max-h-[75vh]">
-
-      <!-- Status Hero -->
       <div>
         <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Registration Status</label>
-        <select id="field-status" disabled onchange="updateStatusStyle(this)"
+        <select id="field-status" disabled onchange="updateStatusStyle(this);markDirty();"
           class="w-full text-[15px] font-bold rounded-xl py-3.5 px-4 border-2 outline-none transition-all appearance-none cursor-default"
           style="background-image:none;">
           <option value="Submitted to IPO">Submitted to IPO</option>
@@ -299,17 +416,12 @@
           <option value="Approved">Approved</option>
         </select>
       </div>
-
       <div class="border-t border-slate-100"></div>
-
-      <!-- Mark / Title -->
       <div>
         <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Mark / Title</label>
-        <input id="field-title" type="text" disabled
+        <input id="field-title" type="text" disabled oninput="markDirty()"
           class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all"/>
       </div>
-
-      <!-- Ref No + College -->
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Reference No.</label>
@@ -318,7 +430,7 @@
         </div>
         <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">College</label>
-          <select id="field-college" disabled onchange="updateModalDeptOptions()"
+          <select id="field-college" disabled onchange="updateModalDeptOptions();markDirty();"
             class="modal-field modal-field-select w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all appearance-none cursor-default">
             <option value="">— Select College —</option>
             <option value="College of Computer Studies">College of Computer Studies</option>
@@ -328,52 +440,54 @@
           </select>
         </div>
       </div>
-
-      <!-- Department (cascades from College) -->
-      <div id="modal-dept-wrap">
+      <div>
         <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Department</label>
-        <select id="field-dept" disabled
+        <select id="field-dept" disabled onchange="markDirty()"
           class="modal-field modal-field-select w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all appearance-none cursor-default">
         </select>
       </div>
-
-      <!-- Owner + Date -->
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Owner</label>
-          <input id="field-owner" type="text" disabled
-            class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all"/>
+          <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Owner(s)</label>
+          <input id="field-owner" type="text" disabled oninput="markDirty()"
+            class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all"
+            placeholder="Comma-separated names"/>
+          <p class="text-[10px] text-outline mt-1">Separate multiple owners with commas</p>
         </div>
         <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Date Applied</label>
-          <input id="field-date" type="date" disabled
+          <input id="field-date" type="date" disabled onchange="markDirty()"
             class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all"/>
         </div>
       </div>
     </div>
-
-    <!-- Footer Buttons -->
-    <div class="px-7 py-5 bg-slate-50 border-t border-outline-variant flex items-center justify-end gap-3">
-      <button id="btn-edit" onclick="enterEditMode()" type="button"
-        class="px-6 py-2.5 bg-primary text-white text-[13px] font-bold rounded-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
-        <i class="ti ti-pencil" style="font-size:15px;"></i> Edit
-      </button>
-      <button id="btn-cancel-edit" onclick="exitEditMode()" type="button"
-        class="hidden px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant bg-white border border-slate-200 hover:border-slate-300 rounded-xl transition-all">
-        Cancel
-      </button>
-      <button id="btn-save" onclick="openConfirmation()" type="button"
-        class="hidden px-6 py-2.5 bg-emerald-600 text-white text-[13px] font-bold rounded-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
-        <i class="ti ti-device-floppy" style="font-size:15px;"></i> Save Changes
-      </button>
+    <div class="px-7 py-5 bg-slate-50 border-t border-outline-variant flex items-center justify-between">
+      <div id="modal-dirty-hint" class="hidden flex items-center gap-2 text-[12px] text-amber-600 font-semibold">
+        <i class="ti ti-pencil" style="font-size:14px;"></i>You have unsaved changes
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        <button id="btn-edit" onclick="enterEditMode()" type="button"
+          class="px-6 py-2.5 bg-primary text-white text-[13px] font-bold rounded-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
+          <i class="ti ti-pencil" style="font-size:15px;"></i>Edit Record
+        </button>
+        <button id="btn-cancel-edit" onclick="requestCancelEdit()" type="button"
+          class="hidden px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant bg-white border border-slate-200 hover:border-slate-300 rounded-xl transition-all">
+          Cancel
+        </button>
+        <button id="btn-save" onclick="openConfirmation()" type="button"
+          class="hidden px-6 py-2.5 bg-emerald-600 text-white text-[13px] font-bold rounded-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
+          <i class="ti ti-device-floppy" style="font-size:15px;"></i>Save Changes
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- CONFIRM MODAL -->
+<!-- SAVE CONFIRMATION -->
 <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-on-surface/50 backdrop-blur-sm"
   id="confirm-modal" style="display:none;">
-  <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center">
+  <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center modal-enter">
     <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-5">
       <span class="material-symbols-outlined text-2xl">help</span>
     </div>
@@ -386,16 +500,46 @@
   </div>
 </div>
 
+<!-- UNSAVED CHANGES MODAL -->
+<div class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-on-surface/60 backdrop-blur-sm"
+  id="unsaved-modal" style="display:none;">
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden modal-enter">
+    <div class="bg-amber-50 border-b border-amber-200 px-7 py-5 flex items-center gap-4">
+      <div class="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+        <i class="ti ti-alert-circle text-amber-600" style="font-size:22px;"></i>
+      </div>
+      <div>
+        <h3 class="text-[16px] font-bold text-amber-900">Unsaved Changes</h3>
+        <p class="text-[12px] text-amber-700 font-medium mt-0.5">Your edits haven't been saved yet</p>
+      </div>
+    </div>
+    <div class="px-7 py-6">
+      <p class="text-[14px] text-on-surface leading-relaxed">You have made changes to this record that haven't been saved. If you leave now, all unsaved edits will be permanently lost.</p>
+    </div>
+    <div class="px-7 pb-7 flex flex-col gap-3">
+      <button onclick="discardChangesAndProceed()" class="w-full py-3 text-[13px] font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
+        <i class="ti ti-trash" style="font-size:15px;"></i>Discard Changes &amp; Leave
+      </button>
+      <button onclick="closeUnsavedModal()" class="w-full py-3 text-[13px] font-bold text-on-surface bg-white border-2 border-slate-200 hover:border-primary hover:text-primary rounded-xl transition-all flex items-center justify-center gap-2">
+        <i class="ti ti-arrow-back" style="font-size:15px;"></i>Go Back &amp; Save
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- SUCCESS TOAST -->
 <div id="success-toast"
-  class="fixed bottom-8 right-8 z-[80] flex items-center gap-3 bg-white border border-emerald-200 shadow-xl rounded-2xl px-5 py-4 pointer-events-none"
-  style="opacity:0; transform:translateY(12px); transition:opacity 0.25s ease, transform 0.25s ease; min-width:260px;">
+  class="fixed bottom-8 right-8 z-[90] flex items-center gap-3 bg-white border border-emerald-200 shadow-xl rounded-2xl px-5 py-4 pointer-events-none"
+  style="opacity:0;transform:translateY(12px);transition:opacity 0.25s ease,transform 0.25s ease;min-width:260px;">
   <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-    <i class="ti ti-check text-emerald-600" style="font-size:18px;"></i>
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="9" r="9" fill="#d1fae5"/>
+      <polyline points="5,9 8,12 13,6" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-draw"/>
+    </svg>
   </div>
   <div>
-    <p class="text-[13px] font-bold text-on-surface leading-tight">Changes saved successfully</p>
-    <p class="text-[11px] text-outline mt-0.5">The record has been updated.</p>
+    <p class="text-[13px] font-bold text-on-surface leading-tight" id="toast-title">Changes saved successfully</p>
+    <p class="text-[11px] text-outline mt-0.5" id="toast-body">The record has been updated.</p>
   </div>
   <div class="absolute bottom-0 left-0 h-[3px] bg-emerald-400 rounded-b-2xl" id="toast-bar" style="width:100%;"></div>
 </div>
@@ -404,63 +548,85 @@
 const API_URL  = "http://localhost:5000/api/research";
 const CATEGORY = "trademark";
 
-/* CLOCK */
-function updateClock() {
-  const now = new Date();
-  let h = now.getHours();
-  const m = String(now.getMinutes()).padStart(2, '0');
-  const s = String(now.getSeconds()).padStart(2, '0');
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  document.getElementById('live-time').textContent = `${String(h).padStart(2, '0')}:${m}:${s}`;
-  document.getElementById('live-ampm').textContent = ampm;
+/* ── CLOCK ── */
+(function(){
+  const tick = () => {
+    const now = new Date(); let h = now.getHours();
+    const m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
+    const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+    document.getElementById('live-time').textContent = `${String(h).padStart(2,'0')}:${m}:${s}`;
+    document.getElementById('live-ampm').textContent = ap;
+  };
+  tick(); setInterval(tick, 1000);
+})();
+
+/* ── SIDEBAR ── */
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('sidebar-overlay').classList.remove('hidden'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.add('hidden'); }
+
+/* ── HELPERS ── */
+function toReadableDate(ds) {
+  if (!ds) return '—';
+  const d = new Date(ds + 'T00:00:00'); if (isNaN(d)) return '—';
+  return d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
 }
-updateClock();
-setInterval(updateClock, 1000);
+function toShortDate(ds) {
+  if (!ds) return '—';
+  const d = new Date(ds + 'T00:00:00'); if (isNaN(d)) return '—';
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
 
-/* STATE */
-let ALL_RECORDS     = [];
-let filteredRecords = [];
-const ROWS_PER_PAGE = 10;
-let currentPage     = 1;
-let activeStatusFilter = 'All';
-let activeMongoId   = null;
-let activeSnapshot  = null;
+/* ── AUTHOR FORMAT: max 2, "+N more" ── */
+function formatAuthors(str) {
+  if (!str || str === 'Unknown') return { html: str || '—', full: str || '—', hasMore: false };
+  const parts = str.split(',').map(a => a.trim()).filter(Boolean);
+  if (parts.length <= 2) return { html: parts.join(', '), full: parts.join(', '), hasMore: false };
+  const shown = parts.slice(0,2).join(', '), remaining = parts.length - 2;
+  return {
+    html: `${shown} <span style="display:inline-flex;align-items:center;font-size:10px;font-weight:700;color:#0058be;background:#eff6ff;border:1px solid #bfdbfe;padding:1px 7px;border-radius:20px;margin-left:2px;">+${remaining} more</span>`,
+    full: parts.join(', '), hasMore: true, count: remaining,
+  };
+}
 
-/* COLLEGE → DEPARTMENT MAP */
+/* ── STATE ── */
+let ALL_RECORDS = [], filteredRecords = [];
+let ROWS_PER_PAGE = 10, currentPage = 1, activeStatusFilter = 'All';
+let activeMongoId = null, activeSnapshot = null;
+let isDirty = false, pendingAction = null;
+
 const MODAL_COLLEGE_DEPTS = {
-  'College of Computer Studies': ['Information Technology', 'Information System', 'Computer Science'],
-  'College of Engineering':      ['Industrial Engineering', 'Electronic Engineering', 'Computer Engineering'],
-  'College of Accounting':       ['Accounting', 'Management Accounting'],
+  'College of Computer Studies': ['Information Technology','Information System','Computer Science'],
+  'College of Engineering':      ['Industrial Engineering','Electronic Engineering','Computer Engineering'],
+  'College of Accounting':       ['Accounting','Management Accounting'],
   'College of Business':         ['Entrepreneurship'],
 };
-
 function updateModalDeptOptions() {
-  const college  = document.getElementById('field-college').value;
-  const deptSel  = document.getElementById('field-dept');
-  const deptWrap = document.getElementById('modal-dept-wrap');
-  deptSel.innerHTML = '';
-  if (college && MODAL_COLLEGE_DEPTS[college]) {
-    MODAL_COLLEGE_DEPTS[college].forEach(d => {
-      const opt = document.createElement('option');
-      opt.value = d; opt.textContent = d;
-      deptSel.appendChild(opt);
-    });
-    deptWrap.style.animation = 'fadeSlideIn 0.18s ease';
-  }
+  const col = document.getElementById('field-college').value;
+  const dSel = document.getElementById('field-dept'); dSel.innerHTML = '';
+  (MODAL_COLLEGE_DEPTS[col] || []).forEach(d => { const o = document.createElement('option'); o.value = d; o.textContent = d; dSel.appendChild(o); });
 }
 
-/* STATUS STYLES */
+/* ── DIRTY ── */
+function markDirty()  { isDirty = true;  document.getElementById('unsaved-indicator').classList.remove('hidden'); document.getElementById('modal-dirty-hint').classList.remove('hidden'); }
+function clearDirty() { isDirty = false; document.getElementById('unsaved-indicator').classList.add('hidden');    document.getElementById('modal-dirty-hint').classList.add('hidden'); }
+
+/* ── UNSAVED GUARD ── */
+function requestModalClose() { isDirty ? showUnsavedModal(() => { clearDirty(); closeModal(); }) : closeModal(); }
+function requestCancelEdit() { isDirty ? showUnsavedModal(() => { clearDirty(); exitEditMode(); }) : exitEditMode(); }
+function handleNavAway(url)  { isDirty ? showUnsavedModal(() => { window.location.href = url; }) : (window.location.href = url); }
+function showUnsavedModal(fn){ pendingAction = fn; document.getElementById('unsaved-modal').style.display = 'flex'; }
+function closeUnsavedModal() { document.getElementById('unsaved-modal').style.display = 'none'; pendingAction = null; }
+function discardChangesAndProceed() { document.getElementById('unsaved-modal').style.display = 'none'; if (pendingAction) { pendingAction(); pendingAction = null; } }
+function handleMainModalBackdrop(e) { if (e.target === document.getElementById('research-modal')) requestModalClose(); }
+
+/* ── STATUS ── */
 const statusMeta = {
-  'Submitted to IPO': { cls: 'badge-submitted', label: 'Submitted to IPO' },
-  'Received E-SOA':   { cls: 'badge-esoa',       label: 'Received E-SOA'   },
-  'Paid':             { cls: 'badge-paid',        label: 'Paid'             },
-  'Approved':         { cls: 'badge-approved',    label: 'Approved'         },
+  'Submitted to IPO': { cls:'badge-submitted' },
+  'Received E-SOA':   { cls:'badge-esoa'      },
+  'Paid':             { cls:'badge-paid'       },
+  'Approved':         { cls:'badge-approved'   },
 };
-function statusBadgeHTML(status) {
-  const m = statusMeta[status] || { cls: 'badge-default', label: status || '—' };
-  return `<span class="status-badge ${m.cls}">${m.label}</span>`;
-}
+function statusBadgeHTML(s) { const m = statusMeta[s] || { cls:'badge-default' }; return `<span class="status-badge ${m.cls}">${s || '—'}</span>`; }
 const statusHero = {
   'Submitted to IPO': { border:'#93c5fd', bg:'#eff6ff', color:'#1d4ed8' },
   'Received E-SOA':   { border:'#a5b4fc', bg:'#eef2ff', color:'#4338ca' },
@@ -469,355 +635,383 @@ const statusHero = {
 };
 function updateStatusStyle(sel) {
   const s = statusHero[sel.value] || { border:'#e2e8f0', bg:'#f8fafc', color:'#334155' };
-  sel.style.borderColor     = s.border;
-  sel.style.backgroundColor = s.bg;
-  sel.style.color           = s.color;
+  sel.style.borderColor = s.border; sel.style.backgroundColor = s.bg; sel.style.color = s.color;
 }
 
-/* STAT CARDS */
+/* ── STATS ── */
 function updateStats() {
   document.getElementById('stat-total').textContent    = ALL_RECORDS.length;
   document.getElementById('stat-approved').textContent = ALL_RECORDS.filter(r => r.status === 'Approved').length;
   document.getElementById('stat-pending').textContent  = ALL_RECORDS.filter(r => r.status !== 'Approved').length;
 }
 
-/* FILTER DROPDOWN */
+/* ── FILTER DROPDOWN ── */
 function toggleFilterMenu() {
-  const menu    = document.getElementById('filter-menu');
-  const chevron = document.getElementById('filter-chevron');
-  const isOpen  = !menu.classList.contains('hidden');
-  menu.classList.toggle('hidden', isOpen);
-  chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  const m = document.getElementById('filter-menu'), c = document.getElementById('filter-chevron');
+  const open = !m.classList.contains('hidden'); m.classList.toggle('hidden', open); c.style.transform = open ? '' : 'rotate(180deg)';
 }
 function applyStatusFilter(val) {
   activeStatusFilter = val;
-  document.querySelectorAll('.filter-val').forEach(btn =>
-    btn.querySelector('i').classList.toggle('hidden', btn.dataset.val !== val));
+  document.querySelectorAll('.filter-val').forEach(b => b.querySelector('i').classList.toggle('hidden', b.dataset.val !== val));
   document.getElementById('filter-label').textContent = val === 'All' ? 'All Status' : val;
-  document.getElementById('filter-menu').classList.add('hidden');
-  document.getElementById('filter-chevron').style.transform = '';
+  document.getElementById('filter-menu').classList.add('hidden'); document.getElementById('filter-chevron').style.transform = '';
   filterAndRender();
 }
-document.addEventListener('click', e => {
-  const w = document.getElementById('filter-wrapper');
-  if (w && !w.contains(e.target)) document.getElementById('filter-menu').classList.add('hidden');
-});
+document.addEventListener('click', e => { const w = document.getElementById('filter-wrapper'); if (w && !w.contains(e.target)) document.getElementById('filter-menu').classList.add('hidden'); });
 
-/* SEARCH + FILTER */
+/* ── SORT ── */
+function mongoIdToDate(id) { try { return new Date(parseInt(String(id).substring(0,8),16)*1000); } catch(e){ return new Date(0); } }
+function sortByDateDesc(arr) {
+  return [...arr].sort((a,b) => {
+    const da = a._rawDateTime ? new Date(a._rawDateTime) : mongoIdToDate(a._id);
+    const db = b._rawDateTime ? new Date(b._rawDateTime) : mongoIdToDate(b._id);
+    return db - da;
+  });
+}
+
+/* ── SEARCH + FILTER ── */
 function filterAndRender() {
   const q = document.getElementById('search-input').value.toLowerCase().trim();
   filteredRecords = ALL_RECORDS.filter(r => {
-    const matchStatus = activeStatusFilter === 'All' || r.status === activeStatusFilter;
-    const matchSearch = !q ||
-      (r.referenceNo || '').toLowerCase().includes(q) ||
-      (r.title       || '').toLowerCase().includes(q) ||
-      (r.owner       || '').toLowerCase().includes(q) ||
-      (r.dept        || '').toLowerCase().includes(q) ||
-      (r.status      || '').toLowerCase().includes(q);
-    return matchStatus && matchSearch;
+    const ms = activeStatusFilter === 'All' || r.status === activeStatusFilter;
+    const mq = !q || (r.referenceNo||'').toLowerCase().includes(q) || (r.title||'').toLowerCase().includes(q)
+                   || (r.owner||'').toLowerCase().includes(q) || (r.dept||'').toLowerCase().includes(q)
+                   || (r.status||'').toLowerCase().includes(q);
+    return ms && mq;
   });
-  currentPage = 1;
-  render();
+  filteredRecords = sortByDateDesc(filteredRecords);
+  currentPage = 1; render();
 }
 
-/* RENDER TABLE */
+/* ── RENDER ── */
 function render() {
-  const tbody      = document.getElementById('table-body');
-  const emptyEl    = document.getElementById('empty-state');
-  const total      = filteredRecords.length;
-  const totalPages = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
-  if (currentPage > totalPages) currentPage = totalPages;
+  const tbody = document.getElementById('table-body'), emptyEl = document.getElementById('empty-state');
+  const total = filteredRecords.length;
+  const tp = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
+  if (currentPage > tp) currentPage = tp;
   const start = (currentPage - 1) * ROWS_PER_PAGE;
   const page  = filteredRecords.slice(start, start + ROWS_PER_PAGE);
 
-  if (total === 0) {
-    tbody.innerHTML = '';
-    emptyEl.classList.remove('hidden');
-  } else {
+  if (total === 0) { tbody.innerHTML = ''; emptyEl.classList.remove('hidden'); }
+  else {
     emptyEl.classList.add('hidden');
-    tbody.innerHTML = page.map(r => `
-      <tr class="hover:bg-slate-50/70 transition-colors">
-        <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide">${r.referenceNo || '—'}</td>
-        <td class="px-5 py-4 text-[13px] text-on-surface font-medium max-w-[200px] truncate">${r.title || ''}</td>
-        <td class="px-5 py-4 text-[12px] text-on-surface-variant">${r.owner || ''}</td>
-        <td class="px-5 py-4">
-          <div class="text-[13px] font-semibold text-on-surface leading-tight">${r.dept ? r.dept.split(' — ')[1] || r.dept : '—'}</div>
-          <div class="text-[11px] text-on-surface-variant mt-0.5">${r.dept ? r.dept.split(' — ')[0] : ''}</div>
-        </td>
-        <td class="px-5 py-4">${statusBadgeHTML(r.status)}</td>
-        <td class="px-5 py-4 text-[12px] text-on-surface-variant tabular-nums">${r.dateApplied || ''}</td>
-        <td class="px-5 py-4 text-center">
-          <button onclick="openResearchModal('${r._id}')" class="btn-view">
-            <i class="ti ti-eye" style="font-size:13px;"></i><span>View</span>
-          </button>
-        </td>
-      </tr>`).join('');
+    tbody.innerHTML = page.map(r => {
+      let deptText = r.dept || 'N/A', collegeText = '';
+      if (r.dept && r.dept.includes(' — ')) [collegeText, deptText] = r.dept.split(' — ');
+      const au = formatAuthors(r.owner);
+      return `
+        <tr class="hover:bg-slate-50/70 transition-colors">
+          <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide whitespace-nowrap">${r.referenceNo || '—'}</td>
+          <td class="px-5 py-4 text-[13px] text-on-surface font-medium" style="max-width:210px;"><div class="truncate" title="${(r.title||'').replace(/"/g,'&quot;')}">${r.title || ''}</div></td>
+          <td class="px-5 py-4 text-[12px] text-on-surface-variant">
+            <div class="author-cell">
+              <div>${au.html}</div>
+              ${au.hasMore ? `<div class="author-tooltip">${au.full}</div>` : ''}
+            </div>
+          </td>
+          <td class="px-5 py-4">
+            <div class="text-[13px] font-medium text-on-surface">${deptText}</div>
+            ${collegeText ? `<div class="text-[11px] text-outline mt-0.5">${collegeText}</div>` : ''}
+          </td>
+          <td class="status-col px-5 py-4">${statusBadgeHTML(r.status)}</td>
+          <td class="px-5 py-4 text-[12px] text-on-surface-variant tabular-nums whitespace-nowrap">${toReadableDate(r.dateOfFiling)}</td>
+          <td class="action-col px-5 py-4 text-center">
+            <button onclick="openResearchModal('${r._id}')" class="btn-view">
+              <i class="ti ti-eye" style="font-size:13px;"></i><span>View</span>
+            </button>
+          </td>
+        </tr>`;
+    }).join('');
   }
-
-  document.getElementById('pagination-info').textContent =
-    `Showing ${total === 0 ? 0 : start + 1}–${Math.min(start + ROWS_PER_PAGE, total)} of ${total}`;
-  renderPagination(totalPages);
+  document.getElementById('pagination-info').textContent = `Showing ${total===0?0:start+1}–${Math.min(start+ROWS_PER_PAGE,total)} of ${total} record${total!==1?'s':''}`;
+  renderPagination(tp);
 }
 
-/* PAGINATION */
+/* ── PAGINATION with ellipsis ── */
 function renderPagination(totalPages) {
-  const ctrl = document.getElementById('pagination-controls');
-  ctrl.innerHTML = '';
-  const makeBtn = (labelOrIcon, targetPage, disabled, active, isIcon) => {
+  const ctrl = document.getElementById('pagination-controls'); ctrl.innerHTML = '';
+  const btn = (label, tp, disabled, active, isIcon) => {
     const b = document.createElement('button');
-    b.className = `page-btn ${active ? 'active' : ''}`;
+    b.className = `page-btn${active?' active':''}`;
     b.disabled = disabled;
-    b.innerHTML = isIcon ? `<span class="material-symbols-outlined" style="font-size:16px;">${labelOrIcon}</span>` : labelOrIcon;
-    if (!disabled && !active) b.onclick = () => { currentPage = targetPage; render(); };
+    b.innerHTML = isIcon ? `<span class="material-symbols-outlined" style="font-size:16px;">${label}</span>` : label;
+    if (!disabled && !active) b.onclick = () => { currentPage = tp; render(); };
     ctrl.appendChild(b);
   };
-  makeBtn('chevron_left',  currentPage - 1, currentPage === 1,          false, true);
-  for (let i = 1; i <= totalPages; i++) makeBtn(i, i, false, i === currentPage, false);
-  makeBtn('chevron_right', currentPage + 1, currentPage === totalPages, false, true);
+  const ellipsis = () => { const s = document.createElement('span'); s.className='page-ellipsis'; s.textContent='…'; ctrl.appendChild(s); };
+  btn('chevron_left', currentPage-1, currentPage===1, false, true);
+  if (totalPages <= 7) { for (let i=1;i<=totalPages;i++) btn(i,i,false,i===currentPage,false); }
+  else {
+    btn(1,1,false,currentPage===1,false);
+    if (currentPage > 3) ellipsis();
+    const s=Math.max(2,currentPage-1), e=Math.min(totalPages-1,currentPage+1);
+    for (let i=s;i<=e;i++) btn(i,i,false,i===currentPage,false);
+    if (currentPage < totalPages-2) ellipsis();
+    btn(totalPages,totalPages,false,currentPage===totalPages,false);
+  }
+  btn('chevron_right', currentPage+1, currentPage===totalPages, false, true);
 }
 
-/* MAP RAW API ITEM */
+/* ── MAP RECORD ── */
 function mapRecord(item) {
-  const title =
-    (item.researchTitle && item.researchTitle.trim()) ||
-    (item.title         && item.title.trim())         || 'No Title';
-
+  const title = (item.researchTitle?.trim()) || (item.title?.trim()) || 'No Title';
   let owner = 'Unknown';
-  if (Array.isArray(item.authors) && item.authors.length > 0) owner = item.authors.join(', ');
+  if (Array.isArray(item.authors) && item.authors.length) owner = item.authors.join(', ');
   else if (typeof item.author === 'string' && item.author.trim()) owner = item.author.trim();
-
   const dept = item.department || item.dept || 'N/A';
-
-  let dateApplied = '';
-  if (item.date)             dateApplied = item.date.split('T')[0];
-  else if (item.dateApplied) dateApplied = item.dateApplied.split('T')[0];
-  else if (item.createdAt)   dateApplied = item.createdAt.split('T')[0];
-
-  const referenceNo = item.referenceId || item.referenceNo || item.refNo || null;
-
+  const rawDateTime = item.createdAt || null;
+  let dateOfFiling = '';
+  if (item.date)            dateOfFiling = item.date.split('T')[0];
+  else if (item.dateApplied) dateOfFiling = item.dateApplied.split('T')[0];
+  else if (item.createdAt)   dateOfFiling = item.createdAt.split('T')[0];
   return {
-    _id: String(item._id),
-    referenceNo: referenceNo || String(item._id),
-    title, owner, dept,
-    status: item.status || 'Submitted to IPO',
-    dateApplied,
+    _id: String(item._id), _rawDateTime: rawDateTime,
+    referenceNo: item.referenceId || item.referenceNo || item.refNo || String(item._id),
+    title, owner, dept, status: item.status || 'Submitted to IPO', dateOfFiling,
   };
 }
 
-/* FETCH DATA */
+/* ── FETCH ── */
 async function fetchTrademarks() {
   try {
-    const res  = await fetch(`${API_URL}?category=${CATEGORY}`);
+    const res  = await fetch(API_URL);
     const data = await res.json();
-    const records = Array.isArray(data) ? data : (data.data ?? []);
-    const trademarks = records.filter(item =>
-      (item.category || '').trim().toLowerCase() === CATEGORY
-    );
-    ALL_RECORDS     = trademarks.map(mapRecord);
-    filteredRecords = [...ALL_RECORDS];
-    updateStats();
-    render();
+    const raw  = Array.isArray(data) ? data : (data.data ?? []);
+    ALL_RECORDS     = raw.filter(i => (i.category||'').toLowerCase() === CATEGORY).map(mapRecord);
+    filteredRecords = sortByDateDesc([...ALL_RECORDS]);
+    updateStats(); render();
   } catch (err) {
-    console.error('Failed to fetch trademarks:', err);
+    console.error('Fetch failed:', err);
+    document.getElementById('table-body').innerHTML =
+      `<tr><td colspan="7" class="text-center py-8 text-red-500 text-[13px] font-medium">Failed to load records. Make sure the API server is running.</td></tr>`;
   }
 }
 
-/* OPEN MODAL */
+/* ── OPEN MODAL ── */
 function openResearchModal(mongoId) {
-  const rec = ALL_RECORDS.find(r => r._id === String(mongoId));
-  if (!rec) return;
-  activeMongoId  = rec._id;
-  activeSnapshot = { ...rec };
-
+  const rec = ALL_RECORDS.find(r => r._id === String(mongoId)); if (!rec) return;
+  activeMongoId = rec._id; activeSnapshot = { ...rec };
   document.getElementById('modal-subtitle-id').textContent = rec.referenceNo || rec._id;
   document.getElementById('field-ref').value   = rec.referenceNo || '';
   document.getElementById('field-title').value = rec.title || '';
   document.getElementById('field-owner').value = rec.owner || '';
-  document.getElementById('field-date').value  = rec.dateApplied || '';
-
-  // Parse "College — Department" stored value
-  const parts   = rec.dept ? rec.dept.split(' — ') : [];
-  const college = parts[0] || rec.dept || '';
-  const dept    = parts[1] || '';
-
-  const collegeSel = document.getElementById('field-college');
-  [...collegeSel.options].forEach(o => o.selected = o.value === college);
+  document.getElementById('field-date').value  = rec.dateOfFiling || '';
+  const parts = rec.dept ? rec.dept.split(' — ') : [];
+  const col = parts[0] || rec.dept || '', dpt = parts[1] || '';
+  const cSel = document.getElementById('field-college');
+  [...cSel.options].forEach(o => o.selected = o.value === col);
   updateModalDeptOptions();
-  const deptSel = document.getElementById('field-dept');
-  [...deptSel.options].forEach(o => o.selected = o.value === dept);
-
-  const statusSel = document.getElementById('field-status');
-  [...statusSel.options].forEach(o => o.selected = o.value === rec.status);
-  updateStatusStyle(statusSel);
-
-  setViewMode();
+  const dSel = document.getElementById('field-dept');
+  [...dSel.options].forEach(o => o.selected = o.value === dpt);
+  const sSel = document.getElementById('field-status');
+  [...sSel.options].forEach(o => o.selected = o.value === rec.status);
+  updateStatusStyle(sSel);
+  clearDirty(); setViewMode();
   document.getElementById('research-modal').style.display = 'flex';
 }
+function closeModal() { document.getElementById('research-modal').style.display = 'none'; activeMongoId = null; activeSnapshot = null; clearDirty(); }
 
-/* CLOSE MODAL */
-function closeModal() {
-  document.getElementById('research-modal').style.display = 'none';
-  activeMongoId = null; activeSnapshot = null;
-}
-
-/* VIEW / EDIT MODE */
-const EDITABLE_FIELDS  = ['field-title', 'field-owner', 'field-date'];
-const EDITABLE_SELECTS = ['field-dept', 'field-status', 'field-college'];
+/* ── VIEW / EDIT MODE ── */
+const EDITABLE_FIELDS  = ['field-title','field-owner','field-date'];
+const EDITABLE_SELECTS = ['field-dept','field-status','field-college'];
 
 function setViewMode() {
   EDITABLE_FIELDS.forEach(id => document.getElementById(id).disabled = true);
   EDITABLE_SELECTS.forEach(id => {
-    const el = document.getElementById(id);
-    el.disabled = true;
-    if (id === 'field-status') {
-      updateStatusStyle(el);
-      el.style.backgroundImage    = 'none';
-      el.style.backgroundRepeat   = '';
-      el.style.backgroundPosition = '';
-      el.style.backgroundSize     = '';
-      el.style.paddingRight       = '';
-      el.style.cursor             = 'default';
-    } else {
-      el.style.backgroundImage = 'none';
-      el.style.paddingRight    = '';
-    }
+    const el = document.getElementById(id); el.disabled = true;
+    if (id === 'field-status') { updateStatusStyle(el); el.style.backgroundImage='none'; el.style.cursor='default'; }
+    else el.style.backgroundImage = 'none';
   });
   document.getElementById('btn-edit').classList.remove('hidden');
   document.getElementById('btn-cancel-edit').classList.add('hidden');
   document.getElementById('btn-save').classList.add('hidden');
 }
-
 function enterEditMode() {
   EDITABLE_FIELDS.forEach(id => document.getElementById(id).disabled = false);
   EDITABLE_SELECTS.forEach(id => {
-    const el = document.getElementById(id);
-    el.disabled = false;
+    const el = document.getElementById(id); el.disabled = false;
     if (id === 'field-status') {
       updateStatusStyle(el);
-      el.style.backgroundImage    = 'url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3E%3Cpath stroke=%27%23374151%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M6 8l4 4 4-4%27/%3E%3C/svg%3E")';
-      el.style.backgroundRepeat   = 'no-repeat';
-      el.style.backgroundPosition = 'right 0.9rem center';
-      el.style.backgroundSize     = '1.15em 1.15em';
-      el.style.paddingRight       = '2.5rem';
-      el.style.cursor             = 'pointer';
-    } else {
-      el.style.removeProperty('background-image');
-      el.style.removeProperty('padding-right');
-    }
+      el.style.cssText += ';background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3E%3Cpath stroke=%27%23374151%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M6 8l4 4 4-4%27/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.9rem center;background-size:1.15em;padding-right:2.5rem;cursor:pointer;';
+    } else { el.style.removeProperty('background-image'); el.style.removeProperty('padding-right'); }
   });
   document.getElementById('btn-edit').classList.add('hidden');
   document.getElementById('btn-cancel-edit').classList.remove('hidden');
   document.getElementById('btn-save').classList.remove('hidden');
 }
-
 function exitEditMode() {
   if (activeSnapshot) {
     document.getElementById('field-title').value = activeSnapshot.title || '';
     document.getElementById('field-owner').value = activeSnapshot.owner || '';
-    document.getElementById('field-date').value  = activeSnapshot.dateApplied || '';
-
-    // Restore college + dept
-    const parts   = activeSnapshot.dept ? activeSnapshot.dept.split(' — ') : [];
-    const college = parts[0] || activeSnapshot.dept || '';
-    const dept    = parts[1] || '';
-    const collegeSel = document.getElementById('field-college');
-    [...collegeSel.options].forEach(o => o.selected = o.value === college);
+    document.getElementById('field-date').value  = activeSnapshot.dateOfFiling || '';
+    const parts = activeSnapshot.dept ? activeSnapshot.dept.split(' — ') : [];
+    const col = parts[0] || activeSnapshot.dept || '', dpt = parts[1] || '';
+    const cSel = document.getElementById('field-college');
+    [...cSel.options].forEach(o => o.selected = o.value === col);
     updateModalDeptOptions();
-    const deptSel = document.getElementById('field-dept');
-    [...deptSel.options].forEach(o => o.selected = o.value === dept);
-
-    const statusSel = document.getElementById('field-status');
-    [...statusSel.options].forEach(o => o.selected = o.value === activeSnapshot.status);
-    updateStatusStyle(statusSel);
+    const dSel = document.getElementById('field-dept');
+    [...dSel.options].forEach(o => o.selected = o.value === dpt);
+    const sSel = document.getElementById('field-status');
+    [...sSel.options].forEach(o => o.selected = o.value === activeSnapshot.status);
+    updateStatusStyle(sSel);
   }
-  setViewMode();
+  clearDirty(); setViewMode();
 }
 
-/* CONFIRMATION MODAL */
+/* ── CONFIRM + SAVE ── */
 function openConfirmation()  { document.getElementById('confirm-modal').style.display = 'flex'; }
 function closeConfirmation() { document.getElementById('confirm-modal').style.display = 'none'; }
 
-/* SAVE (PUT) */
 async function confirmSave() {
-  closeConfirmation();
   if (!activeMongoId) return;
-
-  const college = document.getElementById('field-college').value;
-  const deptVal = document.getElementById('field-dept').value;
-  const department = college && deptVal ? `${college} — ${deptVal}` : college || deptVal;
-
+  const col = document.getElementById('field-college').value, dptVal = document.getElementById('field-dept').value;
+  const dept = col && dptVal ? `${col} — ${dptVal}` : col || dptVal;
   const payload = {
     researchTitle: document.getElementById('field-title').value.trim(),
-    department,
+    department:    dept,
     status:        document.getElementById('field-status').value,
     date:          document.getElementById('field-date').value,
     referenceId:   document.getElementById('field-ref').value.trim(),
-    authors: document.getElementById('field-owner').value
-               .split(',').map(a => a.trim()).filter(Boolean),
+    authors:       document.getElementById('field-owner').value.split(',').map(a => a.trim()).filter(Boolean),
   };
-
-  const confirmBtn = document.getElementById('btn-confirm-save');
-  confirmBtn.disabled    = true;
-  confirmBtn.textContent = 'Saving…';
-
+  const btn = document.getElementById('btn-confirm-save');
+  btn.disabled = true; btn.textContent = 'Saving…';
   try {
-    const res = await fetch(`${API_URL}/${activeMongoId}`, {
-      method: 'PUT', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(`PUT ${res.status}: ${await res.text()}`);
-
+    const res = await fetch(`${API_URL}/${activeMongoId}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    if (!res.ok) throw new Error(await res.text());
     const updated = await res.json();
-    const merged  = {
-      ...updated,
-      _id:           activeMongoId,
-      referenceId:   payload.referenceId   || updated.referenceId  || activeSnapshot.referenceNo,
-      researchTitle: payload.researchTitle || updated.researchTitle || updated.title,
-      department:    payload.department    || updated.department,
-      status:        payload.status        || updated.status,
-      date:          payload.date          || updated.date,
-      authors:       Array.isArray(updated.authors) && updated.authors.length > 0
-                       ? updated.authors : payload.authors,
-    };
-
-    const mapped = mapRecord(merged);
-    const idx    = ALL_RECORDS.findIndex(r => r._id === activeMongoId);
-    if (idx !== -1) ALL_RECORDS[idx] = mapped;
-    activeSnapshot = { ...mapped };
-
-    updateStats();
-    filterAndRender();
-    setViewMode();
-    closeModal();
-    showToast();
+    const merged  = mapRecord({ ...updated, _id: activeMongoId, ...payload, authors: updated.authors?.length ? updated.authors : payload.authors });
+    const idx     = ALL_RECORDS.findIndex(r => r._id === activeMongoId);
+    if (idx !== -1) ALL_RECORDS[idx] = merged;
+    activeSnapshot = { ...merged };
+    updateStats(); filterAndRender(); clearDirty(); setViewMode();
+    closeConfirmation(); closeModal();
+    showToastMsg('Record saved successfully', 'All changes have been applied.');
   } catch (err) {
     console.error('Save failed:', err);
-    alert('Failed to save changes. Please check the console and try again.');
-  } finally {
-    confirmBtn.disabled    = false;
-    confirmBtn.textContent = 'Confirm';
-  }
+    alert('Failed to save. Check the console and try again.');
+  } finally { btn.disabled = false; btn.textContent = 'Confirm'; }
 }
 
-/* TOAST */
-function showToast() {
-  const toast = document.getElementById('success-toast');
-  const bar   = document.getElementById('toast-bar');
-  bar.style.transition = 'none';
-  bar.style.width      = '100%';
-  toast.style.opacity   = '1';
-  toast.style.transform = 'translateY(0)';
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    bar.style.transition = 'width 3s linear';
-    bar.style.width      = '0%';
+/* ── PDF EXPORT ── */
+function openExportModal() {
+  document.getElementById('export-date-from').value = '';
+  document.getElementById('export-date-to').value   = '';
+  document.getElementById('preview-gen-date').textContent =
+    new Date().toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+  refreshPreview();
+  document.getElementById('pdf-preview-modal').style.display = 'flex';
+}
+function closePdfModal() { document.getElementById('pdf-preview-modal').style.display = 'none'; }
+function handlePdfBackdrop(e) { if (e.target === document.getElementById('pdf-preview-modal')) closePdfModal(); }
+function clearDateRange() { document.getElementById('export-date-from').value=''; document.getElementById('export-date-to').value=''; refreshPreview(); }
+
+function getExportRecords() {
+  const fromVal = document.getElementById('export-date-from').value, toVal = document.getElementById('export-date-to').value;
+  const from = fromVal ? new Date(fromVal+'T00:00:00') : null, to = toVal ? new Date(toVal+'T23:59:59') : null;
+  return sortByDateDesc(ALL_RECORDS.filter(r => {
+    if (!from && !to) return true;
+    if (!r.dateOfFiling) return false;
+    const d = new Date(r.dateOfFiling+'T00:00:00');
+    return (!from || d >= from) && (!to || d <= to);
   }));
-  setTimeout(() => {
-    toast.style.opacity   = '0';
-    toast.style.transform = 'translateY(12px)';
-  }, 3300);
 }
 
-/* INIT */
+const previewSC = {
+  'Submitted to IPO': { bg:'#dbeafe', color:'#1e40af', border:'#bfdbfe' },
+  'Received E-SOA':   { bg:'#ede9fe', color:'#4338ca', border:'#c4b5fd' },
+  'Paid':             { bg:'#d1fae5', color:'#065f46', border:'#6ee7b7' },
+  'Approved':         { bg:'#fef3c7', color:'#92400e', border:'#fcd34d' },
+};
+
+function refreshPreview() {
+  const records = getExportRecords();
+  const fromVal = document.getElementById('export-date-from').value, toVal = document.getElementById('export-date-to').value;
+  document.getElementById('preview-count').textContent       = `${records.length} record${records.length!==1?'s':''}`;
+  document.getElementById('preview-total-count').textContent = records.length;
+  if (!fromVal && !toVal) { document.getElementById('preview-period').textContent = 'All Records'; }
+  else {
+    const p=[]; if(fromVal) p.push(`From ${toShortDate(fromVal)}`); if(toVal) p.push(`to ${toShortDate(toVal)}`);
+    document.getElementById('preview-period').textContent = p.join(' ');
+  }
+  const tbody = document.getElementById('preview-table-body');
+  if (!records.length) { tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:24px;color:#727785;font-style:italic;">No records found for selected date range.</td></tr>`; return; }
+  tbody.innerHTML = records.map((r,idx) => {
+    const sc = previewSC[r.status] || { bg:'#f1f5f9', color:'#475569', border:'#cbd5e1' };
+    const au = formatAuthors(r.owner);
+    const auText = au.hasMore ? `${r.owner.split(',').slice(0,2).join(', ')} +${au.count} more` : (r.owner||'—');
+    return `<tr style="background:${idx%2===0?'#fff':'#f8fafc'};">
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;font-weight:700;white-space:nowrap;">${r.referenceNo||'—'}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;">${r.title||'—'}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;color:#424754;">${auText}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;color:#424754;">${r.dept||'—'}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;white-space:nowrap;">
+        <span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:9.5px;font-weight:700;background:${sc.bg};color:${sc.color};border:1px solid ${sc.border};">${r.status||'—'}</span>
+      </td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:11px;white-space:nowrap;">${toShortDate(r.dateOfFiling)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function downloadPDF() {
+  const records = getExportRecords();
+  const fromVal = document.getElementById('export-date-from').value, toVal = document.getElementById('export-date-to').value;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });
+  doc.setFillColor(0,88,190); doc.rect(0,0,297,18,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont('helvetica','bold');
+  doc.text('Trademark Registry Report', 14, 12);
+  doc.setFontSize(8); doc.setFont('helvetica','normal');
+  doc.text('IP Management System', 190, 9, {align:'right'});
+  doc.text(`Generated: ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`, 190, 14, {align:'right'});
+  doc.setTextColor(80,80,80); doc.setFontSize(8);
+  let period = 'All Records';
+  if (fromVal||toVal) { const p=[]; if(fromVal)p.push(`From: ${toShortDate(fromVal)}`); if(toVal)p.push(`To: ${toShortDate(toVal)}`); period=p.join('  •  '); }
+  doc.text(`Period: ${period}`, 14, 25);
+  doc.text(`Total Records: ${records.length}`, 240, 25, {align:'right'});
+  const tableData = records.map(r => {
+    const au = r.owner ? r.owner.split(',').map(a=>a.trim()) : [];
+    const auTxt = au.length > 2 ? `${au.slice(0,2).join(', ')} +${au.length-2}` : au.join(', ') || '—';
+    const dept = r.dept ? (r.dept.includes(' — ') ? r.dept.split(' — ')[1] : r.dept) : '—';
+    return [r.referenceNo||'—', r.title||'—', auTxt, dept, r.status||'—', toShortDate(r.dateOfFiling)];
+  });
+  doc.autoTable({
+    startY: 30,
+    head: [['Reference No.','Mark / Title','Owner(s)','Department','Status','Date Applied']],
+    body: tableData, theme:'grid',
+    headStyles: { fillColor:[0,88,190], textColor:[255,255,255], fontStyle:'bold', fontSize:8, cellPadding:4 },
+    bodyStyles: { fontSize:7.5, cellPadding:3.5 },
+    columnStyles: { 0:{cellWidth:30,fontStyle:'bold'}, 1:{cellWidth:60}, 2:{cellWidth:50}, 3:{cellWidth:42}, 4:{cellWidth:32}, 5:{cellWidth:26} },
+    alternateRowStyles: { fillColor:[248,250,252] },
+    didParseCell(data) {
+      if (data.section !== 'body' || data.column.index !== 4) return;
+      const s = data.cell.raw;
+      if      (s==='Approved')        { data.cell.styles.textColor=[146,64,14];  data.cell.styles.fillColor=[254,243,199]; }
+      else if (s==='Paid')            { data.cell.styles.textColor=[6,95,70];    data.cell.styles.fillColor=[209,250,229]; }
+      else if (s==='Received E-SOA')  { data.cell.styles.textColor=[67,56,202];  data.cell.styles.fillColor=[237,233,254]; }
+      else                            { data.cell.styles.textColor=[30,64,175];  data.cell.styles.fillColor=[219,234,254]; }
+    },
+    margin: { left:14, right:14 },
+  });
+  const pages = doc.internal.getNumberOfPages();
+  for (let i=1;i<=pages;i++) { doc.setPage(i); doc.setFontSize(7); doc.setTextColor(160,160,160); doc.text('Trademark Registry — IP Management System', 14, doc.internal.pageSize.height-6); doc.text(`Page ${i} of ${pages}`, 260, doc.internal.pageSize.height-6); }
+  const fname = `Trademark_Registry_${fromVal||toVal?(fromVal||'start')+'_to_'+(toVal||'end')+'_':'All_'}${new Date().toISOString().split('T')[0]}.pdf`;
+  doc.save(fname);
+  showToastMsg('PDF Downloaded', `${records.length} record${records.length!==1?'s':''} exported.`);
+}
+
+/* ── TOAST ── */
+function showToastMsg(title, body) {
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-body').textContent  = body;
+  const toast = document.getElementById('success-toast'), bar = document.getElementById('toast-bar');
+  bar.style.transition='none'; bar.style.width='100%';
+  toast.style.opacity='1'; toast.style.transform='translateY(0)';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ bar.style.transition='width 3s linear'; bar.style.width='0%'; }));
+  setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateY(12px)'; }, 3300);
+}
+
+window.addEventListener('beforeunload', e => { if (isDirty) { e.preventDefault(); e.returnValue=''; } });
 document.addEventListener('DOMContentLoaded', fetchTrademarks);
 </script>
 </body>
