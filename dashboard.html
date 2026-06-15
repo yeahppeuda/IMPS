@@ -85,6 +85,10 @@
   .cal-day.today { background:#0058be; color:#fff; font-weight:700; border-radius:7px; }
   .cal-day.has-note::after { content:''; position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#6b38d4; }
   .cal-day.today.has-note::after { background:#fff; }
+  
+  /* Added for Calendar updates */
+  .cal-day.is-holiday { color: #ef4444; font-weight: 700; background: #fef2f2; }
+  .cal-day.has-submission::before { content:''; position:absolute; top:2px; right:2px; width:4px; height:4px; border-radius:50%; background:#059669; }
 
   /* ── Note Modal ── */
   .note-overlay { position:fixed; inset:0; background:rgba(15,20,40,0.4); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; z-index:9999; }
@@ -175,13 +179,6 @@
   .skeleton { background:linear-gradient(90deg,#f2f3fd 25%,#e6e7f2 50%,#f2f3fd 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-  /* ── Status badge variants ── */
-  .status-badge { display:inline-flex; align-items:center; gap:4px; border-radius:20px; padding:3px 10px; font-size:11px; font-weight:700; }
-  .status-submitted { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
-  .status-approved  { background:#d1fae5; color:#065f46; border:1px solid #6ee7b7; }
-  .status-pending   { background:#fef9c3; color:#92400e; border:1px solid #fde68a; }
-  .status-rejected  { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
-
   /* ── Responsive ── */
   @media(max-width:768px){
     aside { transform:translateX(-100%); transition:transform 0.3s; z-index:60; }
@@ -216,11 +213,6 @@
     <div class="nav-section-label">General</div>
     <a class="nav-item" href="event.html"><i class="ti ti-calendar-event"></i><span>Event</span></a>
   </nav>
-  <div class="p-4 border-t border-outline-variant">
-    <button onclick="window.location.href='index.html'" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all duration-200">
-      <i class="ti ti-logout" style="font-size:16px;"></i><span>Log Out</span>
-    </button>
-  </div>
 </aside>
 
 <header class="fixed top-0 left-0 right-0 pl-[260px] z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
@@ -285,9 +277,19 @@
         <span id="liveClockDisplay">--:-- --</span>
       </div>
       <div class="h-6 w-px bg-outline-variant"></div>
-      <div class="w-9 h-9 rounded-full bg-secondary-fixed flex items-center justify-center overflow-hidden border-2 border-surface-container-highest cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all shadow-sm">
-        <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtS5si_PKG24Rw7q2_w4G1LPgv4qZ0IDFv16X_sDHSIjKkiAvbUb3IIhf7YLBfH-7mHmFgZxUFTm08OHMNK-fJM39n7IMRjiQC0aLPn-iu_zUj9DSGvVH0k1zRrb2-Ff38yVqqujD62M_WBdGWAnjmztqqh7JKfgo6XB2iQiIhySjsanYZ0WHfMu-51IhL-6xuSrra_gVjemHRGltkhHYPY0qF7bPm_irHwKJB7jsWNq0A9KMjRrphtmHInv9EjHoOZ_dtL46pTA"/>
+      
+      <div class="relative shrink-0" id="profileMenuWrapper">
+        <div onclick="toggleProfileDropdown(event)" class="w-9 h-9 rounded-full bg-secondary-fixed flex items-center justify-center overflow-hidden border-2 border-surface-container-highest cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all shadow-sm">
+          <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtS5si_PKG24Rw7q2_w4G1LPgv4qZ0IDFv16X_sDHSIjKkiAvbUb3IIhf7YLBfH-7mHmFgZxUFTm08OHMNK-fJM39n7IMRjiQC0aLPn-iu_zUj9DSGvVH0k1zRrb2-Ff38yVqqujD62M_WBdGWAnjmztqqh7JKfgo6XB2iQiIhySjsanYZ0WHfMu-51IhL-6xuSrra_gVjemHRGltkhHYPY0qF7bPm_irHwKJB7jsWNq0A9KMjRrphtmHInv9EjHoOZ_dtL46pTA"/>
+        </div>
+        
+        <div id="profileDropdown" class="hidden absolute right-0 top-[calc(100%+8px)] min-w-[160px] bg-white border border-slate-200 rounded-xl p-1.5 shadow-xl z-50">
+          <button onclick="window.location.href='index.html'" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-semibold text-red-600 hover:bg-red-50 transition-colors text-left">
+            <i class="ti ti-logout" style="font-size:16px;"></i><span>Log Out</span>
+          </button>
+        </div>
       </div>
+
     </div>
 
   </div>
@@ -298,13 +300,10 @@
 
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h2 class="text-[28px] font-bold leading-tight text-on-surface tracking-tight">Good Morning, Justine!</h2>
+        <h2 id="dynamicGreeting" class="text-[28px] font-bold leading-tight text-on-surface tracking-tight">Good Morning, Justine!</h2>
         <p class="text-[14px] text-on-surface-variant mt-1">Monitor your intellectual property portfolio with real-time analytics.</p>
       </div>
       <div class="flex gap-3 items-center">
-        <button class="h-[40px] w-[40px] flex items-center justify-center bg-surface-container-highest text-on-surface rounded-xl hover:bg-surface-container-high transition-all shadow-sm" title="Export Report">
-          <span class="material-symbols-outlined text-[20px]">download</span>
-        </button>
         <button onclick="openCategoryModal()" class="h-[40px] px-5 bg-primary text-white rounded-xl font-semibold text-[13px] flex items-center gap-2 hover:opacity-90 transition-all shadow-md shadow-primary/20">
           <span class="material-symbols-outlined text-[18px]">add</span>Add Research
         </button>
@@ -526,7 +525,7 @@
 <div class="note-overlay" id="noteOverlay" role="dialog" aria-modal="true">
   <div class="note-modal">
     <div class="note-modal-header">
-      <span class="note-modal-title" id="noteTitleEl">Reminder</span>
+      <span class="note-modal-title" id="noteTitleEl">Day Details</span>
       <button class="note-modal-close" onclick="closeNoteModal()">×</button>
     </div>
     <div class="note-modal-date" id="noteDateEl"></div>
@@ -593,7 +592,7 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Reference Number</label>
-          <input id="rm-id" type="text" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="e.g. CR-2026-001"/>
+          <input id="rm-id" type="text" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[13px] text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white outline-none transition-all placeholder:text-outline" placeholder="e.g. 2026-12345"/>
         </div>
         <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">College</label>
@@ -620,14 +619,14 @@
         </div>
         <div>
           <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">Status</label>
-          <input type="text" value="Submitted to IPO" readonly class="w-full rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-[13px] font-semibold text-blue-700 cursor-not-allowed outline-none"/>
+          <input type="text" value="Submitted to IPOPHL" readonly class="w-full rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-[13px] font-semibold text-blue-700 cursor-not-allowed outline-none"/>
         </div>
       </div>
       <div>
         <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">
             <label class="text-[10px] font-bold text-outline uppercase tracking-widest">Authors</label>
-            <span id="rm-author-count" class="text-[10px] font-semibold text-on-surface-variant bg-surface-container-highest rounded-full px-2 py-0.5">0 / 15</span>
+            <span id="rm-author-count" class="text-[10px] font-semibold text-on-surface-variant bg-surface-container-highest rounded-full px-2 py-0.5">0 / 20</span>
           </div>
           <button onclick="addAuthorField()" id="rm-add-author-btn" type="button" class="flex items-center gap-1 text-[11px] font-semibold text-primary hover:text-blue-700 transition-colors">
             <span class="material-symbols-outlined text-[14px]">add</span> Add Author
@@ -638,7 +637,7 @@
           <span class="material-symbols-outlined text-[13px]">error</span>
           <span id="rm-author-error-text"></span>
         </p>
-        <p id="rm-author-hint" class="text-[11px] text-outline mt-2">Add at least one author (max 15). Paste multiple names on separate lines and they'll split automatically.</p>
+        <p id="rm-author-hint" class="text-[11px] text-outline mt-2">Add at least one author (max 20). Paste multiple names on separate lines and they'll split automatically.</p>
       </div>
     </div>
     <div class="px-7 py-5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3">
@@ -673,7 +672,7 @@
           <div class="review-row pl-4 border-l border-slate-100"><span class="review-label">Date</span><span class="review-value" id="rv-date">—</span></div>
         </div>
         <div class="review-row"><span class="review-label">Department</span><span class="review-value" id="rv-dept">—</span></div>
-        <div class="review-row"><span class="review-label">Status</span><span class="review-badge"><span class="material-symbols-outlined text-[13px]">send</span>Submitted to IPO</span></div>
+        <div class="review-row"><span class="review-label">Status</span><span class="review-badge"><span class="material-symbols-outlined text-[13px]">send</span>Submitted to IPOPHL</span></div>
         <div class="review-row"><span class="review-label">Authors</span><div id="rv-authors" class="flex flex-wrap gap-1.5 mt-1"></div></div>
       </div>
     </div>
@@ -708,6 +707,21 @@
    CONFIG
 ═══════════════════════════════════════════ */
 const API_BASE = 'http://localhost:5000/api';
+const MAX_AUTHORS = 20;
+
+const PH_HOLIDAYS = {
+  '01-01': 'New Year\'s Day',
+  '04-09': 'Araw ng Kagitingan',
+  '05-01': 'Labor Day',
+  '06-12': 'Independence Day',
+  '08-21': 'Ninoy Aquino Day',
+  '08-31': 'National Heroes Day',
+  '11-01': 'All Saints\' Day',
+  '11-30': 'Bonifacio Day',
+  '12-08': 'Feast of the Immaculate Conception',
+  '12-25': 'Christmas Day',
+  '12-30': 'Rizal Day'
+};
 
 /* ═══════════════════════════════════════════
    INIT
@@ -718,12 +732,13 @@ document.addEventListener('DOMContentLoaded', () => {
   buildCalendar();
   renderCategoryCards();
   startLiveClock();
+  updateGreeting();
   initSearch();
   loadDashboardData();   
 });
 
 /* ═══════════════════════════════════════════
-   LIVE CLOCK
+   LIVE CLOCK & GREETING
 ═══════════════════════════════════════════ */
 function startLiveClock() {
   function tick() {
@@ -735,6 +750,22 @@ function startLiveClock() {
       `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ap}`;
   }
   tick(); setInterval(tick, 1000);
+}
+
+function updateGreeting() {
+  const h = new Date().getHours();
+  let greeting = 'Good Evening';
+  if (h < 12) greeting = 'Good Morning';
+  else if (h < 18) greeting = 'Good Afternoon';
+  
+  const greetingEl = document.getElementById('dynamicGreeting');
+  if (greetingEl) greetingEl.textContent = `${greeting}, Justine!`;
+}
+
+function toggleProfileDropdown(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('profileDropdown');
+  dd.classList.toggle('hidden');
 }
 
 /* ═══════════════════════════════════════════
@@ -771,6 +802,12 @@ document.addEventListener('click', function(e) {
   if (wrapper && !wrapper.contains(e.target)) {
     const searchDd = document.getElementById('searchDropdownMenu');
     if (searchDd) { searchDd.classList.add('hidden'); searchDd.classList.remove('flex'); }
+  }
+
+  const profileWrapper = document.getElementById('profileMenuWrapper');
+  if (profileWrapper && !profileWrapper.contains(e.target)) {
+    const profileDd = document.getElementById('profileDropdown');
+    if (profileDd) { profileDd.classList.add('hidden'); }
   }
 });
 
@@ -894,7 +931,6 @@ function runSearch() {
       <span class="text-[11px] text-on-surface-variant truncate">${r.referenceId || 'No ID'} • ${r.college||(r.department?r.department.split('—')[0].split('--')[0].trim():'')||'—'}</span>
     `;
     
-    // REDIRECT AND HIGHLIGHT FROM SEARCH
     item.addEventListener('click', () => {
       dropdownMenu.classList.add('hidden');
       sessionStorage.setItem('highlightResearchId', r.referenceId);
@@ -947,6 +983,9 @@ async function loadDashboardData() {
     renderPieChart(stats);
     renderInsights(stats);
     renderRecentList(recent);
+    
+    // Refresh calendar to show data connection points
+    buildCalendar();
 
   } catch (err) {
     console.error('Dashboard load error:', err);
@@ -957,13 +996,15 @@ async function loadDashboardData() {
 function aggregateClientSide(records) {
   const catCounts = { copyright:0, patent:0, trademark:0, 'utility-model':0, 'industrial-design':0 };
   const collegeCounts = {};
-  const year = new Date().getFullYear();
-  const monthly = {
-    copyright:      new Array(12).fill(0),
-    patent:         new Array(12).fill(0),
-    trademark:      new Array(12).fill(0),
-    'utility-model':new Array(12).fill(0)
-  };
+  
+  const now = new Date();
+  const year = now.getFullYear();
+  
+  const monthly = { copyright: new Array(12).fill(0), patent: new Array(12).fill(0), trademark: new Array(12).fill(0), 'utility-model': new Array(12).fill(0) };
+  const yearly = { copyright: new Array(6).fill(0), patent: new Array(6).fill(0), trademark: new Array(6).fill(0), 'utility-model': new Array(6).fill(0) };
+  const weekly = { copyright: new Array(12).fill(0), patent: new Array(12).fill(0), trademark: new Array(12).fill(0), 'utility-model': new Array(12).fill(0) };
+  
+  const submissionsByDate = {};
 
   records.forEach(r => {
     const cat = (r.category||'').toLowerCase().trim().replace(/\s+/g,'-');
@@ -976,13 +1017,33 @@ function aggregateClientSide(records) {
     const rawDate = r.date || r.dateOfApplication || r.createdAt;
     if (rawDate) {
       const d = new Date(rawDate);
-      if (!isNaN(d) && d.getFullYear() === year && monthly[cat]) {
-        monthly[cat][d.getMonth()]++;
+      if (!isNaN(d)) {
+        // Calendar Grouping
+        const dateKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        if (!submissionsByDate[dateKey]) submissionsByDate[dateKey] = [];
+        submissionsByDate[dateKey].push(r);
+
+        // Monthly Grouping
+        if (d.getFullYear() === year && monthly[cat]) {
+          monthly[cat][d.getMonth()]++;
+        }
+        
+        // Yearly Grouping (Last 6 Years)
+        const yearDiff = year - d.getFullYear();
+        if (yearDiff >= 0 && yearDiff < 6 && yearly[cat]) {
+          yearly[cat][5 - yearDiff]++;
+        }
+
+        // Weekly Grouping (Trailing 12 weeks)
+        const diffTime = Math.abs(now - d);
+        const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+        if (diffWeeks >= 0 && diffWeeks < 12 && weekly[cat]) {
+            weekly[cat][11 - diffWeeks]++;
+        }
       }
     }
   });
 
-  const now = new Date();
   const recentMonth = records.filter(r => {
     const rawDate = r.date || r.dateOfApplication || r.createdAt;
     if (!rawDate) return false;
@@ -990,7 +1051,7 @@ function aggregateClientSide(records) {
     return !isNaN(d) && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   }).length;
 
-  return { counts: catCounts, college: collegeCounts, monthly, total: records.length, recentMonth };
+  return { counts: catCounts, college: collegeCounts, monthly, yearly, weekly, submissionsByDate, total: records.length, recentMonth };
 }
 
 function showSkeletons() {
@@ -1161,14 +1222,17 @@ function renderInsights(stats) {
   }
 
   const topCatEntry = Object.entries(c).sort((a,b)=>b[1]-a[1])[0];
-  const topCat = topCatEntry ? `${topCatEntry[0].replace(/-/g,' ')} (${topCatEntry[1]})` : '—';
+  const topCatName = topCatEntry ? topCatEntry[0].replace(/-/g,' ').replace(/\b\w/g, l => l.toUpperCase()) : '—';
+  const topCatValue = topCatEntry ? topCatEntry[1] : 0;
+  const topCat = topCatEntry ? `${topCatName} — ${topCatValue} Submissions` : '—';
+  
   const thisMonth = stats.recentMonth || 0;
 
   const rows = [
-    { label:'Total Researches',    value: total.toLocaleString(),  sub: 'across all categories' },
-    { label:'Most Active Category',value: topCat,                  sub: 'highest filings' },
-    { label:'Top College',         value: topCollege,              sub: 'most submissions' },
-    { label:'This Month',          value: thisMonth.toLocaleString(), sub: 'new submissions' },
+    { label:'Total Researches',    value: total.toLocaleString(),  sub: 'Across all categories' },
+    { label:'Most Active Category',value: topCat,                  sub: 'Highest overall filings' },
+    { label:'Top College',         value: topCollege,              sub: 'Most active department' },
+    { label:'Recent Activity',     value: `${thisMonth.toLocaleString()} Added`, sub: 'New submissions this month' },
   ];
 
   const el = document.getElementById('insightsContent');
@@ -1209,7 +1273,7 @@ function renderRecentList(records) {
     const catLabel = (r.category||'Unknown').replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase());
     const rawDate = r.date || r.dateOfApplication || r.createdAt;
     const dateStr = rawDate
-      ? new Date(rawDate+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+      ? new Date(rawDate+'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})
       : '—';
     const authors = Array.isArray(r.authors)
       ? r.authors.slice(0,2).join(', ') + (r.authors.length > 2 ? ` +${r.authors.length-2}` : '')
@@ -1227,7 +1291,6 @@ function renderRecentList(records) {
       </div>
       <span class="text-[10px] font-bold px-2 py-1 rounded-full flex-shrink-0 whitespace-nowrap" style="background:${bg};color:${color};">${catLabel}</span>`;
     
-    // REDIRECT AND HIGHLIGHT FROM RECENT SUBMISSIONS
     item.addEventListener('click', () => {
       sessionStorage.setItem('highlightResearchId', r.referenceId);
       window.location.href = CATEGORY_ROUTES[cat] || 'copyright.html';
@@ -1280,11 +1343,23 @@ function buildCalendar(){
   let next=1; while(cells.length<42) cells.push({day:next++,type:'next'});
   cells.forEach(({day,type})=>{
     const el=document.createElement('div'); el.className='cal-day'; el.textContent=day;
-    if(type!=='current'){el.classList.add('other-month');}
-    else{
+    if(type!=='current'){
+      el.classList.add('other-month');
+    } else {
       const key=dateKey(calYear,calMonth,day);
+      const mmdd = `${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      
       if(today.getFullYear()===calYear&&today.getMonth()===calMonth&&today.getDate()===day) el.classList.add('today');
       if(calNotes[key]) el.classList.add('has-note');
+      
+      // Holiday Check
+      if(PH_HOLIDAYS[mmdd]) el.classList.add('is-holiday');
+      
+      // Data Connection Check
+      if(window._lastStats && window._lastStats.submissionsByDate && window._lastStats.submissionsByDate[key]) {
+          el.classList.add('has-submission');
+      }
+
       el.addEventListener('click',()=>openNoteModal(calYear,calMonth,day));
     }
     grid.appendChild(el);
@@ -1292,12 +1367,14 @@ function buildCalendar(){
   renderUpcoming();
   if(pickerOpen) renderMonthPicker();
 }
+
 function renderUpcoming(){
   const el=document.getElementById('calUpcoming');
   const upcoming=Object.entries(calNotes).filter(([k])=>k>=dateKey(today.getFullYear(),today.getMonth(),today.getDate())).sort(([a],[b])=>a.localeCompare(b))[0];
   if(upcoming){const[,note]=upcoming;el.innerHTML=`<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#f2f3fd;border-radius:10px;border:1px solid #e1e2ec;"><div style="width:5px;height:5px;border-radius:50%;background:#6b38d4;flex-shrink:0;margin-top:4px;"></div><div style="font-size:11px;color:#424754;line-height:1.4;">${note.length>55?note.slice(0,52)+'…':note}</div></div>`;}
   else el.innerHTML='';
 }
+
 function toggleMonthPicker(e){e.stopPropagation();pickerOpen=!pickerOpen;if(pickerOpen)pickerYear=calYear;const picker=document.getElementById('calMonthPicker'),label=document.getElementById('calMonthLabel');if(pickerOpen){picker.classList.add('open');label.classList.add('open');renderMonthPicker();}else{picker.classList.remove('open');label.classList.remove('open');}}
 function closeMonthPicker(){pickerOpen=false;document.getElementById('calMonthPicker').classList.remove('open');document.getElementById('calMonthLabel').classList.remove('open');}
 function renderMonthPicker(){
@@ -1305,6 +1382,7 @@ function renderMonthPicker(){
   const container=document.getElementById('mpMonths'); container.innerHTML='';
   MONTH_SHORT.forEach((m,i)=>{const btn=document.createElement('button');btn.className='mp-month-btn';btn.textContent=m;if(i===calMonth&&pickerYear===calYear)btn.classList.add('active');btn.onclick=()=>{calMonth=i;calYear=pickerYear;closeMonthPicker();buildCalendar();};container.appendChild(btn);});
 }
+
 document.getElementById('mpPrevYear').addEventListener('click',e=>{e.stopPropagation();pickerYear--;renderMonthPicker();});
 document.getElementById('mpNextYear').addEventListener('click',e=>{e.stopPropagation();pickerYear++;renderMonthPicker();});
 document.addEventListener('click',e=>{if(pickerOpen&&!document.getElementById('calMonthPicker').contains(e.target))closeMonthPicker();});
@@ -1313,12 +1391,65 @@ document.getElementById('calNext').addEventListener('click',()=>{calMonth++;if(c
 
 let activeNoteKey=null;
 function openNoteModal(y,m,d){activeNoteKey=dateKey(y,m,d);document.getElementById('noteDateEl').textContent=new Date(y,m,d).toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});showNoteViewMode(calNotes[activeNoteKey]);document.getElementById('noteOverlay').style.display='flex';}
+
 function showNoteViewMode(noteText){
-  document.getElementById('noteViewMode').classList.remove('hidden');document.getElementById('noteEditMode').classList.add('hidden');
-  const viewContent=document.getElementById('noteViewContent'),emptyMsg=document.getElementById('noteEmptyMsg'),viewBtns=document.getElementById('noteViewBtns');
-  if(noteText){document.getElementById('noteTitleEl').textContent='Reminder';emptyMsg.classList.add('hidden');viewContent.innerHTML=`<div class="note-view-wrap"><div class="note-view-label"><span class="material-symbols-outlined" style="font-size:12px;font-variation-settings:'FILL' 1;">bookmark</span>Saved Note</div><div class="note-view-text">${noteText}</div></div>`;viewBtns.innerHTML='';const editBtn=document.createElement('button');editBtn.className='btn-note-edit';editBtn.innerHTML='<span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit Note';editBtn.onclick=()=>showNoteEditMode(noteText);viewBtns.appendChild(editBtn);}
-  else{document.getElementById('noteTitleEl').textContent='Add Reminder';viewContent.innerHTML='';emptyMsg.classList.remove('hidden');viewBtns.innerHTML='';showNoteEditMode('');}
+  document.getElementById('noteViewMode').classList.remove('hidden');
+  document.getElementById('noteEditMode').classList.add('hidden');
+  
+  const viewContent=document.getElementById('noteViewContent');
+  const emptyMsg=document.getElementById('noteEmptyMsg');
+  const viewBtns=document.getElementById('noteViewBtns');
+  
+  viewContent.innerHTML = '';
+  let contentAdded = false;
+
+  const mmdd = activeNoteKey.substring(5);
+  if(PH_HOLIDAYS[mmdd]) {
+      viewContent.innerHTML += `<div class="note-view-wrap" style="border-left-color:#ef4444; background:#fef2f2;"><div class="note-view-label" style="color:#ef4444;"><span class="material-symbols-outlined" style="font-size:12px;">event</span>Official Holiday</div><div class="note-view-text text-red-800 font-semibold">${PH_HOLIDAYS[mmdd]}</div></div>`;
+      contentAdded = true;
+  }
+
+  if(window._lastStats && window._lastStats.submissionsByDate && window._lastStats.submissionsByDate[activeNoteKey]) {
+      const subs = window._lastStats.submissionsByDate[activeNoteKey];
+      let subHTML = `<div class="note-view-wrap" style="border-left-color:#059669; background:#d1fae5;"><div class="note-view-label" style="color:#059669;"><span class="material-symbols-outlined" style="font-size:12px;">fact_check</span>Submissions (${subs.length})</div><div class="space-y-1 mt-1">`;
+      subs.forEach(s => {
+         const title = s.researchTitle || s.title || '(Untitled)';
+         subHTML += `<div class="text-[12px] font-medium text-emerald-900 border-b border-emerald-200 pb-1 mb-1 last:border-0 last:pb-0 last:mb-0">${title} <span class="text-[10px] text-emerald-700 ml-1">(${s.category})</span></div>`;
+      });
+      subHTML += `</div></div>`;
+      viewContent.innerHTML += subHTML;
+      contentAdded = true;
+  }
+
+  if(noteText){
+      document.getElementById('noteTitleEl').textContent='Day Details';
+      viewContent.innerHTML += `<div class="note-view-wrap"><div class="note-view-label"><span class="material-symbols-outlined" style="font-size:12px;font-variation-settings:'FILL' 1;">bookmark</span>Saved Note</div><div class="note-view-text">${noteText}</div></div>`;
+      contentAdded = true;
+      viewBtns.innerHTML='';
+      const editBtn=document.createElement('button');
+      editBtn.className='btn-note-edit';
+      editBtn.innerHTML='<span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit Note';
+      editBtn.onclick=()=>showNoteEditMode(noteText);
+      viewBtns.appendChild(editBtn);
+  } else {
+      document.getElementById('noteTitleEl').textContent= contentAdded ? 'Day Details' : 'Add Reminder';
+      viewBtns.innerHTML='';
+      if(!contentAdded) {
+          emptyMsg.classList.remove('hidden');
+          showNoteEditMode('');
+      } else {
+          emptyMsg.classList.add('hidden');
+          const addBtn=document.createElement('button');
+          addBtn.className='btn-note-edit';
+          addBtn.innerHTML='<span class="material-symbols-outlined" style="font-size:14px;">add</span> Add Note';
+          addBtn.onclick=()=>showNoteEditMode('');
+          viewBtns.appendChild(addBtn);
+      }
+  }
+  
+  if (contentAdded) emptyMsg.classList.add('hidden');
 }
+
 function showNoteEditMode(existingText){document.getElementById('noteViewMode').classList.add('hidden');document.getElementById('noteEditMode').classList.remove('hidden');document.getElementById('noteTitleEl').textContent=existingText?'Edit Reminder':'Add Reminder';const ta=document.getElementById('noteTextarea');ta.value=existingText||'';ta.placeholder=existingText?'Edit your reminder…':'Add a reminder or note…';document.getElementById('noteDeleteBtn').style.display=existingText?'inline-flex':'none';setTimeout(()=>ta.focus(),60);}
 function cancelEditNote(){const existing=calNotes[activeNoteKey];existing?showNoteViewMode(existing):closeNoteModal();}
 function closeNoteModal(){document.getElementById('noteOverlay').style.display='none';}
@@ -1397,7 +1528,6 @@ function closeAllResearchModals(){
   pendingSubmission=null;
 }
 
-const MAX_AUTHORS=15;
 function currentAuthorCount(){return document.getElementById('rm-authors').querySelectorAll('.author-row').length;}
 function updateAuthorUI(){
   const count=currentAuthorCount();
@@ -1430,7 +1560,7 @@ function reviewResearchEntry(){
   if(!title||!id||!date||!authors.length||!college){errorEl.textContent='Please fill in all required fields (including College) and add at least one author.';errorEl.classList.remove('hidden');return;}
   if(authors.length>MAX_AUTHORS){errorEl.textContent='Too many authors.';errorEl.classList.remove('hidden');return;}
   errorEl.classList.add('hidden');
-  pendingSubmission={title,id,department:dept,college,date,authors,category:selectedCategory,status:'Submitted to IPO'};
+  pendingSubmission={title,id,department:dept,college,date,authors,category:selectedCategory,status:'Submitted to IPOPHL'};
   const cat=CATEGORIES.find(c=>c.id===selectedCategory);
   document.getElementById('rv-cat').innerHTML=`<span class="cat-badge" style="background:${cat.bg};color:${cat.color};border:1px solid ${cat.color}33;font-size:12px;"><i class="${cat.icon}" style="font-size:13px;"></i>${cat.label}</span>`;
   document.getElementById('rv-title').textContent=title;
