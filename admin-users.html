@@ -1,503 +1,943 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>User Management | Admin Panel</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Management | IP Management System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<script>
+  tailwind.config = {
+    darkMode:"class",
+    theme:{ extend:{ colors:{
+      "background":"#f9f9ff","surface-container-low":"#f2f3fd","surface-container":"#ecedf7",
+      "surface-container-highest":"#e1e2ec","surface-container-lowest":"#ffffff",
+      "primary":"#0058be","on-surface":"#191b23","on-surface-variant":"#424754",
+      "outline":"#727785","outline-variant":"#c2c6d6","surface":"#f9f9ff"
+    }, fontFamily:{ sans:["Inter","sans-serif"] } } }
+  }
+</script>
 <style>
-:root {
-  --sidebar-w:260px;--sidebar-collapsed:72px;--header-h:64px;
-  --primary:#0058be;--primary-dark:#004499;--primary-light:#e8f0fd;
-  --surface:#f4f6fb;--white:#ffffff;--border:#e2e5ef;
-  --text:#191b23;--text-2:#424754;--text-3:#727785;--text-4:#a0a6b8;
-  --success:#059669;--warning:#d97706;--danger:#dc2626;--purple:#6b38d4;
-}
-*,*::before,*::after{box-sizing:border-box;}
-html,body{height:100%;margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:var(--surface);color:var(--text);}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width 0.25s cubic-bezier(0.4,0,0.2,1);z-index:50;overflow:hidden;}
-.sidebar.collapsed{width:var(--sidebar-collapsed);}
-.sidebar-brand{display:flex;align-items:center;gap:12px;padding:20px 18px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.brand-icon{width:36px;height:36px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.brand-text{overflow:hidden;white-space:nowrap;}
-.brand-text h1{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
-.brand-text p{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.12em;margin-top:1px;}
-.sidebar-admin-badge{margin:12px 14px;background:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%);border-radius:8px;padding:6px 10px;display:flex;align-items:center;gap:8px;overflow:hidden;flex-shrink:0;}
-.admin-badge-dot{width:6px;height:6px;background:#fff;border-radius:50%;flex-shrink:0;animation:blink 2s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.4;}}
-.admin-badge-text{font-size:10px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:0.12em;white-space:nowrap;}
-.sidebar-nav{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 10px;}
-.nav-section-label{font-size:9px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:0.14em;padding:8px 8px 4px;white-space:nowrap;overflow:hidden;transition:opacity 0.2s;}
-.sidebar.collapsed .nav-section-label{opacity:0;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:10px;cursor:pointer;text-decoration:none;color:var(--text-2);font-size:13px;font-weight:500;transition:all 0.15s;white-space:nowrap;overflow:hidden;position:relative;}
-.nav-item:hover{background:#f1f5f9;color:var(--text);}
-.nav-item.active{background:var(--primary-light);color:var(--primary);font-weight:600;}
-.nav-item.active .nav-icon{color:var(--primary);}
-.nav-icon{font-size:18px;width:22px;text-align:center;flex-shrink:0;}
-.nav-label{overflow:hidden;white-space:nowrap;}
-.nav-badge{margin-left:auto;background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;flex-shrink:0;}
-.sidebar-footer{padding:12px 10px;border-top:1px solid var(--border);flex-shrink:0;}
-.collapse-btn{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;color:var(--text-3);font-size:13px;font-weight:500;transition:all 0.15s;border:none;background:none;width:100%;overflow:hidden;white-space:nowrap;}
-.collapse-btn:hover{background:#f1f5f9;color:var(--text);}
-.collapse-icon{transition:transform 0.25s;font-size:18px;flex-shrink:0;}
-.sidebar.collapsed .collapse-icon{transform:rotate(180deg);}
-.main-wrap{margin-left:var(--sidebar-w);transition:margin-left 0.25s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;min-height:100vh;}
-.main-wrap.collapsed{margin-left:var(--sidebar-collapsed);}
-.topbar{height:var(--header-h);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:40;}
-.topbar-left{display:flex;flex-direction:column;}
-.topbar-title{font-size:17px;font-weight:700;color:var(--text);}
-.topbar-breadcrumb{font-size:11px;color:var(--text-3);font-weight:500;}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.topbar-clock{display:flex;align-items:center;gap:6px;background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--text-2);}
-.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:#f8f9fc;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-3);font-size:17px;transition:all 0.15s;position:relative;}
-.icon-btn:hover{background:var(--primary-light);color:var(--primary);border-color:#c7d9f7;}
-.notif-dot{position:absolute;top:6px;right:7px;width:7px;height:7px;background:#dc2626;border-radius:50%;border:1.5px solid #fff;}
-.admin-profile{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;border-radius:12px;border:1px solid var(--border);background:#f8f9fc;cursor:pointer;transition:all 0.15s;}
-.admin-profile:hover{background:var(--primary-light);border-color:#c7d9f7;}
-.profile-avatar{width:30px;height:30px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
-.profile-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.2;}
-.profile-role{font-size:10px;font-weight:600;color:#dc2626;text-transform:uppercase;letter-spacing:0.10em;}
-.page-content{flex:1;padding:28px;animation:pageIn 0.4s ease both;}
-@keyframes pageIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
-.section-card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
-.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;}
-.page-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.15s,color 0.15s;color:var(--text-3);border:none;background:none;}
-.page-btn:hover:not(.active):not(:disabled){background:#f1f5f9;}
-.page-btn.active{background:var(--primary);color:#fff;font-weight:700;}
-.page-btn:disabled{opacity:0.3;cursor:not-allowed;}
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:10px;}
-.action-btn{display:inline-flex;align-items:center;gap:3px;padding:4px 9px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all 0.13s;}
-.action-btn:hover{transform:translateY(-1px);}
-table tbody tr{transition:background 0.1s;}
-table tbody tr:hover{background:#fafbfd;}
-.modal-overlay{position:fixed;inset:0;background:rgba(25,27,35,0.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;}
-.modal-overlay.open{display:flex;}
-.modal-box{background:var(--white);border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,0.14);width:100%;max-width:580px;max-height:90vh;display:flex;flex-direction:column;animation:modalIn 0.22s ease;}
-@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(0.98);}to{opacity:1;transform:none;}}
-.field-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.11em;color:var(--text-3);display:block;margin-bottom:6px;}
-.field-input{width:100%;background:#f8f9fc;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.18s,box-shadow 0.18s;}
-.field-input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(0,88,190,0.10);}
-.confirm-modal{position:fixed;inset:0;background:rgba(25,27,35,0.50);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:110;padding:16px;}
-.confirm-modal.open{display:flex;}
-/* Tooltip on collapsed */
-.sidebar.collapsed .nav-item:hover::after{content:attr(data-tooltip);position:absolute;left:calc(var(--sidebar-collapsed) - 8px);top:50%;transform:translateY(-50%);background:#1e293b;color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;white-space:nowrap;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;}
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #f9f9ff; color: #191b23; margin: 0; }
+  ::-webkit-scrollbar { width: 6px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
+  /* ── Sidebar ── */
+  .nav-item { display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:8px; cursor:pointer; transition:background 0.15s,color 0.15s,transform 0.15s; text-decoration:none; color:#424754; font-size:13.5px; font-weight:400; width:100%; }
+  .nav-item:hover { background:#f1f5f9; color:#191b23; transform:translateX(4px); }
+  .nav-item.active { background:#fee2e2; color:#dc2626; font-weight:500; transform:none; }
+  .nav-item.active i { color:#dc2626; }
+  .nav-item i { font-size:18px; width:20px; text-align:center; flex-shrink:0; }
+  .nav-section-label { font-size:10px; font-weight:600; color:#727785; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin:12px 0 4px; }
+
+  /* ── Header ── */
+  .live-time-badge { display:flex; align-items:center; gap:6px; background:#f2f3fd; border:1px solid #e1e2ec; border-radius:8px; padding:5px 11px; font-size:12px; font-weight:600; color:#424754; white-space:nowrap; }
+  .live-time-badge i { color:#0058be; font-size:14px; }
+
+  /* ── Page entrance ── */
+  #mainContent { opacity:0; transform:translateY(8px); transition:opacity 0.5s ease-out,transform 0.5s ease-out; }
+
+  /* ── Stat cards ── */
+  .stat-card { background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:18px 20px; display:flex; align-items:center; gap:14px; transition:transform 0.2s,box-shadow 0.2s; }
+  .stat-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.07); }
+
+  /* ── Table ── */
+  .tbl-th { padding:10px 16px; font-size:10px; font-weight:700; color:#727785; text-transform:uppercase; letter-spacing:0.09em; border-bottom:1px solid #edf0f7; background:#fafafa; white-space:nowrap; }
+  .tbl-td { padding:13px 16px; font-size:13px; border-bottom:1px solid #f4f5f9; vertical-align:middle; color:#424754; }
+  table tbody tr { transition:background 0.1s; }
+  table tbody tr:hover { background:#fafbff; }
+
+  /* ── Toolbar inputs ── */
+  .toolbar-search { width:100%; background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:9px 12px 9px 36px; font-size:13px; font-family:'Inter',sans-serif; outline:none; transition:all 0.15s; color:#191b23; }
+  .toolbar-search:focus { border-color:#0058be; box-shadow:0 0 0 3px rgba(0,88,190,0.08); }
+  .toolbar-search::placeholder { color:#a0a6b8; }
+
+  /* ── Badges ── */
+  .badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
+  .badge-role-admin { background:#f3e8ff; color:#7e22ce; border: 1px solid #e9d5ff; }
+  .badge-role-staff { background:#e0f2fe; color:#0369a1; border: 1px solid #bae6fd; }
+  .badge-status-active { background:#dcfce7; color:#15803d; border: 1px solid #bbf7d0; }
+  .badge-status-inactive { background:#f3f4f6; color:#4b5563; border: 1px solid #e5e7eb; }
+
+  /* ── Pagination ── */
+  .page-btn { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; transition:background 0.12s,color 0.12s; color:#727785; border:none; background:none; font-family:'Inter',sans-serif; }
+  .page-btn:hover:not(.active):not(:disabled) { background:#f2f3fd; color:#191b23; }
+  .page-btn.active { background:#0058be; color:#fff; font-weight:700; }
+  .page-btn:disabled { opacity:0.3; cursor:not-allowed; }
+
+  /* ── Modal ── */
+  .modal-overlay { position:fixed; inset:0; background:rgba(15,20,40,0.4); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; z-index:200; padding:16px; }
+  .modal-overlay.open { display:flex; }
+  @keyframes modalIn { from{opacity:0;transform:translateY(10px) scale(0.97);}to{opacity:1;transform:none;} }
+
+  /* ── Form fields ── */
+  .field-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.10em; color:#727785; display:block; margin-bottom:5px; }
+  .field-input { width:100%; background:#f9f9ff; border:1.5px solid #e2e8f0; border-radius:10px; padding:10px 14px; font-family:'Inter',sans-serif; font-size:13px; color:#191b23; outline:none; transition:border-color 0.15s,box-shadow 0.15s,background 0.15s; }
+  .field-input:focus { border-color:#0058be; background:#fff; box-shadow:0 0 0 3px rgba(0,88,190,0.09); }
+  .field-input::placeholder { color:#b0b5c4; }
+  .pw-wrap { position:relative; }
+  .pw-wrap .field-input { padding-right:42px; }
+  .pw-eye { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#b0b5c4; font-size:15px; transition:color 0.12s; padding:2px; }
+  .pw-eye:hover { color:#0058be; }
+
+  /* ── Confirm modal ── */
+  .confirm-overlay { position:fixed; inset:0; background:rgba(15,20,40,0.45); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; z-index:300; padding:16px; }
+  .confirm-overlay.open { display:flex; }
+
+  /* ── Toast ── */
+  .toast { position:fixed; bottom:24px; right:24px; z-index:400; display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:13px 18px; box-shadow:0 10px 36px rgba(0,0,0,0.11); opacity:0; transform:translateY(12px); transition:opacity 0.22s,transform 0.22s; pointer-events:none; min-width:250px; }
+  .toast.show { opacity:1; transform:translateY(0); }
+
+  /* ── Skeleton ── */
+  .skeleton { background:linear-gradient(90deg,#f2f3fd 25%,#e6e7f2 50%,#f2f3fd 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
+  @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
+
+  /* ── Role / Status chip toggles ── */
+  .role-chip { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:10px; border:1.5px solid #e2e8f0; background:#fff; font-size:13px; font-family:'Inter',sans-serif; font-weight:500; color:#424754; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+  .role-chip:hover { border-color:#0058be; color:#0058be; background:#f0f6ff; }
+  .role-chip.selected { border-color:#0058be; background:#e8f0fd; color:#0058be; font-weight:600; }
+
+  /* ── Pill filter dropdown opts ── */
+  .spill-opt, .rpill-opt { display:flex; align-items:center; width:100%; padding:9px 12px; border-radius:9px; border:none; background:none; font-size:13px; font-family:'Inter',sans-serif; font-weight:500; color:#424754; cursor:pointer; transition:background 0.12s; text-align:left; }
+  .spill-opt:hover, .rpill-opt:hover { background:#f2f3fd; color:#191b23; }
+  .spill-opt.active, .rpill-opt.active { background:#e8f0fd; color:#0058be; font-weight:700; }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-brand">
-    <div class="brand-icon"><i class="ti ti-building-bank text-white" style="font-size:17px;"></i></div>
-    <div class="brand-text"><h1>IP Management</h1><p>Administration Panel</p></div>
+<aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-[#e2e8f0] bg-white flex flex-col z-50">
+  <div class="flex items-center gap-3 px-5 py-5 border-b border-[#e2e8f0]">
+    <div class="w-9 h-9 rounded-xl bg-[#0058be] flex items-center justify-center text-white flex-shrink-0">
+      <i class="ti ti-building-bank" style="font-size:18px;"></i>
+    </div>
+    <div>
+      <h1 class="text-sm font-semibold leading-tight text-[#191b23]">IP Management</h1>
+      <p class="text-[10px] text-[#727785] font-semibold tracking-widest uppercase">System</p>
+    </div>
   </div>
-  <div class="sidebar-admin-badge"><div class="admin-badge-dot"></div><span class="admin-badge-text">Admin Mode</span></div>
-  <nav class="sidebar-nav">
+  <nav class="flex-1 overflow-y-auto px-3 pt-3 pb-2 space-y-2">
     <div class="nav-section-label">Overview</div>
-    <a class="nav-item" href="admin-dashboard.html" data-tooltip="Dashboard"><i class="ti ti-layout-dashboard nav-icon"></i><span class="nav-label">Dashboard</span></a>
+    <a class="nav-item" href="admin-dashboard.html"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></a>
     <div class="nav-section-label">Management</div>
-    <a class="nav-item active" href="admin-users.html" data-tooltip="Users"><i class="ti ti-users nav-icon"></i><span class="nav-label">User Management</span><span class="nav-badge" id="sb-user-count">—</span></a>
-    <a class="nav-item" href="admin-logs.html" data-tooltip="Logs"><i class="ti ti-clipboard-list nav-icon"></i><span class="nav-label">Activity Logs</span></a>
-    <div class="nav-section-label">User Side</div>
-    <a class="nav-item" href="dashboard.html" data-tooltip="User Side"><i class="ti ti-arrow-back-up nav-icon"></i><span class="nav-label">Back to User Side</span></a>
+    <a class="nav-item active" href="admin-users.html">
+      <i class="ti ti-users"></i><span>User Management</span>
+      <span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#fee2e2] text-[#dc2626]" id="sbBadge">—</span>
+    </a>
+    <a class="nav-item" href="admin-logs.html"><i class="ti ti-clipboard-list"></i><span>Activity Logs</span></a>
   </nav>
-  <div class="sidebar-footer">
-    <button class="collapse-btn" onclick="toggleSidebar()"><i class="ti ti-layout-sidebar-left-collapse collapse-icon nav-icon"></i><span class="nav-label" style="font-size:12px;">Collapse Sidebar</span></button>
-  </div>
 </aside>
 
-<!-- MAIN -->
-<div class="main-wrap" id="mainWrap">
-  <header class="topbar">
-    <div class="topbar-left">
-      <span class="topbar-title">User Management</span>
-      <span class="topbar-breadcrumb">Admin Panel &rsaquo; Users</span>
+<header class="fixed top-0 left-0 right-0 pl-[260px] z-40 bg-white/80 backdrop-blur-md border-b border-[#e2e8f0]">
+  <div class="flex items-center justify-between h-[60px] w-full px-6 gap-4">
+    <div>
+      <h2 class="text-[15px] font-bold text-[#191b23] leading-tight">User Management</h2>
+      <p class="text-[11px] text-[#727785]">Admin Panel › Users</p>
     </div>
-    <div class="topbar-right">
-      <div class="topbar-clock"><i class="ti ti-clock" style="font-size:13px;"></i><span id="clock-time"></span><span id="clock-ampm" style="font-size:10px;font-weight:700;color:#a0a6b8;"></span></div>
-      <div class="topbar-clock"><i class="ti ti-calendar" style="font-size:13px;"></i><span id="clock-date"></span></div>
-      <div class="icon-btn"><i class="ti ti-bell"></i><div class="notif-dot"></div></div>
-      <div class="admin-profile">
-        <div class="profile-avatar">SA</div>
-        <div><div class="profile-name">Super Admin</div><div class="profile-role">Administrator</div></div>
-        <i class="ti ti-chevron-down" style="font-size:13px;color:#a0a6b8;margin-left:4px;"></i>
-      </div>
-    </div>
-  </header>
-
-  <div class="page-content">
-
-    <!-- Stats row -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;">
-      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:center;gap:12px;">
-        <div style="width:38px;height:38px;background:#e8f0fd;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-users" style="font-size:17px;color:#0058be;"></i></div>
-        <div><div style="font-size:22px;font-weight:800;color:var(--text);" id="us-total">—</div><div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Total Users</div></div>
-      </div>
-      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:center;gap:12px;">
-        <div style="width:38px;height:38px;background:#d1fae5;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-user-check" style="font-size:17px;color:#059669;"></i></div>
-        <div><div style="font-size:22px;font-weight:800;color:var(--text);" id="us-active">—</div><div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Active</div></div>
-      </div>
-      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:center;gap:12px;">
-        <div style="width:38px;height:38px;background:#fef3c7;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-user-pause" style="font-size:17px;color:#d97706;"></i></div>
-        <div><div style="font-size:22px;font-weight:800;color:var(--text);" id="us-inactive">—</div><div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Inactive</div></div>
-      </div>
-      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:center;gap:12px;">
-        <div style="width:38px;height:38px;background:#fce7f3;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-shield-lock" style="font-size:17px;color:#be185d;"></i></div>
-        <div><div style="font-size:22px;font-weight:800;color:var(--text);" id="us-admins">—</div><div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Admins</div></div>
-      </div>
-    </div>
-
-    <!-- Table card -->
-    <div class="section-card">
-      <!-- Toolbar -->
-      <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <div style="position:relative;flex:1;min-width:200px;">
-          <i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text-4);"></i>
-          <input id="user-search" type="text" oninput="filterAndRender()" placeholder="Search by name, email, department, role…" style="width:100%;background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:8px 12px 8px 36px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:all 0.15s;color:var(--text);" onfocus="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 0 3px rgba(0,88,190,0.10)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'"/>
+    <div class="flex items-center gap-4 shrink-0">
+      <div class="live-time-badge"><i class="ti ti-clock"></i><span id="clockDisplay">--:-- --</span></div>
+      <div class="h-6 w-px bg-[#e2e8f0]"></div>
+      <div class="relative" id="profileWrap">
+        <div onclick="toggleProfile(event)" class="w-9 h-9 rounded-full bg-[#f2f3fd] flex items-center justify-center border-2 border-[#e2e8f0] cursor-pointer hover:ring-2 hover:ring-[#0058be]/30 transition-all shadow-sm">
+          <span class="text-[11px] font-bold text-[#424754]">SA</span>
         </div>
-        <!-- Role filter -->
-        <select id="role-filter" onchange="filterAndRender()" style="background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;outline:none;color:var(--text-2);">
-          <option value="all">All Roles</option>
-          <option value="admin">Admin</option>
-          <option value="staff">Staff</option>
-          <option value="researcher">Researcher</option>
-        </select>
-        <!-- Status filter -->
-        <select id="status-filter" onchange="filterAndRender()" style="background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;outline:none;color:var(--text-2);">
-          <option value="all">All Status</option>
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
-          <option value="Suspended">Suspended</option>
-        </select>
-        <div style="flex:1;"></div>
-        <button onclick="openAddUserModal()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='var(--primary-dark)'" onmouseout="this.style.background='var(--primary)'">
-          <i class="ti ti-user-plus" style="font-size:14px;"></i> Add User
+        <div id="profileDropdown" class="hidden absolute right-0 top-[calc(100%+8px)] min-w-[150px] bg-white border border-[#e2e8f0] rounded-xl p-1.5 shadow-xl z-50">
+          <div class="px-3 py-2 border-b border-[#f2f3fd] mb-1">
+            <p class="text-[12px] font-semibold text-[#191b23]">Super Admin</p>
+            <p class="text-[10px] font-semibold text-[#727785] uppercase tracking-wider">Administrator</p>
+          </div>
+          <button onclick="window.location.href='index.html'" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-semibold text-[#dc2626] hover:bg-[#fef2f2] transition-colors text-left">
+            <i class="ti ti-logout" style="font-size:14px;"></i>Log Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="mainContent" class="pl-[280px] pt-[76px] min-h-screen">
+  <div class="py-6 px-8 max-w-[1400px]">
+
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h2 class="text-[26px] font-bold leading-tight text-[#191b23] tracking-tight">User Management</h2>
+        <p class="text-[13px] text-[#727785] mt-0.5">Manage system accounts, roles, and access.</p>
+      </div>
+      <button onclick="openAddModal()" class="h-[40px] px-5 bg-[#0058be] text-white rounded-xl font-semibold text-[13px] flex items-center gap-2 hover:opacity-90 transition-all shadow-sm shadow-[#0058be]/20">
+        <i class="ti ti-user-plus" style="font-size:15px;"></i>Add User
+      </button>
+    </div>
+
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div class="stat-card" style="border-left:3px solid #0058be;">
+        <div class="p-2 rounded-lg flex-shrink-0" style="background:#e8f0fd;"><i class="ti ti-users" style="font-size:17px;color:#0058be;"></i></div>
+        <div><p class="text-[24px] font-bold text-[#191b23] leading-none" id="stTotal"><span class="skeleton inline-block w-8 h-6"></span></p><p class="text-[10px] font-semibold uppercase tracking-wider text-[#727785] mt-0.5">Total Users</p></div>
+      </div>
+      <div class="stat-card" style="border-left:3px solid #059669;">
+        <div class="p-2 rounded-lg flex-shrink-0" style="background:#d1fae5;"><i class="ti ti-user-check" style="font-size:17px;color:#059669;"></i></div>
+        <div><p class="text-[24px] font-bold text-[#191b23] leading-none" id="stActive"><span class="skeleton inline-block w-8 h-6"></span></p><p class="text-[10px] font-semibold uppercase tracking-wider text-[#727785] mt-0.5">Active</p></div>
+      </div>
+      <div class="stat-card" style="border-left:3px solid #727785;">
+        <div class="p-2 rounded-lg flex-shrink-0" style="background:#f2f3fd;"><i class="ti ti-user-pause" style="font-size:17px;color:#727785;"></i></div>
+        <div><p class="text-[24px] font-bold text-[#191b23] leading-none" id="stInactive"><span class="skeleton inline-block w-8 h-6"></span></p><p class="text-[10px] font-semibold uppercase tracking-wider text-[#727785] mt-0.5">Inactive</p></div>
+      </div>
+      <div class="stat-card" style="border-left:3px solid #dc2626;">
+        <div class="p-2 rounded-lg flex-shrink-0" style="background:#fef2f2;"><i class="ti ti-shield-lock" style="font-size:17px;color:#dc2626;"></i></div>
+        <div><p class="text-[24px] font-bold text-[#191b23] leading-none" id="stAdmins"><span class="skeleton inline-block w-8 h-6"></span></p><p class="text-[10px] font-semibold uppercase tracking-wider text-[#727785] mt-0.5">Admins</p></div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-[#e2e8f0] shadow-sm overflow-hidden">
+
+      <div class="flex items-center gap-3 px-5 py-4 border-b border-[#f0f2f7]">
+        <div class="relative flex-1">
+          <i class="ti ti-search absolute left-4 top-1/2 -translate-y-1/2 text-[#a0a6b8] text-[15px] pointer-events-none"></i>
+          <input id="tableSearch" type="text" autocomplete="off"
+            placeholder="Search name, email, or role…"
+            class="w-full h-[42px] bg-white border border-[#e2e8f0] rounded-xl pl-11 pr-4 text-[13px] text-[#191b23] outline-none focus:border-[#0058be] focus:ring-2 focus:ring-[#0058be]/10 transition-all placeholder:text-[#a0a6b8]"/>
+        </div>
+        
+        <div class="relative shrink-0">
+          <button id="statusPillBtn" onclick="toggleStatusPill(event)"
+            class="h-[42px] flex items-center gap-2 px-4 border border-[#e2e8f0] rounded-xl text-[13px] font-medium text-[#424754] bg-white hover:bg-[#f9f9ff] transition-all">
+            <i class="ti ti-adjustments-horizontal text-[15px] text-[#727785]"></i>
+            <span id="statusPillLabel">All Status</span>
+            <i class="ti ti-chevron-down text-[12px] text-[#a0a6b8]" id="statusChevron"></i>
+          </button>
+          <div id="statusPillDropdown" style="display:none;position:absolute;right:0;top:calc(100%+6px);min-width:170px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:6px;box-shadow:0 10px 32px rgba(0,0,0,0.11);z-index:100;">
+            <div style="padding:5px 10px 4px;font-size:10px;font-weight:700;color:#a0a6b8;text-transform:uppercase;letter-spacing:0.08em;">Filter by Status</div>
+            <button class="spill-opt active" data-val="all"      onclick="setStatusPill('all',this,'All Status')">All Status</button>
+            <button class="spill-opt"        data-val="Active"   onclick="setStatusPill('Active',this,'Active')">Active</button>
+            <button class="spill-opt"        data-val="Inactive" onclick="setStatusPill('Inactive',this,'Inactive')">Inactive</button>
+          </div>
+        </div>
+        
+        <div class="relative shrink-0">
+          <button id="rolePillBtn" onclick="toggleRolePill(event)"
+            class="h-[42px] flex items-center gap-2 px-4 border border-[#e2e8f0] rounded-xl text-[13px] font-medium text-[#424754] bg-white hover:bg-[#f9f9ff] transition-all">
+            <i class="ti ti-users text-[15px] text-[#727785]"></i>
+            <span id="rolePillLabel">All Roles</span>
+            <i class="ti ti-chevron-down text-[12px] text-[#a0a6b8]" id="roleChevron"></i>
+          </button>
+          <div id="rolePillDropdown" style="display:none;position:absolute;right:0;top:calc(100%+6px);min-width:160px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:6px;box-shadow:0 10px 32px rgba(0,0,0,0.11);z-index:100;">
+            <div style="padding:5px 10px 4px;font-size:10px;font-weight:700;color:#a0a6b8;text-transform:uppercase;letter-spacing:0.08em;">Filter by Role</div>
+            <button class="rpill-opt active" data-val="all"   onclick="setRolePill('all',this,'All Roles')">All Roles</button>
+            <button class="rpill-opt"        data-val="admin" onclick="setRolePill('admin',this,'Admin')">Admin</button>
+            <button class="rpill-opt"        data-val="staff" onclick="setRolePill('staff',this,'Staff')">Staff</button>
+          </div>
+        </div>
+
+        <button onclick="exportUsers()" title="Export CSV"
+          class="h-[42px] w-[42px] flex items-center justify-center bg-[#0058be] text-white rounded-xl hover:bg-[#004fa6] transition-all flex-shrink-0 shadow-sm shadow-[#0058be]/20">
+          <i class="ti ti-download" style="font-size:17px;"></i>
         </button>
       </div>
 
-      <!-- Table -->
-      <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;text-align:left;">
+      <div id="tableLoading" class="p-6 space-y-3">
+        <div class="skeleton h-10 rounded-lg w-full"></div>
+        <div class="skeleton h-12 rounded-lg w-full"></div>
+        <div class="skeleton h-12 rounded-lg w-full"></div>
+        <div class="skeleton h-12 rounded-lg w-full"></div>
+        <div class="skeleton h-12 rounded-lg w-full"></div>
+      </div>
+
+      <div id="tableError" class="hidden flex-col items-center justify-center py-16 text-center">
+        <div class="w-12 h-12 rounded-2xl bg-[#fef2f2] flex items-center justify-center mb-3">
+          <i class="ti ti-wifi-off" style="font-size:20px;color:#dc2626;"></i>
+        </div>
+        <p class="text-[14px] font-semibold text-[#191b23] mb-1">Could not load users</p>
+        <p class="text-[12px] text-[#727785] mb-4" id="tableErrorMsg">Check your connection and try again.</p>
+        <button onclick="loadUsers()" class="text-[13px] font-semibold text-[#0058be] hover:underline flex items-center gap-1">
+          <i class="ti ti-refresh text-[13px]"></i>Retry
+        </button>
+      </div>
+
+      <div id="tableWrap" class="hidden overflow-x-auto">
+        <table class="w-full border-collapse text-left">
           <thead>
-            <tr style="background:#f8f9fc;">
-              <th style="padding:11px 18px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;border-bottom:1px solid var(--border);white-space:nowrap;">User ID</th>
-              <th style="padding:11px 18px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;border-bottom:1px solid var(--border);">Name</th>
-              <th style="padding:11px 18px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;border-bottom:1px solid var(--border);">Email</th>
-              <th style="padding:11px 18px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;border-bottom:1px solid var(--border);">Department</th>
-              <th style="padding:11px 18px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;border-bottom:1px solid var(--border);">Role</th>
-              <th style="padding:11px 18px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;border-bottom:1px solid var(--border);">Status</th>
-              <th style="padding:11px 18px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;border-bottom:1px solid var(--border);white-space:nowrap;">Date Created</th>
-              <th style="padding:11px 18px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;border-bottom:1px solid var(--border);text-align:center;">Actions</th>
+            <tr>
+              <th class="tbl-th">User</th>
+              <th class="tbl-th">Email</th>
+              <th class="tbl-th">Role</th>
+              <th class="tbl-th">Status</th>
+              <th class="tbl-th">Created</th>
+              <th class="tbl-th text-center">Action</th>
             </tr>
           </thead>
-          <tbody id="user-tbody" style="font-size:13px;"></tbody>
+          <tbody id="userTbody"></tbody>
         </table>
       </div>
 
-      <!-- Empty state -->
-      <div id="user-empty" style="display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">
-        <div style="width:56px;height:56px;background:#f1f5f9;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
-          <i class="ti ti-users-off" style="font-size:26px;color:#d1d5db;"></i>
+      <div id="emptyState" class="hidden flex-col items-center justify-center py-16 text-center">
+        <div class="w-12 h-12 rounded-2xl bg-[#f2f3fd] flex items-center justify-center mb-3">
+          <i class="ti ti-users-off" style="font-size:20px;color:#c2c6d6;"></i>
         </div>
-        <p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">No users found</p>
-        <p style="font-size:12px;color:var(--text-3);">Try adjusting your search or filters.</p>
+        <p class="text-[14px] font-semibold text-[#191b23] mb-1">No users found</p>
+        <p class="text-[12px] text-[#727785]">Try adjusting your search or filters.</p>
       </div>
 
-      <!-- Pagination -->
-      <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <p id="pag-info" style="font-size:12px;color:var(--text-3);"></p>
-        <div id="pag-controls" style="display:flex;align-items:center;gap:4px;"></div>
+      <div id="paginationBar" class="hidden items-center justify-between px-5 py-3.5 border-t border-[#f0f2f7] flex-wrap gap-3">
+        <p id="pagInfo" class="text-[12px] text-[#727785]"></p>
+        <div id="pagControls" class="flex items-center gap-1"></div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- ════ ADD USER MODAL ════ -->
-<div class="modal-overlay" id="add-user-modal">
-  <div class="modal-box">
-    <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+  </div>
+</main>
+
+
+<div class="modal-overlay" id="userModal">
+  <div class="relative w-full max-w-[520px] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col" style="animation:modalIn 0.22s ease;max-height:92vh;">
+
+    <div class="px-7 pt-6 pb-4 border-b border-[#f0f2f7] flex items-start justify-between gap-4">
       <div>
-        <h3 style="font-size:16px;font-weight:700;color:var(--text);" id="user-modal-title">Add New User</h3>
-        <p style="font-size:12px;color:var(--text-3);margin-top:2px;">Fill in the user details below.</p>
+        <h3 class="text-[20px] font-bold text-[#191b23] leading-tight" id="drawerTitle">Add New User</h3>
+        <p class="text-[13px] text-[#727785] mt-1" id="drawerSubtitle">Fill in the user details below.</p>
+        <div id="drawerIdRow" class="hidden mt-2.5 inline-flex items-center gap-2 bg-[#f4f5f9] rounded-lg px-3 py-1.5">
+          <span class="text-[10px] font-semibold text-[#727785] uppercase tracking-wider">ID</span>
+          <span class="text-[11px] font-bold text-[#424754] font-mono" id="drawerUserId"></span>
+        </div>
       </div>
-      <button onclick="closeAddUserModal()" style="width:32px;height:32px;border-radius:8px;border:none;background:#f1f5f9;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:16px;transition:background 0.15s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
-        <i class="ti ti-x"></i>
+      <button onclick="closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-[#727785] hover:bg-[#f2f3fd] transition-all flex-shrink-0">
+        <i class="ti ti-x" style="font-size:16px;"></i>
       </button>
     </div>
-    <div style="padding:22px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-        <div><label class="field-label">First Name *</label><input class="field-input" id="um-fname" type="text" placeholder="Juan"/></div>
-        <div><label class="field-label">Last Name *</label><input class="field-input" id="um-lname" type="text" placeholder="dela Cruz"/></div>
-      </div>
-      <div><label class="field-label">Email Address *</label><input class="field-input" id="um-email" type="email" placeholder="juan@university.edu"/></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-        <div>
-          <label class="field-label">Department *</label>
-          <select class="field-input" id="um-dept">
-            <option value="">Select department…</option>
-            <option>College of Computer Studies</option>
-            <option>College of Education</option>
-            <option>College of Engineering</option>
-            <option>College of Technology</option>
-            <option>IP Office</option>
-          </select>
-        </div>
-        <div>
-          <label class="field-label">Role *</label>
-          <select class="field-input" id="um-role">
-            <option value="">Select role…</option>
-            <option value="admin">Admin</option>
-            <option value="staff">Staff</option>
-            <option value="researcher">Researcher</option>
-          </select>
+
+    <div class="px-7 py-5 overflow-y-auto flex-1 space-y-5">
+
+      <div>
+        <label class="field-label">Full Name <span class="text-[#dc2626]">*</span></label>
+        <div class="grid grid-cols-3 gap-2.5 mt-1.5">
+          <input class="field-input" id="umFname" type="text" placeholder="First"/>
+          <input class="field-input" id="umMname" type="text" placeholder="Middle"/>
+          <input class="field-input" id="umLname" type="text" placeholder="Last"/>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-        <div><label class="field-label">Password *</label><input class="field-input" id="um-pass" type="password" placeholder="••••••••"/></div>
-        <div>
-          <label class="field-label">Status</label>
-          <select class="field-input" id="um-status"><option value="Active">Active</option><option value="Inactive">Inactive</option></select>
-        </div>
+
+      <div>
+        <label class="field-label">Email Address <span class="text-[#dc2626]">*</span></label>
+        <input class="field-input mt-1.5" id="umEmail" type="email" placeholder="e.g. juan@university.edu"/>
       </div>
-      <p id="um-error" style="font-size:12px;color:#dc2626;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:8px 12px;display:none;"></p>
+
+      <div>
+        <label class="field-label" id="passLabel">Password <span class="text-[#dc2626]" id="passRequired">*</span></label>
+        <div class="pw-wrap mt-1.5">
+          <input class="field-input" id="umPass" type="password" placeholder="e.g. ••••••••"/>
+          <button class="pw-eye" type="button" onclick="togglePw()"><i class="ti ti-eye" id="pwIcon"></i></button>
+        </div>
+        <p class="text-[11px] text-[#a0a6b8] mt-1.5" id="passHint">Minimum 8 characters.</p>
+      </div>
+
+      <div>
+        <label class="field-label">Role <span class="text-[#dc2626]">*</span></label>
+        <div class="flex flex-wrap gap-2 mt-2" id="roleChips">
+          <button type="button" class="role-chip" data-val="admin" onclick="selectChip('role','admin',this)">
+            <i class="ti ti-shield-lock" style="font-size:13px;"></i> Admin
+          </button>
+          <button type="button" class="role-chip" data-val="staff" onclick="selectChip('role','staff',this)">
+            <i class="ti ti-user" style="font-size:13px;"></i> Staff
+          </button>
+        </div>
+        <input type="hidden" id="umRole"/>
+      </div>
+
+      <div>
+        <label class="field-label">Status</label>
+        <div class="flex flex-wrap gap-2 mt-2" id="statusChips">
+          <button type="button" class="role-chip selected" data-val="Active" onclick="selectChip('status','Active',this)">
+            <i class="ti ti-circle-check" style="font-size:13px;"></i> Active
+          </button>
+          <button type="button" class="role-chip" data-val="Inactive" onclick="selectChip('status','Inactive',this)">
+            <i class="ti ti-circle-pause" style="font-size:13px;"></i> Inactive
+          </button>
+        </div>
+        <input type="hidden" id="umStatus" value="Active"/>
+      </div>
+
+      <div id="umError" class="hidden text-[12px] text-[#dc2626] bg-[#fef2f2] border border-[#fca5a5] rounded-xl px-4 py-3 flex items-center gap-2">
+        <i class="ti ti-alert-circle flex-shrink-0"></i>
+        <span id="umErrorText"></span>
+      </div>
     </div>
-    <div style="padding:16px 24px;background:#f8f9fc;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;">
-      <button onclick="closeAddUserModal()" style="padding:9px 18px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:13px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;color:var(--text-2);transition:background 0.15s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">Cancel</button>
-      <button onclick="saveUser()" style="padding:9px 18px;border:none;border-radius:10px;background:var(--primary);font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;color:#fff;transition:background 0.15s;" onmouseover="this.style.background='var(--primary-dark)'" onmouseout="this.style.background='var(--primary)'"><span id="um-save-label">Save User</span></button>
+
+    <div class="px-7 py-4 flex items-center justify-between gap-3 border-t border-[#f0f2f7]">
+      <button id="deleteBtn" onclick="triggerDelete()" class="hidden text-[13px] font-medium text-[#a0a6b8] hover:text-[#dc2626] flex items-center gap-1.5 transition-colors">
+        <i class="ti ti-trash" style="font-size:13px;"></i>Delete user
+      </button>
+      <div class="flex gap-3 ml-auto">
+        <button onclick="closeModal()" class="px-6 py-2.5 text-[14px] font-semibold text-[#424754] border border-[#e2e8f0] rounded-xl hover:bg-[#f2f3fd] transition-all">Cancel</button>
+        <button onclick="saveUser()" id="umSaveBtn"
+          class="px-6 py-2.5 text-[14px] font-bold text-white bg-[#0058be] rounded-xl hover:bg-[#004fa6] transition-all flex items-center gap-2">
+          <i class="ti ti-device-floppy" style="font-size:15px;"></i>
+          <span id="umSaveLabel">Save User</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ════ CONFIRM MODAL ════ -->
-<div class="confirm-modal" id="confirm-modal">
-  <div style="background:#fff;border-radius:18px;padding:28px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.15);text-align:center;animation:modalIn 0.2s ease;">
-    <div id="conf-icon-wrap" style="width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"></div>
-    <h3 style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;" id="conf-title">Confirm Action</h3>
-    <p style="font-size:13px;color:var(--text-3);margin-bottom:22px;line-height:1.5;" id="conf-msg">Are you sure?</p>
-    <div style="display:flex;gap:10px;">
-      <button onclick="closeConfirm()" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8f9fc;font-size:13px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;color:var(--text-2);">Cancel</button>
-      <button id="conf-confirm-btn" style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;color:#fff;" onclick="executeConfirm()">Confirm</button>
+
+<div class="confirm-overlay" id="confirmModal">
+  <div class="w-full max-w-sm rounded-2xl bg-white shadow-2xl p-7 text-center" style="animation:modalIn 0.2s ease;">
+    <div id="confIcon" class="mx-auto mb-4 w-12 h-12 rounded-full flex items-center justify-center bg-[#fef2f2]">
+      <i class="ti ti-trash" style="font-size:20px;color:#dc2626;"></i>
+    </div>
+    <h3 class="text-[15px] font-bold text-[#191b23] mb-2" id="confTitle">Delete User</h3>
+    <p class="text-[13px] text-[#727785] mb-6 leading-relaxed" id="confMsg">Are you sure?</p>
+    <div class="flex gap-3">
+      <button onclick="closeConfirm()" class="flex-1 py-2.5 border border-[#e2e8f0] rounded-xl text-[13px] font-semibold text-[#424754] hover:bg-[#f0f2f7] transition-all">Cancel</button>
+      <button id="confBtn" class="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-white transition-all bg-[#dc2626] hover:bg-[#b91c1c]" onclick="executeConfirm()">Delete</button>
     </div>
   </div>
 </div>
 
-<!-- ════ TOAST ════ -->
-<div id="toast" style="position:fixed;bottom:24px;right:24px;z-index:200;display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e2e5ef;border-radius:16px;padding:14px 18px;box-shadow:0 12px 40px rgba(0,0,0,0.10);opacity:0;transform:translateY(12px);transition:opacity 0.25s,transform 0.25s;pointer-events:none;min-width:260px;">
-  <div id="toast-icon-wrap" style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
-  <div><p id="toast-title" style="font-size:13px;font-weight:700;color:var(--text);"></p><p id="toast-msg" style="font-size:11px;color:var(--text-3);margin-top:2px;"></p></div>
-  <div id="toast-bar" style="position:absolute;bottom:0;left:0;height:3px;border-radius:0 0 16px 16px;width:100%;"></div>
+
+<div class="toast" id="toast">
+  <div id="toastIcon" class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-[#e8f0fd]">
+    <i class="ti ti-check" style="font-size:14px;color:#0058be;"></i>
+  </div>
+  <div class="flex-1 min-w-0">
+    <p class="text-[13px] font-bold text-[#191b23]" id="toastTitle"></p>
+    <p class="text-[11px] text-[#727785] mt-0.5" id="toastMsg"></p>
+  </div>
 </div>
+
 
 <script>
-/* ── MOCK DATA ── */
-let USERS = [
-  {id:'USR-001',fname:'Maria',lname:'Santos',   email:'maria.santos@university.edu',   dept:'College of Computer Studies',role:'researcher',status:'Active',   created:'2024-01-15'},
-  {id:'USR-002',fname:'John', lname:'Reyes',    email:'john.reyes@university.edu',     dept:'College of Education',       role:'staff',      status:'Active',   created:'2024-01-20'},
-  {id:'USR-003',fname:'Liza', lname:'Gomez',    email:'liza.gomez@university.edu',     dept:'College of Engineering',     role:'researcher', status:'Active',   created:'2024-02-05'},
-  {id:'USR-004',fname:'Ana',  lname:'Cruz',     email:'ana.cruz@university.edu',       dept:'College of Education',       role:'researcher', status:'Inactive', created:'2024-02-10'},
-  {id:'USR-005',fname:'Ryan', lname:'Tan',      email:'ryan.tan@university.edu',       dept:'College of Computer Studies',role:'staff',      status:'Active',   created:'2024-02-18'},
-  {id:'USR-006',fname:'Sofia',lname:'Ramos',    email:'sofia.ramos@university.edu',    dept:'College of Computer Studies',role:'researcher', status:'Active',   created:'2024-03-01'},
-  {id:'USR-007',fname:'Marco',lname:'Bautista', email:'marco.bautista@university.edu', dept:'College of Engineering',     role:'researcher', status:'Active',   created:'2024-03-10'},
-  {id:'USR-008',fname:'Grace',lname:'Villanueva',email:'grace.villanueva@university.edu',dept:'College of Education',    role:'staff',      status:'Suspended',created:'2024-03-15'},
-  {id:'USR-009',fname:'Carlo',lname:'Perez',    email:'carlo.perez@university.edu',    dept:'College of Computer Studies',role:'researcher', status:'Active',   created:'2024-04-01'},
-  {id:'USR-010',fname:'Helen',lname:'Navarro',  email:'helen.navarro@university.edu',  dept:'College of Education',       role:'researcher', status:'Active',   created:'2024-04-05'},
-  {id:'USR-011',fname:'Paolo',lname:'Dela Rosa',email:'paolo.delarosa@university.edu', dept:'College of Engineering',     role:'researcher', status:'Active',   created:'2024-04-12'},
-  {id:'USR-012',fname:'Admin',lname:'System',   email:'admin@university.edu',          dept:'IP Office',                  role:'admin',      status:'Active',   created:'2024-01-01'},
-];
-let nextUserId = 13;
-const ROWS = 8;
+/* ══════════════════════════════════
+   CONFIG
+══════════════════════════════════ */
+const API_BASE = 'http://localhost:5000/api'; // <--- Change port here if needed
+const ROWS_PER_PAGE = 10;
+
+let allUsers    = [];
+let filtered    = [];
 let currentPage = 1;
-let filteredUsers = [...USERS];
-let editingId = null;
-let pendingAction = null;
+let editingId   = null;   
+let pendingDeleteId = null;
 
-/* ── Clock ── */
-function updateClock() {
-  const now = new Date(); let h = now.getHours();
-  const m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
-  const ampm = h>=12?'PM':'AM'; h=h%12||12;
-  document.getElementById('clock-time').textContent=`${String(h).padStart(2,'0')}:${m}:${s}`;
-  document.getElementById('clock-ampm').textContent=ampm;
-  document.getElementById('clock-date').textContent=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+/* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const mc = document.getElementById('mainContent');
+  setTimeout(() => { mc.style.opacity='1'; mc.style.transform='translateY(0)'; }, 80);
+  const searchInput = document.getElementById('tableSearch');
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.autocomplete = 'off';
+    searchInput.addEventListener('input', filterAndRender);
+  }
+  startClock();
+  loadUsers();
+});
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('profileWrap').contains(e.target))
+    document.getElementById('profileDropdown').classList.add('hidden');
+  const spb = document.getElementById('statusPillBtn');
+  const rpb = document.getElementById('rolePillBtn');
+  if (spb && !spb.contains(e.target)) document.getElementById('statusPillDropdown').style.display='none';
+  if (rpb && !rpb.contains(e.target)) document.getElementById('rolePillDropdown').style.display='none';
+});
+
+function toggleProfile(e) {
+  e.stopPropagation();
+  document.getElementById('profileDropdown').classList.toggle('hidden');
 }
-updateClock(); setInterval(updateClock,1000);
 
-/* ── Sidebar ── */
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('collapsed');document.getElementById('mainWrap').classList.toggle('collapsed');}
-
-/* ── Stats ── */
-function updateStats(){
-  const total=USERS.length,active=USERS.filter(u=>u.status==='Active').length,inactive=USERS.filter(u=>u.status!=='Active').length,admins=USERS.filter(u=>u.role==='admin').length;
-  document.getElementById('us-total').textContent=total;
-  document.getElementById('us-active').textContent=active;
-  document.getElementById('us-inactive').textContent=inactive;
-  document.getElementById('us-admins').textContent=admins;
-  document.getElementById('sb-user-count').textContent=total;
+/* ══════════════════════════════════
+   CLOCK
+══════════════════════════════════ */
+function startClock() {
+  function tick() {
+    const n = new Date(); let h = n.getHours();
+    const m = String(n.getMinutes()).padStart(2,'0'), s = String(n.getSeconds()).padStart(2,'0');
+    const ap = h>=12?'PM':'AM'; h=h%12||12;
+    document.getElementById('clockDisplay').textContent =
+      `${String(h).padStart(2,'0')}:${m}:${s} ${ap}`;
+  }
+  tick(); setInterval(tick, 1000);
 }
 
-/* ── Filter & Render ── */
-function filterAndRender(){
-  const q=(document.getElementById('user-search').value||'').toLowerCase().trim();
-  const role=document.getElementById('role-filter').value;
-  const status=document.getElementById('status-filter').value;
-  filteredUsers=USERS.filter(u=>{
-    const fullName=(u.fname+' '+u.lname).toLowerCase();
-    const mQ=!q||fullName.includes(q)||u.email.toLowerCase().includes(q)||u.dept.toLowerCase().includes(q)||u.id.toLowerCase().includes(q)||u.role.toLowerCase().includes(q);
-    const mR=role==='all'||u.role===role;
-    const mS=status==='all'||u.status===status;
-    return mQ&&mR&&mS;
+/* ══════════════════════════════════
+   LOAD FROM API
+══════════════════════════════════ */
+async function loadUsers() {
+  show('tableLoading'); hide('tableWrap'); hide('emptyState'); hide('tableError'); hide('paginationBar');
+  try {
+    const res = await fetch(`${API_BASE}/users`);
+    if (!res.ok) throw new Error(`Server error ${res.status}`);
+    const data = await res.json();
+    allUsers = Array.isArray(data) ? data : (data.users || data.data || []);
+    hide('tableLoading');
+    updateStats();
+    filterAndRender();
+  } catch (err) {
+    hide('tableLoading');
+    showEl('tableError');
+    document.getElementById('tableErrorMsg').textContent = err.message || 'Unable to reach the server.';
+  }
+}
+
+/* ══════════════════════════════════
+   STATS
+══════════════════════════════════ */
+function updateStats() {
+  const total   = allUsers.length;
+  const active  = allUsers.filter(u => u.status === 'Active').length;
+  const inactive= allUsers.filter(u => u.status !== 'Active').length;
+  const admins  = allUsers.filter(u => (u.role||'').toLowerCase() === 'admin').length;
+  setText('stTotal',   total);
+  setText('stActive',  active);
+  setText('stInactive',inactive);
+  setText('stAdmins',  admins);
+  setText('sbBadge',   total);
+}
+
+/* ══════════════════════════════════
+   PILL FILTER DROPDOWNS
+══════════════════════════════════ */
+let _activeStatus = 'all';
+let _activeRole   = 'all';
+
+function toggleStatusPill(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('statusPillDropdown');
+  const cv = document.getElementById('statusChevron');
+  const open = dd.style.display !== 'none';
+  closeAllPills();
+  if (!open) { dd.style.display='block'; cv.style.transform='rotate(180deg)'; }
+}
+function toggleRolePill(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('rolePillDropdown');
+  const cv = document.getElementById('roleChevron');
+  const open = dd.style.display !== 'none';
+  closeAllPills();
+  if (!open) { dd.style.display='block'; cv.style.transform='rotate(180deg)'; }
+}
+function closeAllPills() {
+  document.getElementById('statusPillDropdown').style.display='none';
+  document.getElementById('rolePillDropdown').style.display='none';
+  document.getElementById('statusChevron').style.transform='';
+  document.getElementById('roleChevron').style.transform='';
+}
+function setStatusPill(val, el, label) {
+  _activeStatus = val;
+  document.querySelectorAll('.spill-opt').forEach(b => b.classList.toggle('active', b.dataset.val===val));
+  document.getElementById('statusPillLabel').textContent = label;
+  closeAllPills();
+  filterAndRender();
+}
+function setRolePill(val, el, label) {
+  _activeRole = val;
+  document.querySelectorAll('.rpill-opt').forEach(b => b.classList.toggle('active', b.dataset.val===val));
+  document.getElementById('rolePillLabel').textContent = label;
+  closeAllPills();
+  filterAndRender();
+}
+
+/* ══════════════════════════════════
+   CHIP SELECTOR (role / status)
+══════════════════════════════════ */
+function selectChip(group, val, el) {
+  const container = group === 'role' ? document.getElementById('roleChips') : document.getElementById('statusChips');
+  container.querySelectorAll('.role-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById(group === 'role' ? 'umRole' : 'umStatus').value = val;
+}
+
+/* ══════════════════════════════════
+   EXPORT CSV (Without Dept)
+══════════════════════════════════ */
+function exportUsers() {
+  if (!filtered.length) return showToast('Nothing to export', 'No users match the current filter.', true);
+  const headers = ['ID','First Name','Middle Name','Last Name','Email','Role','Status','Created'];
+  const rows = filtered.map(u => [
+    u._id||u.id||'',
+    u.fname||'',
+    u.mname||'',
+    u.lname||'',
+    u.email||'',
+    u.role||'',
+    u.status||'',
+    u.createdAt ? new Date(u.createdAt).toLocaleDateString() : (u.created||'')
+  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type:'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `users_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  showToast('Exported', `${filtered.length} users exported as CSV.`);
+}
+
+/* ══════════════════════════════════
+   FILTER & RENDER
+══════════════════════════════════ */
+function filterAndRender() {
+  const q  = (document.getElementById('tableSearch').value || '').toLowerCase().trim();
+  const rf = _activeRole;
+  const sf = _activeStatus;
+
+  filtered = allUsers.filter(u => {
+    // Aligned to backend schema (fname, mname, lname)
+    const fname  = u.fname || '';
+    const mname  = u.mname || '';
+    const lname  = u.lname || '';
+    const full   = `${fname} ${mname} ${lname}`.toLowerCase();
+    const email  = (u.email || '').toLowerCase();
+    const role   = (u.role || '').toLowerCase();
+
+    const mQ = !q || full.includes(q) || email.includes(q) || role.includes(q);
+    const mR = rf === 'all' || role === rf.toLowerCase();
+    const mS = sf === 'all' || (u.status || '') === sf;
+    return mQ && mR && mS;
   });
-  currentPage=1; render();
+
+  currentPage = 1;
+  renderTable();
 }
 
-function render(){
-  const total=filteredUsers.length, pages=Math.max(1,Math.ceil(total/ROWS));
-  if(currentPage>pages)currentPage=pages;
-  const start=(currentPage-1)*ROWS, page=filteredUsers.slice(start,start+ROWS);
-  const tbody=document.getElementById('user-tbody'), empty=document.getElementById('user-empty');
-  tbody.innerHTML='';
-  if(total===0){empty.style.display='flex';tbody.innerHTML='';return;}
-  empty.style.display='none';
+function renderTable() {
+  const tbody = document.getElementById('userTbody');
+  const total = filtered.length;
+  const pages = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
+  if (currentPage > pages) currentPage = pages;
+  const start = (currentPage - 1) * ROWS_PER_PAGE;
+  const page  = filtered.slice(start, start + ROWS_PER_PAGE);
 
-  const roleStyle={admin:{bg:'#fce7f3',text:'#9d174d'},staff:{bg:'#dbeafe',text:'#1e40af'},researcher:{bg:'#ede9fe',text:'#5b21b6'}};
-  const statusStyle={Active:{bg:'#d1fae5',text:'#065f46'},Inactive:{bg:'#fef3c7',text:'#92400e'},Suspended:{bg:'#fee2e2',text:'#991b1b'}};
+  tbody.innerHTML = '';
 
-  page.forEach(u=>{
-    const rs=roleStyle[u.role]||{bg:'#f1f5f9',text:'#334155'};
-    const ss=statusStyle[u.status]||{bg:'#f1f5f9',text:'#334155'};
-    const initials=(u.fname[0]+u.lname[0]).toUpperCase();
-    const avatarColors=['#0058be','#6b38d4','#059669','#d97706','#dc2626','#0369a1','#be185d'];
-    const ac=avatarColors[parseInt(u.id.replace(/\D/g,''))%avatarColors.length];
-    const tr=document.createElement('tr');
-    tr.style.borderBottom='1px solid #f0f2f7';
-    tr.innerHTML=`
-      <td style="padding:13px 18px;font-size:11px;font-weight:700;color:var(--text-3);white-space:nowrap;">${u.id}</td>
-      <td style="padding:13px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:32px;height:32px;border-radius:9px;background:${ac};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">${initials}</div>
-          <div><div style="font-size:13px;font-weight:600;color:var(--text);">${u.fname} ${u.lname}</div></div>
+  if (total === 0) {
+    hide('tableWrap'); hide('paginationBar');
+    showEl('emptyState');
+    return;
+  }
+  hide('emptyState');
+  show('tableWrap');
+
+  const AVATAR_COLORS = ['#0058be','#424754','#059669','#727785','#924700','#0058be'];
+
+  page.forEach((u, i) => {
+    // Aligned to backend schema
+    const fname  = u.fname || '';
+    const mname  = u.mname || '';
+    const lname  = u.lname || '';
+    const email  = u.email || '';
+    const role   = u.role  || '—';
+    const status = u.status|| '—';
+    const created= u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : (u.created || '—');
+    const fullName = [fname, mname, lname].filter(Boolean).join(' ');
+    const initials = ((fname[0]||'') + (lname[0]||'')).toUpperCase() || '??';
+    const ac = AVATAR_COLORS[(start + i) % AVATAR_COLORS.length];
+    const uid = u._id || u.id || '';
+
+    // Color coded Badges
+    const roleBadge = (role.toLowerCase() === 'admin') 
+        ? `<span class="badge badge-role-admin">Admin</span>`
+        : `<span class="badge badge-role-staff">Staff</span>`;
+
+    const statusBadge = status === 'Active'
+      ? `<span class="badge badge-status-active"><span class="w-1.5 h-1.5 rounded-full bg-[#15803d] mr-1.5"></span>Active</span>`
+      : `<span class="badge badge-status-inactive"><span class="w-1.5 h-1.5 rounded-full bg-[#4b5563] mr-1.5"></span>Inactive</span>`;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="tbl-td">
+        <div class="flex items-center gap-3">
+          <div style="width:34px;height:34px;border-radius:10px;background:${ac};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">${initials}</div>
+          <div>
+            <p class="text-[13px] font-semibold text-[#191b23] leading-tight">${fullName}</p>
+          </div>
         </div>
       </td>
-      <td style="padding:13px 18px;font-size:12px;color:var(--text-2);">${u.email}</td>
-      <td style="padding:13px 18px;font-size:12px;color:var(--text-2);max-width:160px;"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${u.dept}</span></td>
-      <td style="padding:13px 18px;"><span class="badge" style="background:${rs.bg};color:${rs.text};">${u.role}</span></td>
-      <td style="padding:13px 18px;"><span class="badge" style="background:${ss.bg};color:${ss.text};">${u.status}</span></td>
-      <td style="padding:13px 18px;font-size:12px;color:var(--text-3);white-space:nowrap;">${u.created}</td>
-      <td style="padding:13px 18px;text-align:center;">
-        <div style="display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;">
-          <button class="action-btn" style="background:#e8f0fd;color:#0058be;" onclick="editUser('${u.id}')"><i class="ti ti-pencil"></i></button>
-          <button class="action-btn" style="background:${u.status==='Active'?'#fef3c7':'#d1fae5'};color:${u.status==='Active'?'#d97706':'#059669'};" onclick="toggleStatus('${u.id}')" title="${u.status==='Active'?'Deactivate':'Activate'}"><i class="ti ti-${u.status==='Active'?'user-pause':'user-check'}"></i></button>
-          <button class="action-btn" style="background:#fce7f3;color:#be185d;" onclick="resetPw('${u.id}')"><i class="ti ti-key"></i></button>
-          <button class="action-btn" style="background:#fee2e2;color:#dc2626;" onclick="deleteUser('${u.id}')"><i class="ti ti-trash"></i></button>
-        </div>
+      <td class="tbl-td" style="font-size:12px;color:#727785;">${email}</td>
+      <td class="tbl-td">${roleBadge}</td>
+      <td class="tbl-td">${statusBadge}</td>
+      <td class="tbl-td" style="font-size:11px;color:#a0a6b8;white-space:nowrap;">${created}</td>
+      <td class="tbl-td text-center">
+        <button
+          onclick="openViewEdit('${uid}')"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e2e8f0] text-[12px] font-semibold text-[#424754] hover:bg-[#f2f3fd] hover:border-[#0058be] hover:text-[#0058be] transition-all">
+          <i class="ti ti-pencil" style="font-size:13px;"></i>Edit
+        </button>
       </td>`;
     tbody.appendChild(tr);
   });
 
   // Pagination
-  const from=total===0?0:start+1, to=Math.min(start+ROWS,total);
-  document.getElementById('pag-info').textContent=`Showing ${from}–${to} of ${total} user${total!==1?'s':''}`;
-  const ctrl=document.getElementById('pag-controls'); ctrl.innerHTML='';
-  const mkBtn=(lbl,pg,active,disabled,icon)=>{
-    const btn=document.createElement('button'); btn.className=`page-btn${active?' active':''}`;
-    btn.disabled=disabled; btn.innerHTML=icon?`<i class="ti ti-${lbl}" style="font-size:14px;"></i>`:lbl;
-    if(!disabled&&!active)btn.onclick=()=>{currentPage=pg;render();};
-    ctrl.appendChild(btn);
+  const from = total === 0 ? 0 : start + 1;
+  const to   = Math.min(start + ROWS_PER_PAGE, total);
+  setText('pagInfo', `Showing ${from}–${to} of ${total} user${total !== 1 ? 's' : ''}`);
+  const ctrl = document.getElementById('pagControls');
+  ctrl.innerHTML = '';
+  showEl('paginationBar');
+  document.getElementById('paginationBar').style.display='flex';
+
+  const mkBtn = (lbl, pg, active, disabled, isIcon) => {
+    const b = document.createElement('button');
+    b.className = 'page-btn' + (active ? ' active' : '');
+    b.disabled  = disabled;
+    b.innerHTML = isIcon ? `<i class="ti ti-${lbl}" style="font-size:13px;"></i>` : lbl;
+    if (!disabled && !active) b.onclick = () => { currentPage = pg; renderTable(); };
+    ctrl.appendChild(b);
   };
-  mkBtn('chevron-left',currentPage-1,false,currentPage===1,true);
-  const pg=[]; if(pages<=7){for(let i=1;i<=pages;i++)pg.push(i);}
-  else{pg.push(1);if(currentPage>3)pg.push('…');for(let i=Math.max(2,currentPage-1);i<=Math.min(pages-1,currentPage+1);i++)pg.push(i);if(currentPage<pages-2)pg.push('…');pg.push(pages);}
-  pg.forEach(p=>{
-    if(p==='…'){const sp=document.createElement('span');sp.className='page-btn';sp.textContent='…';ctrl.appendChild(sp);}
-    else mkBtn(p,p,p===currentPage,false,false);
+
+  mkBtn('chevron-left', currentPage - 1, false, currentPage === 1, true);
+  const pg = [];
+  if (pages <= 7) { for (let i = 1; i <= pages; i++) pg.push(i); }
+  else {
+    pg.push(1);
+    if (currentPage > 3) pg.push('…');
+    for (let i = Math.max(2, currentPage-1); i <= Math.min(pages-1, currentPage+1); i++) pg.push(i);
+    if (currentPage < pages - 2) pg.push('…');
+    pg.push(pages);
+  }
+  pg.forEach(p => {
+    if (p === '…') { const sp = document.createElement('span'); sp.className='page-btn'; sp.textContent='…'; ctrl.appendChild(sp); }
+    else mkBtn(p, p, p === currentPage, false, false);
   });
-  mkBtn('chevron-right',currentPage+1,false,currentPage===pages,true);
+  mkBtn('chevron-right', currentPage + 1, false, currentPage === pages, true);
 }
 
-/* ── User actions ── */
-function editUser(id){
-  const u=USERS.find(x=>x.id===id); if(!u)return;
-  editingId=id;
-  document.getElementById('um-fname').value=u.fname;
-  document.getElementById('um-lname').value=u.lname;
-  document.getElementById('um-email').value=u.email;
-  document.getElementById('um-dept').value=u.dept;
-  document.getElementById('um-role').value=u.role;
-  document.getElementById('um-status').value=u.status;
-  document.getElementById('um-pass').value='';
-  document.getElementById('user-modal-title').textContent='Edit User';
-  document.getElementById('um-save-label').textContent='Update User';
-  document.getElementById('um-error').style.display='none';
-  document.getElementById('add-user-modal').classList.add('open');
-}
-function toggleStatus(id){
-  const u=USERS.find(x=>x.id===id); if(!u)return;
-  const action=u.status==='Active'?'deactivate':'activate';
-  pendingAction={type:'toggleStatus',id};
-  showConfirm(`${u.status==='Active'?'Deactivate':'Activate'} User`,`Are you sure you want to ${action} ${u.fname} ${u.lname}?`,u.status==='Active'?'#d97706':'#059669','warning');
-}
-function resetPw(id){
-  const u=USERS.find(x=>x.id===id); if(!u)return;
-  pendingAction={type:'resetPw',id};
-  showConfirm('Reset Password',`Send a password reset link to ${u.email}?`,'#6b38d4','info');
-}
-function deleteUser(id){
-  const u=USERS.find(x=>x.id===id); if(!u)return;
-  pendingAction={type:'delete',id};
-  showConfirm('Delete User',`This will permanently remove ${u.fname} ${u.lname}. This cannot be undone.`,'#dc2626','danger');
-}
-function executeConfirm(){
-  const a=pendingAction; if(!a)return;
-  if(a.type==='delete'){USERS=USERS.filter(x=>x.id!==a.id);showToast('User Deleted','The user has been removed.','#dc2626');}
-  else if(a.type==='toggleStatus'){const u=USERS.find(x=>x.id===a.id);if(u){u.status=u.status==='Active'?'Inactive':'Active';showToast(u.status==='Active'?'User Activated':'User Deactivated',`${u.fname} ${u.lname} status updated.`,u.status==='Active'?'#059669':'#d97706');}}
-  else if(a.type==='resetPw'){const u=USERS.find(x=>x.id===a.id);if(u)showToast('Reset Link Sent',`Password reset email sent to ${u.email}.`,'#6b38d4');}
-  closeConfirm(); updateStats(); filterAndRender();
+/* ══════════════════════════════════
+   OPEN MODAL (Add or Edit)
+══════════════════════════════════ */
+function openAddModal() {
+  editingId = null;
+  clearForm();
+  document.getElementById('drawerTitle').textContent    = 'Add New User';
+  document.getElementById('drawerSubtitle').textContent = 'Fill in the user details below.';
+  document.getElementById('drawerIdRow').classList.add('hidden');
+  document.getElementById('deleteBtn').classList.add('hidden');
+  document.getElementById('umSaveLabel').textContent    = 'Save User';
+  document.getElementById('passRequired').style.display = 'inline';
+  document.getElementById('passHint').textContent       = 'Minimum 8 characters.';
+  document.getElementById('umRole').value               = '';
+  document.getElementById('umStatus').value             = 'Active';
+  resetChips('roleChips');
+  setChips('statusChips', 'Active');
+  hideErr();
+  document.getElementById('userModal').classList.add('open');
+  setTimeout(() => document.getElementById('umFname').focus(), 80);
 }
 
-/* ── Add / Edit modal ── */
-function openAddUserModal(){editingId=null;document.getElementById('um-fname').value='';document.getElementById('um-lname').value='';document.getElementById('um-email').value='';document.getElementById('um-dept').value='';document.getElementById('um-role').value='';document.getElementById('um-pass').value='';document.getElementById('um-status').value='Active';document.getElementById('user-modal-title').textContent='Add New User';document.getElementById('um-save-label').textContent='Save User';document.getElementById('um-error').style.display='none';document.getElementById('add-user-modal').classList.add('open');}
-function closeAddUserModal(){document.getElementById('add-user-modal').classList.remove('open');}
-function saveUser(){
-  const fname=document.getElementById('um-fname').value.trim(),lname=document.getElementById('um-lname').value.trim(),email=document.getElementById('um-email').value.trim(),dept=document.getElementById('um-dept').value,role=document.getElementById('um-role').value,status=document.getElementById('um-status').value,pass=document.getElementById('um-pass').value;
-  const err=document.getElementById('um-error');
-  if(!fname||!lname||!email||!dept||!role){err.textContent='Please fill in all required fields.';err.style.display='block';return;}
-  if(!editingId&&!pass){err.textContent='Please enter a password for the new user.';err.style.display='block';return;}
-  err.style.display='none';
-  if(editingId){const u=USERS.find(x=>x.id===editingId);if(u){Object.assign(u,{fname,lname,email,dept,role,status});showToast('User Updated',`${fname} ${lname} has been updated.`,'#059669');};}
-  else{const id=`USR-${String(nextUserId++).padStart(3,'0')}`;USERS.unshift({id,fname,lname,email,dept,role,status,created:new Date().toISOString().split('T')[0]});showToast('User Created',`${fname} ${lname} has been added.`,'#0058be');}
-  closeAddUserModal(); updateStats(); filterAndRender();
+function openViewEdit(uid) {
+  const u = allUsers.find(x => (x._id || x.id) == uid);
+  if (!u) return;
+  editingId = uid;
+
+  const fname  = u.fname  || '';
+  const mname  = u.mname  || '';
+  const lname  = u.lname  || '';
+
+  document.getElementById('drawerTitle').textContent    = 'Edit User';
+  document.getElementById('drawerSubtitle').textContent = `Editing account for ${fname} ${lname}`.trim();
+  document.getElementById('drawerIdRow').classList.remove('hidden');
+  document.getElementById('drawerUserId').textContent   = uid;
+  document.getElementById('umFname').value  = fname;
+  document.getElementById('umMname').value  = mname;
+  document.getElementById('umLname').value  = lname;
+  document.getElementById('umEmail').value  = u.email || '';
+  document.getElementById('umPass').value   = '';
+  
+  const role   = (u.role || '').toLowerCase();
+  const status = u.status || 'Active';
+  document.getElementById('umRole').value   = role;
+  document.getElementById('umStatus').value = status;
+  setChips('roleChips',   role);
+  setChips('statusChips', status);
+  document.getElementById('deleteBtn').classList.remove('hidden');
+  document.getElementById('umSaveLabel').textContent   = 'Update User';
+  document.getElementById('passRequired').style.display= 'none';
+  document.getElementById('passHint').textContent      = 'Leave blank to keep the existing password.';
+  hideErr();
+  document.getElementById('userModal').classList.add('open');
 }
 
-/* ── Confirm modal ── */
-function showConfirm(title,msg,color,type){
-  const icons={danger:'trash',warning:'alert-triangle',info:'info-circle'};
-  document.getElementById('conf-icon-wrap').style.background=color+'18';
-  document.getElementById('conf-icon-wrap').innerHTML=`<i class="ti ti-${icons[type]||'help'}" style="font-size:22px;color:${color};"></i>`;
-  document.getElementById('conf-title').textContent=title;
-  document.getElementById('conf-msg').textContent=msg;
-  document.getElementById('conf-confirm-btn').style.background=color;
-  document.getElementById('confirm-modal').classList.add('open');
-}
-function closeConfirm(){document.getElementById('confirm-modal').classList.remove('open');pendingAction=null;}
-
-/* ── Toast ── */
-function showToast(title,msg,color,dur=3000){
-  const t=document.getElementById('toast'),bar=document.getElementById('toast-bar');
-  document.getElementById('toast-title').textContent=title;
-  document.getElementById('toast-msg').textContent=msg;
-  document.getElementById('toast-icon-wrap').style.background=color+'18';
-  document.getElementById('toast-icon-wrap').innerHTML=`<i class="ti ti-check" style="font-size:16px;color:${color};"></i>`;
-  bar.style.background=color;bar.style.transition='none';bar.style.width='100%';
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateY(0)';bar.style.transition=`width ${dur}ms linear`;bar.style.width='0%';}));
-  clearTimeout(window._toast); window._toast=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(12px)';},dur);
+function closeModal() {
+  document.getElementById('userModal').classList.remove('open');
+  hideErr();
 }
 
-/* ── Init ── */
-updateStats(); filterAndRender();
+function clearForm() {
+  ['umFname','umMname','umLname','umEmail','umPass'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('umRole').value   = '';
+  document.getElementById('umStatus').value = 'Active';
+  resetChips('roleChips');
+  setChips('statusChips', 'Active');
+}
+
+function resetChips(containerId) {
+  document.getElementById(containerId).querySelectorAll('.role-chip').forEach(c => c.classList.remove('selected'));
+}
+function setChips(containerId, val) {
+  const container = document.getElementById(containerId);
+  container.querySelectorAll('.role-chip').forEach(c => {
+    c.classList.toggle('selected', c.dataset.val.toLowerCase() === val.toLowerCase());
+  });
+}
+
+/* ══════════════════════════════════
+   SAVE (Create or Update)
+══════════════════════════════════ */
+async function saveUser() {
+  // ALIGNED MAP TO BACKEND
+  const payload = {
+    fname: document.getElementById('umFname').value.trim(),
+    mname: document.getElementById('umMname').value.trim(),
+    lname: document.getElementById('umLname').value.trim(),
+    email: document.getElementById('umEmail').value.trim(),
+    role: document.getElementById('umRole').value,
+    status: document.getElementById('umStatus').value || 'Active'
+  };
+  
+  const pass = document.getElementById('umPass').value;
+
+  if (!payload.fname || !payload.lname || !payload.email || !payload.role) {
+    return showErr('Please fill in all required fields and select a role.');
+  }
+  if (!editingId && !pass) return showErr('Please enter a password for the new user.');
+  if (pass && pass.length < 8) return showErr('Password must be at least 8 characters.');
+  
+  const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRx.test(payload.email)) return showErr('Please enter a valid email address.');
+
+  if (pass) payload.password = pass;
+
+  const btn = document.getElementById('umSaveBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader-2 animate-spin" style="font-size:14px;"></i> Saving…';
+
+  try {
+    let res;
+    if (editingId) {
+      res = await fetch(`${API_BASE}/users/${editingId}`, {
+        method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+      });
+    } else {
+      res = await fetch(`${API_BASE}/users`, {
+        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+      });
+    }
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({}));
+      throw new Error(err.message || `Server error ${res.status}`);
+    }
+    closeModal();
+    showToast(editingId ? 'User Updated' : 'User Created', `${payload.fname} ${payload.lname} has been ${editingId?'updated':'added'}.`);
+    await loadUsers();
+  } catch (err) {
+    showErr(err.message || 'Failed to save. Try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-device-floppy" style="font-size:15px;"></i><span id="umSaveLabel">' + (editingId ? 'Update User' : 'Save User') + '</span>';
+  }
+}
+
+/* ══════════════════════════════════
+   DELETE
+══════════════════════════════════ */
+function triggerDelete() {
+  const u = allUsers.find(x => (x._id || x.id) == editingId);
+  if (!u) return;
+  pendingDeleteId = editingId;
+  const fname = u.fname || '';
+  const lname = u.lname || '';
+  document.getElementById('confMsg').textContent =
+    `Permanently remove ${fname} ${lname}? This cannot be undone.`;
+  document.getElementById('confirmModal').classList.add('open');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmModal').classList.remove('open');
+  pendingDeleteId = null;
+}
+
+async function executeConfirm() {
+  if (!pendingDeleteId) return;
+  const u = allUsers.find(x => (x._id || x.id) == pendingDeleteId);
+  const btn = document.getElementById('confBtn');
+  btn.textContent = 'Deleting…'; btn.disabled = true;
+  try {
+    const res = await fetch(`${API_BASE}/users/${pendingDeleteId}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(`Server error ${res.status}`);
+    closeConfirm();
+    closeModal();
+    const fname = u ? (u.fname||'User') : 'User';
+    const lname = u ? (u.lname||'')     : '';
+    showToast('User Deleted', `${fname} ${lname} has been removed.`);
+    await loadUsers();
+  } catch (err) {
+    closeConfirm();
+    showToast('Delete Failed', err.message || 'Could not delete. Try again.', true);
+  } finally {
+    btn.textContent = 'Delete'; btn.disabled = false;
+  }
+}
+
+/* ══════════════════════════════════
+   PASSWORD TOGGLE
+══════════════════════════════════ */
+function togglePw() {
+  const inp = document.getElementById('umPass');
+  const ico = document.getElementById('pwIcon');
+  const isText = inp.type === 'text';
+  inp.type = isText ? 'password' : 'text';
+  ico.className = isText ? 'ti ti-eye' : 'ti ti-eye-off';
+}
+
+/* ══════════════════════════════════
+   TOAST
+══════════════════════════════════ */
+let _toastTimer;
+function showToast(title, msg, isError = false) {
+  const t   = document.getElementById('toast');
+  const ico = document.getElementById('toastIcon');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent   = msg || '';
+  if (isError) {
+    ico.style.background = '#fef2f2';
+    ico.innerHTML = '<i class="ti ti-alert-circle" style="font-size:14px;color:#dc2626;"></i>';
+  } else {
+    ico.style.background = '#e8f0fd';
+    ico.innerHTML = '<i class="ti ti-check" style="font-size:14px;color:#0058be;"></i>';
+  }
+  clearTimeout(_toastTimer);
+  t.classList.add('show');
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ══════════════════════════════════
+   ERROR HELPERS
+══════════════════════════════════ */
+function showErr(msg) {
+  document.getElementById('umError').classList.remove('hidden');
+  document.getElementById('umErrorText').textContent = msg;
+}
+function hideErr() { document.getElementById('umError').classList.add('hidden'); }
+
+/* ══════════════════════════════════
+   DOM HELPERS
+══════════════════════════════════ */
+function show(id)   { const el=document.getElementById(id); if(el){ el.classList.remove('hidden'); el.style.display=''; } }
+function hide(id)   { const el=document.getElementById(id); if(el){ el.classList.add('hidden'); el.style.display='none'; } }
+function showEl(id) { const el=document.getElementById(id); if(el){ el.classList.remove('hidden'); el.style.display='flex'; } }
+function setText(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
+
+/* close on backdrop click / ESC */
+document.getElementById('userModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+document.getElementById('confirmModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeConfirm(); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('confirmModal').classList.contains('open')) { closeConfirm(); return; }
+  if (document.getElementById('userModal').classList.contains('open'))    { closeModal();   return; }
+});
 </script>
 </body>
 </html>

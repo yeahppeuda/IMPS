@@ -4,402 +4,526 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Activity Logs | Admin Panel</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#0058be',
+          surface: { DEFAULT: '#f4f6fb' },
+          'on-surface': '#191b23',
+          'on-surface-variant': '#424754',
+          outline: '#727785',
+          'outline-variant': '#e2e5ef',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] },
+      }
+    }
+  }
+</script>
 <style>
-:root{--sidebar-w:260px;--sidebar-collapsed:72px;--header-h:64px;--primary:#0058be;--primary-dark:#004499;--primary-light:#e8f0fd;--surface:#f4f6fb;--white:#ffffff;--border:#e2e5ef;--text:#191b23;--text-2:#424754;--text-3:#727785;--text-4:#a0a6b8;--success:#059669;--warning:#d97706;--danger:#dc2626;--purple:#6b38d4;}
-*,*::before,*::after{box-sizing:border-box;}
-html,body{height:100%;margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:var(--surface);color:var(--text);}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width 0.25s cubic-bezier(0.4,0,0.2,1);z-index:50;overflow:hidden;}
-.sidebar.collapsed{width:var(--sidebar-collapsed);}
-.sidebar-brand{display:flex;align-items:center;gap:12px;padding:20px 18px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.brand-icon{width:36px;height:36px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.brand-text{overflow:hidden;white-space:nowrap;}
-.brand-text h1{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
-.brand-text p{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.12em;margin-top:1px;}
-.sidebar-admin-badge{margin:12px 14px;background:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%);border-radius:8px;padding:6px 10px;display:flex;align-items:center;gap:8px;overflow:hidden;flex-shrink:0;}
-.admin-badge-dot{width:6px;height:6px;background:#fff;border-radius:50%;flex-shrink:0;animation:blink 2s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.4;}}
-.admin-badge-text{font-size:10px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:0.12em;white-space:nowrap;}
-.sidebar-nav{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 10px;}
-.nav-section-label{font-size:9px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:0.14em;padding:8px 8px 4px;white-space:nowrap;overflow:hidden;transition:opacity 0.2s;}
-.sidebar.collapsed .nav-section-label{opacity:0;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:10px;cursor:pointer;text-decoration:none;color:var(--text-2);font-size:13px;font-weight:500;transition:all 0.15s;white-space:nowrap;overflow:hidden;position:relative;}
-.nav-item:hover{background:#f1f5f9;color:var(--text);}
-.nav-item.active{background:var(--primary-light);color:var(--primary);font-weight:600;}
-.nav-item.active .nav-icon{color:var(--primary);}
-.nav-icon{font-size:18px;width:22px;text-align:center;flex-shrink:0;}
-.nav-label{overflow:hidden;white-space:nowrap;}
-.nav-badge{margin-left:auto;background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;flex-shrink:0;}
-.sidebar-footer{padding:12px 10px;border-top:1px solid var(--border);flex-shrink:0;}
-.collapse-btn{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;color:var(--text-3);font-size:13px;font-weight:500;transition:all 0.15s;border:none;background:none;width:100%;overflow:hidden;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;}
-.collapse-btn:hover{background:#f1f5f9;color:var(--text);}
-.collapse-icon{transition:transform 0.25s;font-size:18px;flex-shrink:0;}
-.sidebar.collapsed .collapse-icon{transform:rotate(180deg);}
-.main-wrap{margin-left:var(--sidebar-w);transition:margin-left 0.25s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;min-height:100vh;}
-.main-wrap.collapsed{margin-left:var(--sidebar-collapsed);}
-.topbar{height:var(--header-h);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:40;}
-.topbar-clock{display:flex;align-items:center;gap:6px;background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--text-2);}
-.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:#f8f9fc;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-3);font-size:17px;transition:all 0.15s;position:relative;}
-.icon-btn:hover{background:var(--primary-light);color:var(--primary);border-color:#c7d9f7;}
-.notif-dot{position:absolute;top:6px;right:7px;width:7px;height:7px;background:#dc2626;border-radius:50%;border:1.5px solid #fff;}
-.admin-profile{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;border-radius:12px;border:1px solid var(--border);background:#f8f9fc;cursor:pointer;transition:all 0.15s;}
-.admin-profile:hover{background:var(--primary-light);border-color:#c7d9f7;}
-.profile-avatar{width:30px;height:30px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
-.profile-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.2;}
-.profile-role{font-size:10px;font-weight:600;color:#dc2626;text-transform:uppercase;letter-spacing:0.10em;}
-.page-content{flex:1;padding:28px;animation:pageIn 0.4s ease both;}
-@keyframes pageIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
-.section-card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
-.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;}
-.page-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.15s,color 0.15s;color:var(--text-3);border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif;}
-.page-btn:hover:not(.active):not(:disabled){background:#f1f5f9;}
-.page-btn.active{background:var(--primary);color:#fff;font-weight:700;}
-.page-btn:disabled{opacity:0.3;cursor:not-allowed;}
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:10px;}
-.filter-input{background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;outline:none;color:var(--text-2);transition:border-color 0.15s,box-shadow 0.15s;cursor:pointer;}
-.filter-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,88,190,0.10);}
-table tbody tr{transition:background 0.1s;cursor:pointer;}
-table tbody tr:hover{background:#fafbfd;}
-/* Log detail modal */
-.log-modal-overlay{position:fixed;inset:0;background:rgba(25,27,35,0.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;}
-.log-modal-overlay.open{display:flex;}
-@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(0.98);}to{opacity:1;transform:none;}}
-.sort-btn{background:none;border:none;cursor:pointer;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:4px;padding:0;transition:color 0.15s;}
-.sort-btn:hover{color:var(--primary);}
-.sort-btn.asc::after{content:'↑';margin-left:3px;color:var(--primary);}
-.sort-btn.desc::after{content:'↓';margin-left:3px;color:var(--primary);}
-/* Tooltip collapsed */
-.sidebar.collapsed .nav-item:hover::after{content:attr(data-tooltip);position:absolute;left:calc(var(--sidebar-collapsed) - 8px);top:50%;transform:translateY(-50%);background:#1e293b;color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;white-space:nowrap;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;}
+  ::-webkit-scrollbar{width:5px;height:5px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:10px;}
+
+  .nav-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;cursor:pointer;transition:background .15s,color .15s,transform .15s;text-decoration:none;color:#424754;font-size:13.5px;font-weight:400;width:100%;}
+  .nav-item:hover{background-color:#f1f5f9;color:#191b23;transform:translateX(4px);}
+  .nav-item.active{background-color:#e8f0fd;color:#0058be;font-weight:500;transform:none;}
+  .nav-item.active i{color:#0058be;}
+  .nav-item i{font-size:18px;width:20px;text-align:center;flex-shrink:0;}
+  .nav-section-label{font-size:10px;font-weight:600;color:#727785;text-transform:uppercase;letter-spacing:.08em;padding:0 12px;margin:12px 0 4px;}
+
+  .stat-card{transition:box-shadow .2s,transform .2s;}
+  .stat-card:hover{transform:translateY(-2px);}
+
+  .page-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s,color .15s;color:#424754;border:none;background:none;font-family:Inter,sans-serif;}
+  .page-btn:hover:not(.active):not([disabled]){background:#f1f5f9;}
+  .page-btn.active{background:#0058be;color:#fff;font-weight:700;}
+  .page-btn[disabled]{opacity:.3;cursor:not-allowed;}
+  .page-ellipsis{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:#727785;font-size:14px;}
+
+  .badge-info{background:linear-gradient(135deg,#eff6ff,#dbeafe);color:#1e40af;border:1px solid #bfdbfe;}
+  .badge-warning{background:linear-gradient(135deg,#fffbeb,#fef3c7);color:#92400e;border:1px solid #fcd34d;}
+  .badge-critical{background:linear-gradient(135deg,#fef2f2,#fee2e2);color:#991b1b;border:1px solid #fca5a5;}
+
+  .action-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px 3px 8px;border-radius:20px;font-size:11px;font-weight:600;border-width:1px;border-style:solid;white-space:nowrap;}
+
+  .btn-view{display:inline-flex;align-items:center;gap:5px;padding:5px 12px 5px 10px;border-radius:8px;font-size:12px;font-weight:600;color:#0058be;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;}
+  .btn-view::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#0058be,#1d4ed8);opacity:0;transition:opacity .18s;border-radius:inherit;}
+  .btn-view:hover::before{opacity:1;}
+  .btn-view:hover{color:#fff;border-color:#0058be;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,88,190,.25);}
+  .btn-view i,.btn-view span{position:relative;z-index:1;}
+
+  .sort-btn{background:none;border:none;cursor:pointer;font-size:10px;font-weight:700;color:#727785;text-transform:uppercase;letter-spacing:.10em;font-family:Inter,sans-serif;display:flex;align-items:center;gap:4px;padding:0;transition:color .15s;}
+  .sort-btn:hover{color:#0058be;}
+  .sort-btn.asc::after{content:'↑';margin-left:3px;color:#0058be;}
+  .sort-btn.desc::after{content:'↓';margin-left:3px;color:#0058be;}
+
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  .page-fade{animation:fadeIn .4s ease both;}
+  @keyframes modalIn{from{opacity:0;transform:translateY(-12px) scale(.97);}to{opacity:1;transform:none;}}
+  .modal-enter{animation:modalIn .22s cubic-bezier(.34,1.3,.64,1) both;}
+  @keyframes checkDraw{from{stroke-dashoffset:50;}to{stroke-dashoffset:0;}}
+  .check-draw{stroke-dasharray:50;stroke-dashoffset:50;animation:checkDraw .4s .1s ease forwards;}
+  tbody tr{transition:background .12s;}
 </style>
 </head>
-<body>
+<body class="bg-surface text-on-surface font-sans antialiased flex min-h-screen">
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-brand">
-    <div class="brand-icon"><i class="ti ti-building-bank text-white" style="font-size:17px;"></i></div>
-    <div class="brand-text"><h1>IP Management</h1><p>Administration Panel</p></div>
+<aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-white flex flex-col z-50">
+  <div class="flex items-center gap-3 px-5 py-5 border-b border-outline-variant">
+    <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white flex-shrink-0">
+      <i class="ti ti-building-bank" style="font-size:18px;"></i>
+    </div>
+    <div>
+      <h1 class="text-sm font-semibold leading-tight text-on-surface">IP Management</h1>
+      <p class="text-[10px] text-on-surface-variant font-semibold tracking-widest uppercase">Administration Panel</p>
+    </div>
   </div>
-  <div class="sidebar-admin-badge"><div class="admin-badge-dot"></div><span class="admin-badge-text">Admin Mode</span></div>
-  <nav class="sidebar-nav">
+  <nav class="flex-1 overflow-y-auto px-3 pt-3 pb-2 space-y-0.5">
     <div class="nav-section-label">Overview</div>
-    <a class="nav-item" href="admin-dashboard.html" data-tooltip="Dashboard"><i class="ti ti-layout-dashboard nav-icon"></i><span class="nav-label">Dashboard</span></a>
+    <a class="nav-item" href="admin-dashboard.html"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></a>
     <div class="nav-section-label">Management</div>
-    <a class="nav-item" href="admin-users.html" data-tooltip="Users"><i class="ti ti-users nav-icon"></i><span class="nav-label">User Management</span></a>
-    <a class="nav-item active" href="admin-logs.html" data-tooltip="Logs"><i class="ti ti-clipboard-list nav-icon"></i><span class="nav-label">Activity Logs</span></a>
-    <div class="nav-section-label">User Side</div>
-    <a class="nav-item" href="dashboard.html" data-tooltip="User Side"><i class="ti ti-arrow-back-up nav-icon"></i><span class="nav-label">Back to User Side</span></a>
+    <a class="nav-item" href="admin-users.html"><i class="ti ti-users"></i><span>User Management</span></a>
+    <a class="nav-item active" href="admin-logs.html"><i class="ti ti-clipboard-list"></i><span>Activity Logs</span></a>
   </nav>
-  <div class="sidebar-footer">
-    <button class="collapse-btn" onclick="toggleSidebar()"><i class="ti ti-layout-sidebar-left-collapse collapse-icon nav-icon"></i><span class="nav-label" style="font-size:12px;">Collapse Sidebar</span></button>
+  <div class="p-4 border-t border-outline-variant">
+    <div class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-slate-50 border border-outline-variant cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-all">
+      <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">SA</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-semibold text-on-surface leading-tight">Super Admin</p>
+        <p class="text-[10px] font-bold text-red-600 uppercase tracking-wider">Administrator</p>
+      </div>
+      <i class="ti ti-chevron-down text-outline" style="font-size:13px;"></i>
+    </div>
   </div>
 </aside>
 
-<!-- MAIN -->
-<div class="main-wrap" id="mainWrap">
-  <header class="topbar">
-    <div style="display:flex;flex-direction:column;">
-      <span style="font-size:17px;font-weight:700;color:var(--text);">Activity Logs</span>
-      <span style="font-size:11px;color:var(--text-3);font-weight:500;">Admin Panel &rsaquo; Audit Trail</span>
+<main class="flex-1 ml-[260px] min-h-screen flex flex-col bg-surface page-fade">
+
+  <header class="h-[60px] flex items-center justify-between px-8 sticky top-0 bg-white/80 backdrop-blur-md z-40 border-b border-outline-variant">
+    <div>
+      <h2 class="text-[17px] font-bold text-on-surface leading-tight">Activity Logs</h2>
+      <p class="text-[11px] text-outline font-medium">Admin Panel &rsaquo; Audit Trail</p>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="topbar-clock"><i class="ti ti-clock" style="font-size:13px;"></i><span id="clock-time"></span><span id="clock-ampm" style="font-size:10px;font-weight:700;color:#a0a6b8;"></span></div>
-      <div class="topbar-clock"><i class="ti ti-calendar" style="font-size:13px;"></i><span id="clock-date"></span></div>
-      <div class="icon-btn"><i class="ti ti-bell"></i><div class="notif-dot"></div></div>
-      <div class="admin-profile">
-        <div class="profile-avatar">SA</div>
-        <div><div class="profile-name">Super Admin</div><div class="profile-role">Administrator</div></div>
-        <i class="ti ti-chevron-down" style="font-size:13px;color:#a0a6b8;margin-left:4px;"></i>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2">
+        <i class="ti ti-clock text-outline" style="font-size:14px;"></i>
+        <span id="live-time" class="text-[13px] font-semibold text-on-surface tabular-nums tracking-tight"></span>
+        <span id="live-ampm" class="text-[10px] font-bold text-outline uppercase"></span>
       </div>
+      <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+        <i class="ti ti-calendar text-outline" style="font-size:13px;"></i>
+        <span id="live-date" class="text-[12px] font-semibold text-on-surface-variant"></span>
+      </div>
+      <button class="relative w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-outline hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all">
+        <i class="ti ti-bell" style="font-size:17px;"></i>
+        <span class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
+      </button>
     </div>
   </header>
 
-  <div class="page-content">
+  <div class="p-8 space-y-7 flex-1">
 
-    <!-- Summary chips -->
-    <div style="display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap;">
-      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:10px;">
-        <div style="width:32px;height:32px;background:#e8f0fd;border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="ti ti-list" style="font-size:15px;color:#0058be;"></i></div>
-        <div><div style="font-size:18px;font-weight:800;color:var(--text);" id="ls-total">—</div><div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Total Logs</div></div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-5">
+      <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm">
+        <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+          <i class="ti ti-list text-blue-600" style="font-size:20px;"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Total Logs</p>
+          <p class="text-3xl font-bold text-on-surface mt-0.5 leading-none" id="ls-total">0</p>
+        </div>
       </div>
-      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:10px;">
-        <div style="width:32px;height:32px;background:#d1fae5;border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="ti ti-check" style="font-size:15px;color:#059669;"></i></div>
-        <div><div style="font-size:18px;font-weight:800;color:var(--text);" id="ls-today">—</div><div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Today</div></div>
+      <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm">
+        <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+          <i class="ti ti-check text-emerald-600" style="font-size:20px;"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Today</p>
+          <p class="text-3xl font-bold text-on-surface mt-0.5 leading-none" id="ls-today">0</p>
+        </div>
       </div>
-      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:10px;">
-        <div style="width:32px;height:32px;background:#fee2e2;border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="ti ti-alert-triangle" style="font-size:15px;color:#dc2626;"></i></div>
-        <div><div style="font-size:18px;font-weight:800;color:var(--text);" id="ls-critical">—</div><div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Critical</div></div>
+      <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm">
+        <div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+          <i class="ti ti-alert-triangle text-red-500" style="font-size:20px;"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Critical</p>
+          <p class="text-3xl font-bold text-on-surface mt-0.5 leading-none" id="ls-critical">0</p>
+        </div>
       </div>
-      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:10px;">
-        <div style="width:32px;height:32px;background:#ede9fe;border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="ti ti-users" style="font-size:15px;color:#6b38d4;"></i></div>
-        <div><div style="font-size:18px;font-weight:800;color:var(--text);" id="ls-unique-users">—</div><div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Unique Users</div></div>
-      </div>
-      <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
-        <button onclick="exportCSV()" style="display:flex;align-items:center;gap:6px;padding:9px 16px;background:#f8f9fc;border:1px solid var(--border);border-radius:10px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;color:var(--text-2);transition:all 0.15s;" onmouseover="this.style.background='var(--primary-light)';this.style.color='var(--primary)'" onmouseout="this.style.background='#f8f9fc';this.style.color='var(--text-2)'">
-          <i class="ti ti-download" style="font-size:14px;"></i> Export CSV
-        </button>
-        <button onclick="clearFilters()" style="display:flex;align-items:center;gap:6px;padding:9px 16px;background:#f8f9fc;border:1px solid var(--border);border-radius:10px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;color:var(--text-2);transition:all 0.15s;" onmouseover="this.style.background='#fef2f2';this.style.color='#dc2626'" onmouseout="this.style.background='#f8f9fc';this.style.color='var(--text-2)'">
-          <i class="ti ti-filter-off" style="font-size:14px;"></i> Clear Filters
-        </button>
+      <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-4 shadow-sm">
+        <div class="w-11 h-11 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0">
+          <i class="ti ti-users text-violet-600" style="font-size:20px;"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Unique Users</p>
+          <p class="text-3xl font-bold text-on-surface mt-0.5 leading-none" id="ls-unique">0</p>
+        </div>
       </div>
     </div>
 
-    <!-- Table card -->
-    <div class="section-card">
+    <section class="bg-white rounded-2xl border border-outline-variant shadow-sm overflow-visible">
 
-      <!-- Toolbar -->
-      <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <!-- Search -->
-        <div style="position:relative;flex:1;min-width:220px;">
-          <i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text-4);"></i>
-          <input id="log-search" type="text" oninput="filterAndRender()" placeholder="Search by user, action, module, description, IP…"
-            style="width:100%;background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:8px 12px 8px 36px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;color:var(--text);"
-            onfocus="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 0 3px rgba(0,88,190,0.10)'"
-            onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'"/>
+      <div class="px-5 py-4 border-b border-outline-variant flex items-center gap-2.5">
+
+        <div class="relative flex-1">
+          <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-outline" style="font-size:15px;"></i>
+          <input id="log-search" type="text" oninput="filterAndRender()"
+            placeholder="Search user, action, module, IP…"
+            class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-[13px] focus:ring-1 focus:ring-primary focus:bg-white focus:border-primary transition-all outline-none placeholder:text-outline"/>
         </div>
-        <!-- Module filter -->
-        <select id="mod-filter" onchange="filterAndRender()" class="filter-input">
-          <option value="all">All Modules</option>
-          <option>Copyright</option>
-          <option>Patent</option>
-          <option>Trademark</option>
-          <option>Utility Model</option>
-          <option>Industrial Design</option>
-          <option>User Management</option>
-          <option>System</option>
-          <option>Reports</option>
-          <option>Events</option>
-        </select>
-        <!-- Action filter -->
-        <select id="action-filter" onchange="filterAndRender()" class="filter-input">
-          <option value="all">All Actions</option>
-          <option>Login</option>
-          <option>Logout</option>
-          <option>Create</option>
-          <option>Update</option>
-          <option>Delete</option>
-          <option>Export</option>
-          <option>View</option>
-          <option>Reset Password</option>
-        </select>
-        <!-- Severity filter -->
-        <select id="sev-filter" onchange="filterAndRender()" class="filter-input">
-          <option value="all">All Severity</option>
-          <option value="info">Info</option>
-          <option value="warning">Warning</option>
-          <option value="critical">Critical</option>
-        </select>
-        <!-- Date from / to -->
-        <input id="date-from" type="date" onchange="filterAndRender()" class="filter-input" title="From date"/>
-        <input id="date-to"   type="date" onchange="filterAndRender()" class="filter-input" title="To date"/>
+
+        <div class="relative shrink-0" id="filter-wrapper">
+          <button id="filter-btn" onclick="toggleFilterPanel()"
+            class="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[13px] font-medium text-on-surface-variant hover:bg-slate-100 transition-colors whitespace-nowrap">
+            <i class="ti ti-adjustments-horizontal" style="font-size:15px;"></i>
+            <span>Filters</span>
+            <span id="filter-count" class="hidden text-[10px] font-bold bg-primary text-white rounded-full px-1.5 py-px leading-none ml-0.5"></span>
+            <i class="ti ti-chevron-down text-outline" id="filter-chevron" style="font-size:12px;transition:transform .15s;"></i>
+          </button>
+
+          <div id="filter-panel"
+            class="hidden absolute right-0 mt-1.5 w-72 bg-white rounded-2xl border border-slate-200 shadow-2xl z-[200] p-5 space-y-4"
+            style="box-shadow:0 16px 48px rgba(0,0,0,0.12);">
+
+            <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Filter Logs</p>
+
+            <div class="space-y-1">
+              <label class="text-[11px] font-semibold text-on-surface-variant">Module</label>
+              <select id="mod-filter" onchange="updateFilterCount()"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-[13px] text-on-surface outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all cursor-pointer">
+                <option value="all">All Modules</option>
+                <option>Copyright</option><option>Patent</option><option>Trademark</option>
+                <option>Utility Model</option><option>Industrial Design</option>
+                <option>User Management</option><option>System</option><option>Reports</option><option>Events</option>
+              </select>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-[11px] font-semibold text-on-surface-variant">Action</label>
+              <select id="action-filter" onchange="updateFilterCount()"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-[13px] text-on-surface outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all cursor-pointer">
+                <option value="all">All Actions</option>
+                <option>Login</option><option>Logout</option><option>Create</option>
+                <option>Update</option><option>Delete</option><option>Export</option>
+                <option>View</option><option>Reset Password</option>
+              </select>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-semibold text-on-surface-variant">Severity</label>
+              <div class="grid grid-cols-4 gap-1.5">
+                <button onclick="setSev('all')"      id="sev-btn-all"      class="sev-btn py-1.5 rounded-lg text-[11px] font-semibold border transition-all">All</button>
+                <button onclick="setSev('info')"     id="sev-btn-info"     class="sev-btn py-1.5 rounded-lg text-[11px] font-semibold border transition-all">Info</button>
+                <button onclick="setSev('warning')"  id="sev-btn-warning"  class="sev-btn py-1.5 rounded-lg text-[11px] font-semibold border transition-all">Warn</button>
+                <button onclick="setSev('critical')" id="sev-btn-critical" class="sev-btn py-1.5 rounded-lg text-[11px] font-semibold border transition-all">Crit</button>
+              </div>
+              <input type="hidden" id="sev-filter" value="all"/>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-[11px] font-semibold text-on-surface-variant">Date Range</label>
+              <div class="flex items-center gap-2">
+                <input id="date-from" type="date" onchange="updateFilterCount()"
+                  class="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-lg py-1.5 px-2.5 text-[12px] outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"/>
+                <span class="text-outline text-[11px] shrink-0">to</span>
+                <input id="date-to" type="date" onchange="updateFilterCount()"
+                  class="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-lg py-1.5 px-2.5 text-[12px] outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"/>
+              </div>
+            </div>
+
+            <div class="flex gap-2 pt-1 border-t border-slate-100">
+              <button onclick="applyFilters()"
+                class="flex-1 py-2 bg-primary text-white text-[13px] font-bold rounded-xl hover:bg-blue-700 transition-colors mt-1">
+                Apply Filters
+              </button>
+              <button onclick="clearFilters()"
+                class="flex-1 py-2 bg-slate-100 text-on-surface-variant text-[13px] font-semibold rounded-xl hover:bg-slate-200 transition-colors mt-1">
+                Clear All
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="exportCSV()"
+          class="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[13px] font-medium text-on-surface-variant hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all whitespace-nowrap">
+          <i class="ti ti-download" style="font-size:14px;"></i> Export CSV
+        </button>
       </div>
 
-      <!-- Table -->
-      <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;text-align:left;">
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse" style="min-width:860px;">
           <thead>
-            <tr style="background:#f8f9fc;">
-              <th style="padding:11px 18px;border-bottom:1px solid var(--border);white-space:nowrap;">
+            <tr class="bg-slate-50">
+              <th class="px-5 py-3 border-b border-outline-variant whitespace-nowrap">
                 <button class="sort-btn" onclick="sortBy('timestamp')">Timestamp</button>
               </th>
-              <th style="padding:11px 18px;border-bottom:1px solid var(--border);">
+              <th class="px-5 py-3 border-b border-outline-variant">
                 <button class="sort-btn" onclick="sortBy('user')">User</button>
               </th>
-              <th style="padding:11px 18px;border-bottom:1px solid var(--border);">
+              <th class="px-5 py-3 border-b border-outline-variant">
                 <button class="sort-btn" onclick="sortBy('action')">Action</button>
               </th>
-              <th style="padding:11px 18px;border-bottom:1px solid var(--border);">
+              <th class="px-5 py-3 border-b border-outline-variant">
                 <button class="sort-btn" onclick="sortBy('module')">Module</button>
               </th>
-              <th style="padding:11px 18px;border-bottom:1px solid var(--border);min-width:220px;">
-                <span style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;">Description</span>
+              <th class="px-5 py-3 border-b border-outline-variant" style="min-width:200px;">
+                <span class="text-[10px] font-bold text-outline uppercase tracking-widest">Description</span>
               </th>
-              <th style="padding:11px 18px;border-bottom:1px solid var(--border);white-space:nowrap;">
-                <span style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;">IP Address</span>
+              <th class="px-5 py-3 border-b border-outline-variant whitespace-nowrap">
+                <span class="text-[10px] font-bold text-outline uppercase tracking-widest">IP Address</span>
               </th>
-              <th style="padding:11px 18px;border-bottom:1px solid var(--border);">
-                <span style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;">Severity</span>
+              <th class="px-5 py-3 border-b border-outline-variant">
+                <span class="text-[10px] font-bold text-outline uppercase tracking-widest">Severity</span>
               </th>
-              <th style="padding:11px 18px;border-bottom:1px solid var(--border);text-align:center;">
-                <span style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.10em;">Details</span>
+              <th class="px-5 py-3 border-b border-outline-variant text-center">
+                <span class="text-[10px] font-bold text-outline uppercase tracking-widest">Details</span>
               </th>
             </tr>
           </thead>
-          <tbody id="log-tbody" style="font-size:13px;"></tbody>
+          <tbody id="log-tbody" class="divide-y divide-slate-100 text-[13px]"></tbody>
         </table>
       </div>
 
-      <!-- Empty state -->
-      <div id="log-empty" style="display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">
-        <div style="width:56px;height:56px;background:#f1f5f9;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
-          <i class="ti ti-clipboard-off" style="font-size:26px;color:#d1d5db;"></i>
+      <div id="log-empty" class="hidden flex-col items-center justify-center py-16 text-center">
+        <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
+          <i class="ti ti-clipboard-off text-slate-300" style="font-size:28px;"></i>
         </div>
-        <p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">No logs found</p>
-        <p style="font-size:12px;color:var(--text-3);">Try adjusting your search, date range, or filters.</p>
+        <p class="text-[14px] font-semibold text-on-surface mb-1" id="empty-title">No logs found</p>
+        <p class="text-[12px] text-outline" id="empty-desc">Try adjusting your search or filters.</p>
       </div>
 
-      <!-- Pagination -->
-      <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <p id="pag-info" style="font-size:12px;color:var(--text-3);"></p>
-        <div id="pag-controls" style="display:flex;align-items:center;gap:4px;"></div>
+      <div class="px-6 py-4 border-t border-outline-variant flex flex-wrap items-center justify-between gap-3">
+        <p id="pag-info" class="text-[12px] text-outline"></p>
+        <div id="pag-controls" class="flex items-center gap-1"></div>
       </div>
+    </section>
+  </div>
+</main>
 
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-4"
+  id="log-detail-modal"
+  style="display:none; background:rgba(15,23,42,0.65); backdrop-filter:blur(4px);"
+  onclick="handleModalBackdrop(event)">
+  <div id="log-modal-inner" class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col modal-enter" style="max-height:90vh;">
+
+    <div class="px-7 py-5 border-b border-outline-variant flex items-center justify-between bg-white shadow-sm z-10 relative">
+      <div>
+        <h3 class="text-[18px] font-bold text-on-surface flex items-center gap-2">
+          <i class="ti ti-clipboard-list text-primary" style="font-size:18px;"></i>
+          Log Details
+        </h3>
+        <p class="text-[13px] text-primary font-semibold mt-0.5" id="det-log-id">—</p>
+      </div>
+      <button onclick="closeLogDetail()" class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline">
+        <span class="material-symbols-outlined text-[22px]">close</span>
+      </button>
+    </div>
+
+    <div class="p-7 overflow-y-auto flex-1" id="log-detail-body"></div>
+
+    <div class="px-7 py-5 bg-slate-50 border-t border-outline-variant flex justify-end">
+      <button onclick="closeLogDetail()"
+        class="px-6 py-2.5 text-[13px] font-semibold text-on-surface-variant bg-white border border-slate-200 hover:border-slate-300 rounded-xl transition-all">
+        Close
+      </button>
     </div>
   </div>
 </div>
 
-<!-- ════ LOG DETAIL MODAL ════ -->
-<div class="log-modal-overlay" id="log-detail-modal">
-  <div style="background:#fff;border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,0.14);width:100%;max-width:520px;max-height:88vh;display:flex;flex-direction:column;animation:modalIn 0.22s ease;">
-    <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-      <div>
-        <h3 style="font-size:16px;font-weight:700;color:var(--text);">Log Details</h3>
-        <p style="font-size:12px;color:var(--text-3);margin-top:2px;" id="det-log-id">—</p>
-      </div>
-      <button onclick="closeLogDetail()" style="width:32px;height:32px;border-radius:8px;border:none;background:#f1f5f9;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:16px;transition:background 0.15s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
-        <i class="ti ti-x"></i>
-      </button>
-    </div>
-    <div style="padding:22px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:0;" id="log-detail-body">
-    </div>
-    <div style="padding:14px 24px;background:#f8f9fc;border-top:1px solid var(--border);display:flex;justify-content:flex-end;">
-      <button onclick="closeLogDetail()" style="padding:9px 18px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:13px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;color:var(--text-2);transition:background 0.15s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">Close</button>
-    </div>
+<div id="success-toast"
+  class="fixed bottom-8 right-8 z-[90] flex items-center gap-3 bg-white border border-emerald-200 shadow-xl rounded-2xl px-5 py-4 pointer-events-none"
+  style="opacity:0;transform:translateY(12px);transition:opacity .25s ease,transform .25s ease;min-width:240px;">
+  <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="9" r="9" fill="#d1fae5"/>
+      <polyline points="5,9 8,12 13,6" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-draw"/>
+    </svg>
   </div>
+  <div>
+    <p class="text-[13px] font-bold text-on-surface leading-tight" id="toast-title">Done</p>
+    <p class="text-[11px] text-outline mt-0.5" id="toast-body"></p>
+  </div>
+  <div class="absolute bottom-0 left-0 h-[3px] bg-emerald-400 rounded-b-2xl" id="toast-bar" style="width:100%;"></div>
 </div>
 
 <script>
-/* ── MOCK LOGS ── */
+/* ─── LIVE BACKEND INTEGRATION ─── */
 const ACTIONS_META = {
-  'Login':          {color:'#0058be', icon:'ti-login',    sev:'info'},
-  'Logout':         {color:'#6b38d4', icon:'ti-logout',   sev:'info'},
-  'Create':         {color:'#059669', icon:'ti-plus',     sev:'info'},
-  'Update':         {color:'#d97706', icon:'ti-pencil',   sev:'warning'},
-  'Delete':         {color:'#dc2626', icon:'ti-trash',    sev:'critical'},
-  'Export':         {color:'#0369a1', icon:'ti-download', sev:'info'},
-  'View':           {color:'#475569', icon:'ti-eye',      sev:'info'},
-  'Reset Password': {color:'#be185d', icon:'ti-key',      sev:'warning'},
+  'Login':          {color:'#0058be',bg:'#eff6ff',border:'#bfdbfe',icon:'ti-login'},
+  'Logout':         {color:'#6b38d4',bg:'#f5f3ff',border:'#c4b5fd',icon:'ti-logout'},
+  'Create':         {color:'#059669',bg:'#ecfdf5',border:'#6ee7b7',icon:'ti-plus'},
+  'Update':         {color:'#d97706',bg:'#fffbeb',border:'#fcd34d',icon:'ti-pencil'},
+  'Delete':         {color:'#dc2626',bg:'#fef2f2',border:'#fca5a5',icon:'ti-trash'},
+  'Export':         {color:'#0369a1',bg:'#f0f9ff',border:'#7dd3fc',icon:'ti-download'},
+  'View':           {color:'#475569',bg:'#f8fafc',border:'#cbd5e1',icon:'ti-eye'},
+  'Reset Password': {color:'#be185d',bg:'#fdf2f8',border:'#f9a8d4',icon:'ti-key'},
+};
+const SEV = {
+  info:     {cls:'badge-info',    label:'Info'},
+  warning:  {cls:'badge-warning', label:'Warning'},
+  critical: {cls:'badge-critical',label:'Critical'},
 };
 
-const SEV_STYLE = {
-  info:     {bg:'#e8f0fd',text:'#1d4ed8',label:'Info'},
-  warning:  {bg:'#fef3c7',text:'#92400e',label:'Warning'},
-  critical: {bg:'#fee2e2',text:'#991b1b',label:'Critical'},
-};
-
-function genLogs() {
-  const users = ['Maria Santos','John Reyes','Liza Gomez','Ana Cruz','Ryan Tan','Sofia Ramos','Admin System','Super Admin'];
-  const modules= ['Copyright','Patent','Trademark','Utility Model','Industrial Design','User Management','System','Reports','Events'];
-  const ips    = ['192.168.1.10','192.168.1.22','192.168.1.45','10.0.0.5','10.0.0.12','172.16.0.3'];
-  const entries= [
-    {action:'Login',    desc:'User logged in successfully',       module:'System'},
-    {action:'Create',   desc:'New research record submitted',     module:'Copyright'},
-    {action:'Update',   desc:'Record status changed to Approved', module:'Patent'},
-    {action:'Delete',   desc:'Duplicate record removed',          module:'Trademark'},
-    {action:'Export',   desc:'Records exported to CSV',           module:'Reports'},
-    {action:'View',     desc:'Viewed research record details',    module:'Utility Model'},
-    {action:'Logout',   desc:'User session terminated',           module:'System'},
-    {action:'Reset Password', desc:'Password reset link sent',    module:'User Management'},
-    {action:'Create',   desc:'New event added to calendar',       module:'Events'},
-    {action:'Update',   desc:'User profile information updated',  module:'User Management'},
-    {action:'Delete',   desc:'User account permanently deleted',  module:'User Management'},
-    {action:'Create',   desc:'New user account registered',       module:'User Management'},
-    {action:'View',     desc:'Dashboard statistics accessed',     module:'Reports'},
-    {action:'Export',   desc:'Activity logs exported as CSV',     module:'Reports'},
-    {action:'Update',   desc:'Industrial design record updated',  module:'Industrial Design'},
-  ];
-
-  const logs = [];
-  const now = new Date();
-  for (let i = 0; i < 80; i++) {
-    const e    = entries[i % entries.length];
-    const meta = ACTIONS_META[e.action];
-    const dt   = new Date(now.getTime() - i * 23 * 60000 - Math.random() * 3600000);
-    logs.push({
-      id:        `LOG-${String(i+1).padStart(4,'0')}`,
-      user:      users[i % users.length],
-      action:    e.action,
-      module:    e.module,
-      desc:      e.desc,
-      ip:        ips[i % ips.length],
-      severity:  meta.sev,
-      timestamp: dt.toISOString(),
-    });
-  }
-  return logs;
-}
-
-let ALL_LOGS = genLogs();
-let filteredLogs = [...ALL_LOGS];
-let currentPage = 1;
+// Start with empty arrays - no more mock data!
+let ALL_LOGS = [], filteredLogs = [], currentPage = 1;
 const ROWS = 12;
-let sortField = 'timestamp';
-let sortDir   = 'desc';
+let sortField = 'timestamp', sortDir = 'desc';
 
-/* ── Clock ── */
-function updateClock(){
-  const now=new Date();let h=now.getHours();
-  const m=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0');
-  const ampm=h>=12?'PM':'AM';h=h%12||12;
-  document.getElementById('clock-time').textContent=`${String(h).padStart(2,'0')}:${m}:${s}`;
-  document.getElementById('clock-ampm').textContent=ampm;
-  document.getElementById('clock-date').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+/* FETCH LOGS FROM SERVER.JS BACKEND */
+async function fetchLogs() {
+  try {
+    // Tinitira nito yung naka-setup mong logRoutes.js sa port 5000
+    const response = await fetch('http://localhost:5000/api/logs');
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    // Save to our global arrays
+    ALL_LOGS = data;
+    filteredLogs = [...ALL_LOGS];
+    
+    // Update the UI
+    updateSummary();
+    filterAndRender();
+    
+  } catch (error) {
+    console.error("Error fetching logs:", error);
+    document.getElementById('log-tbody').innerHTML = '';
+    
+    const emptyState = document.getElementById('log-empty');
+    document.getElementById('empty-title').textContent = "Connection Error";
+    document.getElementById('empty-desc').textContent = "Failed to load logs. Make sure backend is running.";
+    emptyState.style.display = 'flex';
+    
+    showToast('Error', 'Could not connect to database.');
+  }
 }
-updateClock(); setInterval(updateClock,1000);
 
-/* ── Sidebar ── */
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('collapsed');document.getElementById('mainWrap').classList.toggle('collapsed');}
+/* CLOCK */
+(function tick(){
+  const now=new Date(); let h=now.getHours();
+  const m=String(now.getMinutes()).padStart(2,'0'), s=String(now.getSeconds()).padStart(2,'0');
+  const ap=h>=12?'PM':'AM'; h=h%12||12;
+  document.getElementById('live-time').textContent=`${String(h).padStart(2,'0')}:${m}:${s}`;
+  document.getElementById('live-ampm').textContent=ap;
+  document.getElementById('live-date').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  setTimeout(tick,1000);
+})();
 
-/* ── Summary chips ── */
+/* SUMMARY */
 function updateSummary(){
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('ls-total').textContent        = ALL_LOGS.length;
-  document.getElementById('ls-today').textContent        = ALL_LOGS.filter(l=>l.timestamp.startsWith(today)).length;
-  document.getElementById('ls-critical').textContent     = ALL_LOGS.filter(l=>l.severity==='critical').length;
-  document.getElementById('ls-unique-users').textContent = new Set(ALL_LOGS.map(l=>l.user)).size;
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('ls-total').textContent   =ALL_LOGS.length;
+  // Safely check timestamp before splitting to avoid errors with bad data
+  document.getElementById('ls-today').textContent   =ALL_LOGS.filter(l=> l.timestamp && l.timestamp.startsWith(today)).length;
+  document.getElementById('ls-critical').textContent=ALL_LOGS.filter(l=>l.severity==='critical').length;
+  document.getElementById('ls-unique').textContent  =new Set(ALL_LOGS.map(l=>l.user)).size;
 }
 
-/* ── Sort ── */
-let _sortBtns = {};
+/* SORT */
 function sortBy(field){
-  if(sortField===field) sortDir = sortDir==='asc'?'desc':'asc';
-  else { sortField=field; sortDir='desc'; }
-  document.querySelectorAll('.sort-btn').forEach(b=>{b.classList.remove('asc','desc');});
-  const btn = document.querySelector(`.sort-btn[onclick="sortBy('${field}')"]`);
+  if(sortField===field) sortDir=sortDir==='asc'?'desc':'asc';
+  else{sortField=field;sortDir='desc';}
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('asc','desc'));
+  const btn=document.querySelector(`.sort-btn[onclick="sortBy('${field}')"]`);
   if(btn) btn.classList.add(sortDir);
   filterAndRender();
 }
 
-/* ── Filter ── */
-function filterAndRender(){
-  const q     = (document.getElementById('log-search').value||'').toLowerCase().trim();
-  const mod   = document.getElementById('mod-filter').value;
-  const act   = document.getElementById('action-filter').value;
-  const sev   = document.getElementById('sev-filter').value;
-  const dfrom = document.getElementById('date-from').value;
-  const dto   = document.getElementById('date-to').value;
+/* FILTER PANEL */
+function toggleFilterPanel(){
+  const panel=document.getElementById('filter-panel');
+  const chevron=document.getElementById('filter-chevron');
+  const open=!panel.classList.contains('hidden');
+  panel.classList.toggle('hidden',open);
+  chevron.style.transform=open?'':'rotate(180deg)';
+}
+document.addEventListener('click',e=>{
+  const w=document.getElementById('filter-wrapper');
+  if(w&&!w.contains(e.target)){
+    document.getElementById('filter-panel').classList.add('hidden');
+    document.getElementById('filter-chevron').style.transform='';
+  }
+});
 
-  filteredLogs = ALL_LOGS.filter(l=>{
-    const mQ = !q || l.user.toLowerCase().includes(q)||l.action.toLowerCase().includes(q)||l.module.toLowerCase().includes(q)||l.desc.toLowerCase().includes(q)||l.ip.includes(q)||l.id.toLowerCase().includes(q);
-    const mM = mod==='all' || l.module===mod;
-    const mA = act==='all' || l.action===act;
-    const mS = sev==='all' || l.severity===sev;
-    const ld = l.timestamp.split('T')[0];
-    const mD = (!dfrom||ld>=dfrom) && (!dto||ld<=dto);
+let activeSev='all';
+const SEV_STYLES={
+  all:     {active:'bg-slate-700 text-white border-slate-700',    inactive:'bg-slate-50 text-on-surface-variant border-slate-200'},
+  info:    {active:'bg-blue-600 text-white border-blue-600',       inactive:'bg-blue-50 text-blue-700 border-blue-200'},
+  warning: {active:'bg-amber-500 text-white border-amber-500',     inactive:'bg-amber-50 text-amber-700 border-amber-200'},
+  critical:{active:'bg-red-600 text-white border-red-600',         inactive:'bg-red-50 text-red-700 border-red-200'},
+};
+function setSev(val){
+  activeSev=val;
+  document.getElementById('sev-filter').value=val;
+  ['all','info','warning','critical'].forEach(s=>{
+    const btn=document.getElementById(`sev-btn-${s}`);
+    const styles=SEV_STYLES[s];
+    btn.className=`sev-btn py-1.5 rounded-lg text-[11px] font-semibold border transition-all ${s===val?styles.active:styles.inactive}`;
+  });
+  updateFilterCount();
+}
+setSev('all');
+
+function updateFilterCount(){
+  const mod =document.getElementById('mod-filter').value;
+  const act =document.getElementById('action-filter').value;
+  const sev =document.getElementById('sev-filter').value;
+  const dfrom=document.getElementById('date-from').value;
+  const dto  =document.getElementById('date-to').value;
+  let count=0;
+  if(mod!=='all') count++;
+  if(act!=='all') count++;
+  if(sev!=='all') count++;
+  if(dfrom||dto)  count++;
+  const badge=document.getElementById('filter-count');
+  badge.textContent=count;
+  badge.classList.toggle('hidden',count===0);
+}
+
+function applyFilters(){
+  document.getElementById('filter-panel').classList.add('hidden');
+  document.getElementById('filter-chevron').style.transform='';
+  filterAndRender();
+}
+
+/* FILTER */
+function filterAndRender(){
+  const q    =(document.getElementById('log-search').value||'').toLowerCase().trim();
+  const mod  =document.getElementById('mod-filter').value;
+  const act  =document.getElementById('action-filter').value;
+  const sev  =document.getElementById('sev-filter').value;
+  const dfrom=document.getElementById('date-from').value;
+  const dto  =document.getElementById('date-to').value;
+
+  filteredLogs=ALL_LOGS.filter(l=>{
+    const mQ=!q||(l.user||'').toLowerCase().includes(q)||
+                 (l.action||'').toLowerCase().includes(q)||
+                 (l.module||'').toLowerCase().includes(q)||
+                 (l.desc||'').toLowerCase().includes(q)||
+                 (l.ip||'').includes(q)||
+                 (l.id||'').toLowerCase().includes(q);
+    const mM=mod==='all'||l.module===mod;
+    const mA=act==='all'||l.action===act;
+    const mS=sev==='all'||l.severity===sev;
+    
+    const ld=l.timestamp ? l.timestamp.split('T')[0] : '';
+    const mD=(!dfrom||ld>=dfrom)&&(!dto||ld<=dto);
+    
     return mQ&&mM&&mA&&mS&&mD;
   });
-
-  // Sort
-  filteredLogs.sort((a,b)=>{
-    let av=a[sortField]||'', bv=b[sortField]||'';
-    const cmp = av<bv?-1:av>bv?1:0;
-    return sortDir==='asc'?cmp:-cmp;
-  });
-
+  filteredLogs.sort((a,b)=>{const av=a[sortField]||'',bv=b[sortField]||'';const c=av<bv?-1:av>bv?1:0;return sortDir==='asc'?c:-c;});
   currentPage=1; render();
 }
 
@@ -407,135 +531,164 @@ function clearFilters(){
   document.getElementById('log-search').value='';
   document.getElementById('mod-filter').value='all';
   document.getElementById('action-filter').value='all';
-  document.getElementById('sev-filter').value='all';
   document.getElementById('date-from').value='';
   document.getElementById('date-to').value='';
+  setSev('all');
+  updateFilterCount();
   filterAndRender();
 }
 
-/* ── Render table ── */
+/* RENDER */
 function render(){
   const total=filteredLogs.length, pages=Math.max(1,Math.ceil(total/ROWS));
-  if(currentPage>pages)currentPage=pages;
+  if(currentPage>pages) currentPage=pages;
   const start=(currentPage-1)*ROWS, page=filteredLogs.slice(start,start+ROWS);
   const tbody=document.getElementById('log-tbody'), empty=document.getElementById('log-empty');
   tbody.innerHTML='';
-  if(total===0){empty.style.display='flex';return;}
+  
+  if(total===0){
+      document.getElementById('empty-title').textContent = "No logs found";
+      document.getElementById('empty-desc').textContent = "Try adjusting your search or filters.";
+      empty.style.display='flex';
+      return;
+  }
+  
   empty.style.display='none';
 
   page.forEach(log=>{
-    const meta = ACTIONS_META[log.action]||{color:'#475569',icon:'ti-dots',sev:'info'};
-    const ss   = SEV_STYLE[log.severity]||SEV_STYLE.info;
-    const dt   = new Date(log.timestamp);
-    const dateStr = dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    const timeStr = dt.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
+    const meta=ACTIONS_META[log.action]||{color:'#475569',bg:'#f8fafc',border:'#cbd5e1',icon:'ti-dots'};
+    const sv=SEV[log.severity]||SEV.info;
+    const dt=log.timestamp ? new Date(log.timestamp) : new Date();
+    const dateStr=dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const timeStr=dt.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     const tr=document.createElement('tr');
-    tr.style.borderBottom='1px solid #f0f2f7';
+    tr.className='hover:bg-slate-50/70 transition-colors cursor-pointer';
     tr.onclick=()=>openLogDetail(log.id);
     tr.innerHTML=`
-      <td style="padding:12px 18px;white-space:nowrap;">
-        <div style="font-size:12px;font-weight:600;color:var(--text);">${dateStr}</div>
-        <div style="font-size:11px;color:var(--text-4);margin-top:1px;">${timeStr}</div>
+      <td class="px-5 py-4 whitespace-nowrap">
+        <div class="text-[12px] font-semibold text-on-surface">${dateStr}</div>
+        <div class="text-[11px] text-outline mt-0.5 tabular-nums">${timeStr}</div>
       </td>
-      <td style="padding:12px 18px;">
-        <div style="font-size:13px;font-weight:600;color:var(--text);">${log.user}</div>
-        <div style="font-size:10px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:0.06em;margin-top:1px;">${log.id}</div>
+      <td class="px-5 py-4">
+        <div class="text-[13px] font-semibold text-on-surface">${log.user}</div>
+        <div class="text-[10px] font-bold text-outline uppercase tracking-wide mt-0.5">${log.id || 'N/A'}</div>
       </td>
-      <td style="padding:12px 18px;white-space:nowrap;">
-        <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:${meta.color}18;border:1px solid ${meta.color}30;">
-          <i class="ti ${meta.icon}" style="font-size:12px;color:${meta.color};"></i>
-          <span style="font-size:11px;font-weight:700;color:${meta.color};">${log.action}</span>
-        </div>
+      <td class="px-5 py-4 whitespace-nowrap">
+        <span class="action-pill" style="color:${meta.color};background:${meta.bg};border-color:${meta.border};">
+          <i class="ti ${meta.icon}" style="font-size:11px;"></i>${log.action}
+        </span>
       </td>
-      <td style="padding:12px 18px;font-size:12px;color:var(--text-2);font-weight:500;white-space:nowrap;">${log.module}</td>
-      <td style="padding:12px 18px;font-size:12px;color:var(--text-3);max-width:240px;"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${log.desc}</span></td>
-      <td style="padding:12px 18px;font-size:11px;font-weight:600;color:var(--text-3);font-family:monospace;white-space:nowrap;">${log.ip}</td>
-      <td style="padding:12px 18px;">
-        <span class="badge" style="background:${ss.bg};color:${ss.text};">${ss.label}</span>
+      <td class="px-5 py-4 text-[12px] text-on-surface-variant font-medium whitespace-nowrap">${log.module}</td>
+      <td class="px-5 py-4 text-[12px] text-outline" style="max-width:220px;">
+        <span class="block truncate">${log.desc}</span>
       </td>
-      <td style="padding:12px 18px;text-align:center;">
-        <button onclick="event.stopPropagation();openLogDetail('${log.id}')" style="width:30px;height:30px;border-radius:8px;border:none;background:#e8f0fd;color:#0058be;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;transition:background 0.15s;" onmouseover="this.style.background='#c7d9f7'" onmouseout="this.style.background='#e8f0fd'">
-          <i class="ti ti-eye" style="font-size:14px;"></i>
+      <td class="px-5 py-4 text-[11px] font-semibold text-outline" style="font-family:monospace;white-space:nowrap;">${log.ip}</td>
+      <td class="px-5 py-4">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${sv.cls}">${sv.label}</span>
+      </td>
+      <td class="px-5 py-4 text-center">
+        <button onclick="event.stopPropagation();openLogDetail('${log.id}')" class="btn-view">
+          <i class="ti ti-eye" style="font-size:13px;"></i><span>View</span>
         </button>
       </td>`;
     tbody.appendChild(tr);
   });
 
-  // Pagination
   const from=total===0?0:start+1, to=Math.min(start+ROWS,total);
   document.getElementById('pag-info').textContent=`Showing ${from}–${to} of ${total} log${total!==1?'s':''}`;
+
   const ctrl=document.getElementById('pag-controls'); ctrl.innerHTML='';
-  const mkBtn=(lbl,pg,active,disabled,icon)=>{
-    const btn=document.createElement('button'); btn.className=`page-btn${active?' active':''}`;
-    btn.disabled=disabled; btn.innerHTML=icon?`<i class="ti ti-${lbl}" style="font-size:14px;"></i>`:lbl;
-    if(!disabled&&!active)btn.onclick=()=>{currentPage=pg;render();};
-    ctrl.appendChild(btn);
+  const mkBtn=(lbl,pg,active,disabled,isIcon)=>{
+    const b=document.createElement('button');
+    b.className=`page-btn${active?' active':''}`;
+    b.disabled=disabled;
+    b.innerHTML=isIcon?`<span class="material-symbols-outlined" style="font-size:16px;">${lbl}</span>`:lbl;
+    if(!disabled&&!active) b.onclick=()=>{currentPage=pg;render();};
+    ctrl.appendChild(b);
   };
-  mkBtn('chevron-left',currentPage-1,false,currentPage===1,true);
-  const pgs=[]; if(pages<=7){for(let i=1;i<=pages;i++)pgs.push(i);}
-  else{pgs.push(1);if(currentPage>3)pgs.push('…');for(let i=Math.max(2,currentPage-1);i<=Math.min(pages-1,currentPage+1);i++)pgs.push(i);if(currentPage<pages-2)pgs.push('…');pgs.push(pages);}
-  pgs.forEach(p=>{
-    if(p==='…'){const sp=document.createElement('span');sp.className='page-btn';sp.textContent='…';ctrl.appendChild(sp);}
-    else mkBtn(p,p,p===currentPage,false,false);
-  });
-  mkBtn('chevron-right',currentPage+1,false,currentPage===pages,true);
+  const ellipsis=()=>{const s=document.createElement('span');s.className='page-ellipsis';s.textContent='…';ctrl.appendChild(s);};
+  mkBtn('chevron_left',currentPage-1,false,currentPage===1,true);
+  if(pages<=7){for(let i=1;i<=pages;i++) mkBtn(i,i,i===currentPage,false,false);}
+  else{
+    mkBtn(1,1,currentPage===1,false,false);
+    if(currentPage>3) ellipsis();
+    const s=Math.max(2,currentPage-1), e=Math.min(pages-1,currentPage+1);
+    for(let i=s;i<=e;i++) mkBtn(i,i,i===currentPage,false,false);
+    if(currentPage<pages-2) ellipsis();
+    mkBtn(pages,pages,currentPage===pages,false,false);
+  }
+  mkBtn('chevron_right',currentPage+1,false,currentPage===pages,true);
 }
 
-/* ── Log detail modal ── */
+/* LOG DETAIL MODAL */
 function openLogDetail(id){
-  const log = ALL_LOGS.find(l=>l.id===id); if(!log)return;
-  const meta = ACTIONS_META[log.action]||{color:'#475569',icon:'ti-dots'};
-  const ss   = SEV_STYLE[log.severity]||SEV_STYLE.info;
-  const dt   = new Date(log.timestamp);
+  const log=ALL_LOGS.find(l=>l.id===id); if(!log) return;
+  const meta=ACTIONS_META[log.action]||{color:'#475569',icon:'ti-dots'};
+  const sv=SEV[log.severity]||SEV.info;
+  const dt=log.timestamp ? new Date(log.timestamp) : new Date();
+  document.getElementById('det-log-id').textContent=log.id;
 
-  document.getElementById('det-log-id').textContent = log.id;
-
-  const fields = [
-    {label:'Log ID',       value:log.id},
-    {label:'Timestamp',    value:dt.toLocaleString('en-US',{dateStyle:'full',timeStyle:'medium'})},
-    {label:'User',         value:log.user},
-    {label:'Action',       value:log.action, color:meta.color},
-    {label:'Module',       value:log.module},
-    {label:'Description',  value:log.desc},
-    {label:'IP Address',   value:log.ip, mono:true},
-    {label:'Severity',     value:ss.label, badge:{bg:ss.bg,text:ss.text}},
+  const fields=[
+    {label:'Log ID',      value:log.id,     style:'mono'},
+    {label:'Timestamp',   value:dt.toLocaleString('en-US',{dateStyle:'full',timeStyle:'medium'})},
+    {label:'User',        value:log.user},
+    {label:'Action',      value:log.action, style:'pill', meta},
+    {label:'Module',      value:log.module},
+    {label:'Description', value:log.desc},
+    {label:'IP Address',  value:log.ip,     style:'mono'},
+    {label:'Severity',    value:sv.label,   style:'badge', cls:sv.cls},
   ];
 
-  const body = document.getElementById('log-detail-body');
-  body.innerHTML = '';
+  const body=document.getElementById('log-detail-body');
+  body.innerHTML='';
   fields.forEach(f=>{
-    const row = document.createElement('div');
-    row.style.cssText='display:flex;align-items:flex-start;gap:16px;padding:11px 0;border-bottom:1px solid #f0f2f7;';
-    const lbl = `<div style="width:130px;flex-shrink:0;font-size:10px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:0.11em;padding-top:2px;">${f.label}</div>`;
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:flex-start;gap:16px;padding:11px 0;border-bottom:1px solid #f1f5f9;';
+    const lbl=`<div style="width:120px;flex-shrink:0;font-size:10px;font-weight:700;color:#a0a6b8;text-transform:uppercase;letter-spacing:.11em;padding-top:2px;">${f.label}</div>`;
     let val;
-    if(f.badge) val=`<span class="badge" style="background:${f.badge.bg};color:${f.badge.text};">${f.value}</span>`;
-    else if(f.color) val=`<span style="font-size:13px;font-weight:600;color:${f.color};">${f.value}</span>`;
-    else if(f.mono)  val=`<span style="font-size:13px;color:var(--text-2);font-family:monospace;">${f.value}</span>`;
-    else val=`<span style="font-size:13px;color:var(--text-2);font-weight:500;line-height:1.5;">${f.value}</span>`;
-    row.innerHTML = lbl + `<div style="flex:1;">${val}</div>`;
+    if(f.style==='badge')
+      val=`<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${f.cls}">${f.value}</span>`;
+    else if(f.style==='pill'&&f.meta)
+      val=`<span class="action-pill" style="color:${f.meta.color};background:${f.meta.bg};border-color:${f.meta.border};"><i class="ti ${f.meta.icon}" style="font-size:11px;"></i>${f.value}</span>`;
+    else if(f.style==='mono')
+      val=`<span style="font-size:13px;color:#424754;font-family:monospace;">${f.value}</span>`;
+    else
+      val=`<span style="font-size:13px;color:#424754;font-weight:500;line-height:1.6;">${f.value}</span>`;
+    row.innerHTML=lbl+`<div style="flex:1;">${val}</div>`;
     body.appendChild(row);
   });
 
-  document.getElementById('log-detail-modal').classList.add('open');
+  document.getElementById('log-detail-modal').style.display='flex';
 }
-function closeLogDetail(){document.getElementById('log-detail-modal').classList.remove('open');}
-document.getElementById('log-detail-modal').addEventListener('click',function(e){if(e.target===this)closeLogDetail();});
 
-/* ── Export CSV ── */
+function closeLogDetail(){document.getElementById('log-detail-modal').style.display='none';}
+function handleModalBackdrop(e){if(e.target===document.getElementById('log-detail-modal')) closeLogDetail();}
+
+/* EXPORT CSV */
 function exportCSV(){
   const headers=['Log ID','Timestamp','User','Action','Module','Description','IP Address','Severity'];
-  const rows = filteredLogs.map(l=>[l.id,l.timestamp,l.user,l.action,l.module,`"${l.desc}"`,l.ip,l.severity]);
-  const csv  = [headers, ...rows].map(r=>r.join(',')).join('\n');
-  const blob = new Blob([csv],{type:'text/csv'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a'); a.href=url; a.download='activity_logs.csv'; a.click();
+  const rows=filteredLogs.map(l=>[l.id, l.timestamp, l.user, l.action, l.module, `"${l.desc}"`, l.ip, l.severity]);
+  const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='activity_logs.csv';a.click();
   URL.revokeObjectURL(url);
+  showToast('CSV Exported',`${filteredLogs.length} records downloaded.`);
 }
 
-/* ── Init ── */
-updateSummary();
-filterAndRender();
+/* TOAST */
+function showToast(title,body){
+  document.getElementById('toast-title').textContent=title;
+  document.getElementById('toast-body').textContent=body;
+  const toast=document.getElementById('success-toast'),bar=document.getElementById('toast-bar');
+  bar.style.transition='none';bar.style.width='100%';
+  toast.style.opacity='1';toast.style.transform='translateY(0)';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{bar.style.transition='width 3s linear';bar.style.width='0%';}));
+  setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translateY(12px)';},3300);
+}
+
+/* ─── INITIALIZE FETCH ON LOAD ─── */
+fetchLogs();
 </script>
 </body>
 </html>
