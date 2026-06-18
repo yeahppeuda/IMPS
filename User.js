@@ -9,22 +9,21 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true },
     role: { type: String, enum: ["admin", "staff"], default: "staff", required: true },
-    status: { type: String, enum: ["Active", "Inactive", "Suspended"], default: "Active", required: true }
+    status: { type: String, enum: ["Active", "Inactive", "Suspended"], default: "Active", required: true },
+    // UPDATE: Idinagdag para mag-record ng timestamp ng huling login
+    lastLogin: { type: Date, default: null }
   },
   { timestamps: true }
 );
 
-// FIX: Inalis ang 'next' dahil naka-async function tayo
+// Pre-save hook para sa password hashing
 userSchema.pre("save", async function () {
-  // Kung hindi binago ang password, huminto na rito (parang return next() noon)
   if (!this.isModified("password")) return; 
 
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    // HINDI na kailangan ng next() dito, kusa itong magpapatuloy kapag natapos ang async block
   } catch (err) {
-    // I-throw ang error para mahuli ng try-catch block sa iyong routes (userRoutes.js)
     throw err; 
   }
 });
@@ -36,7 +35,7 @@ userSchema.set("toJSON", {
     ret.id = ret._id; 
     delete ret._id;
     delete ret.__v;
-    delete ret.password; // Tago ang password!
+    delete ret.password; // Ligtas na tinago ang password hash sa client-side browser
     ret.created = ret.createdAt ? ret.createdAt.toISOString().split("T")[0] : "";
   }
 });

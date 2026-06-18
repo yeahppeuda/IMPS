@@ -23,7 +23,6 @@ router.post("/", async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Siguraduhing lowercase ang email bago i-check sa DB
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered." });
@@ -32,9 +31,8 @@ router.post("/", async (req, res) => {
     const newUser = new User(req.body);
     await newUser.save();
 
-    // SUCCESS LOG: Lalabas itong kulay blue/green badge sa UI mo!
     await createLog({
-      user: req.user?.email || 'System/Admin', // Papalitan ng middleware user email kung may auth ka na
+      user: req.user?.email || 'System/Admin', 
       action: "Create",
       module: "User Management",
       desc: `Successfully created a new ${newUser.role} account for: ${newUser.email}`,
@@ -57,9 +55,8 @@ router.put("/:id", async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found." });
 
-    const oldEmail = user.email; // I-store ang lumang email para sa log description mamaya
+    const oldEmail = user.email;
 
-    // I-assign ang mga bagong detalye habang pinapanatili ang luma kung walang pinasa
     Object.assign(user, {
       fname: req.body.fname ?? user.fname,
       mname: req.body.mname ?? user.mname,
@@ -69,21 +66,19 @@ router.put("/:id", async (req, res) => {
       status: req.body.status ?? user.status
     });
 
-    // Kung binago o may pinasang bagong password ang admin, i-update ito
     if (req.body.password && req.body.password.trim() !== "") {
       user.password = req.body.password;
     }
 
-    await user.save(); // Dito magti-trigger ang pre-save bcrypt hash!
+    await user.save();
 
-    // SUCCESS LOG: Swak na sa "Update" filter at magiging orange badge!
     await createLog({
       user: req.user?.email || 'System/Admin',
       action: "Update",
       module: "User Management",
       desc: `Updated profile details for user: ${oldEmail}${oldEmail !== user.email ? ` (Changed to ${user.email})` : ''}`,
       ip: req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-      severity: "warning" // Ginawang warning para alerto ang admin panel kapag may binago
+      severity: "warning"
     });
 
     res.json(user);
@@ -101,14 +96,13 @@ router.delete("/:id", async (req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found." });
 
-    // SUCCESS LOG: Lalabas itong kulay PULA (critical/danger) sa table ng admin-logs.html mo!
     await createLog({
       user: req.user?.email || 'System/Admin',
       action: "Delete",
       module: "User Management",
       desc: `Permanently deleted user account: ${user.fname} ${user.lname} (${user.email})`,
       ip: req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-      severity: "critical" // Dahil permanent data loss ito, critical ang severity level nito!
+      severity: "critical"
     });
 
     res.json({ message: "User permanently deleted from the system." });

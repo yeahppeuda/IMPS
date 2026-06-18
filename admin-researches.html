@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>All Researches | IP Management System</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#0058be',
+          surface: { DEFAULT: '#f4f6fb', container: '#ffffff', dim: '#d8d9e3' },
+          'on-surface': '#191b23',
+          'on-surface-variant': '#424754',
+          outline: '#727785',
+          'outline-variant': '#e2e5ef',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] },
+      }
+    }
+  }
+</script>
+<style>
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+    border-radius: 8px; cursor: pointer; transition: background 0.15s, color 0.15s, transform 0.15s;
+    text-decoration: none; color: #424754; font-size: 13.5px; font-weight: 400; width: 100%;
+  }
+  .nav-item:hover { background-color: #f1f5f9; color: #191b23; transform: translateX(4px); }
+  .nav-item.active { background-color: #e8f0fd; color: #0058be; font-weight: 500; transform: none; }
+  .nav-item.active i { color: #0058be; }
+  .nav-item i { font-size: 18px; width: 20px; text-align: center; flex-shrink: 0; }
+  .nav-section-label {
+    font-size: 10px; font-weight: 600; color: #727785;
+    text-transform: uppercase; letter-spacing: 0.08em; padding: 0 12px; margin: 12px 0 4px;
+  }
+
+  .stat-card { transition: box-shadow 0.2s, transform 0.2s; }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  tbody tr { transition: background 0.12s; }
+
+  .page-btn {
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: background 0.15s, color 0.15s; color: #424754;
+  }
+  .page-btn:hover:not(.active):not(:disabled) { background: #f1f5f9; }
+  .page-btn.active { background: #0058be; color: #fff; font-weight: 700; }
+  .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .page-ellipsis { width:32px; height:32px; display:flex; align-items:center; justify-content:center; color:#727785; font-size:14px; }
+
+  /* Category badges */
+  .cat-badge {
+    display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px 3px 7px;
+    border-radius: 20px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.01em;
+    border-width: 1px; border-style: solid; white-space: nowrap;
+  }
+  .cat-copyright    { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+  .cat-patent       { background: #f0fdf4; color: #166534; border-color: #86efac; }
+  .cat-trademark    { background: #fdf4ff; color: #7e22ce; border-color: #d8b4fe; }
+  .cat-utility      { background: #fff7ed; color: #c2410c; border-color: #fdba74; }
+  .cat-industrial   { background: #f0f9ff; color: #0369a1; border-color: #7dd3fc; }
+  .cat-default      { background: #f8fafc; color: #475569; border-color: #cbd5e1; }
+
+  /* Action buttons */
+  .btn-view {
+    display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px 4px 8px;
+    border-radius: 7px; font-size: 11.5px; font-weight: 600; color: #0058be;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #bfdbfe; cursor: pointer;
+    transition: all 0.18s; position: relative; overflow: hidden;
+  }
+  .btn-view::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,#0058be,#1d4ed8); opacity:0; transition:opacity 0.18s; border-radius:inherit; }
+  .btn-view:hover::before { opacity:1; }
+  .btn-view:hover { color:#fff; border-color:#0058be; transform:translateY(-1px); box-shadow:0 3px 10px rgba(0,88,190,0.2); }
+  .btn-view i, .btn-view span { position:relative; z-index:1; }
+
+  .btn-archive {
+    display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px 4px 8px;
+    border-radius: 7px; font-size: 11.5px; font-weight: 600; color: #d97706;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1px solid #fcd34d; cursor: pointer;
+    transition: all 0.18s; position: relative; overflow: hidden;
+  }
+  .btn-archive::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,#d97706,#b45309); opacity:0; transition:opacity 0.18s; border-radius:inherit; }
+  .btn-archive:hover::before { opacity:1; }
+  .btn-archive:hover { color:#fff; border-color:#d97706; transform:translateY(-1px); box-shadow:0 3px 10px rgba(217,119,6,0.2); }
+  .btn-archive i, .btn-archive span { position:relative; z-index:1; }
+
+  .btn-restore {
+    display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px 4px 8px;
+    border-radius: 7px; font-size: 11.5px; font-weight: 600; color: #059669;
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 1px solid #6ee7b7; cursor: pointer; transition: all 0.18s;
+    position: relative; overflow: hidden;
+  }
+  .btn-restore::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,#059669,#047857); opacity:0; transition:opacity 0.18s; border-radius:inherit; }
+  .btn-restore:hover::before { opacity:1; }
+  .btn-restore:hover { color:#fff; border-color:#059669; transform:translateY(-1px); box-shadow:0 3px 10px rgba(5,150,105,0.2); }
+  .btn-restore i, .btn-restore span { position:relative; z-index:1; }
+
+  /* Tab switcher */
+  .tab-btn {
+    display: flex; align-items: center; gap: 7px; padding: 9px 18px;
+    border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.18s; color: #424754; border: 1px solid transparent;
+  }
+  .tab-btn.active { background: #0058be; color: #fff; box-shadow: 0 2px 8px rgba(0,88,190,0.25); }
+  .tab-btn:not(.active):hover { background: #f1f5f9; border-color: #e2e5ef; }
+  .tab-btn .tab-count {
+    font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 20px;
+    background: rgba(255,255,255,0.25); color: inherit;
+  }
+  .tab-btn:not(.active) .tab-count { background: #e2e5ef; color: #424754; }
+
+  /* Retention progress bar */
+  .retention-bar { height: 5px; border-radius: 10px; background: #e2e5ef; overflow: hidden; }
+  .retention-fill { height: 100%; border-radius: 10px; transition: width 0.4s; }
+  .retention-high   { background: linear-gradient(90deg, #10b981, #34d399); }
+  .retention-medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+  .retention-low    { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+  /* Archived row tint */
+  .archived-row { background: #fffbeb !important; }
+  .archived-row:hover { background: #fef3c7 !important; }
+
+  @media (max-width: 1023px) {
+    #sidebar { transform: translateX(-100%); transition: transform 0.25s ease; }
+    #sidebar.open { transform: translateX(0); }
+    #main-content { margin-left: 0 !important; }
+  }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-sans antialiased flex min-h-screen">
+
+<aside id="sidebar" class="w-[260px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-white flex flex-col z-50">
+  <div class="flex items-center gap-3 px-5 py-5 border-b border-outline-variant">
+    <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white flex-shrink-0">
+      <i class="ti ti-building-bank" style="font-size:18px;"></i>
+    </div>
+    <div>
+      <h1 class="text-sm font-semibold leading-tight text-on-surface">IP Management</h1>
+      <p class="text-[10px] text-on-surface-variant font-semibold tracking-widest uppercase">System</p>
+    </div>
+  </div>
+  <nav class="flex-1 overflow-y-auto px-3 pt-3 pb-2 space-y-2">
+    <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></a>
+    <div class="nav-section-label">IP Modules</div>
+    <a class="nav-item" href="copyright.html"><i class="ti ti-copyright"></i><span>Copyright</span></a>
+    <a class="nav-item" href="patent.html"><i class="ti ti-file-description"></i><span>Patent</span></a>
+    <a class="nav-item" href="trademark.html"><i class="ti ti-shield-check"></i><span>Trademark</span></a>
+    <a class="nav-item" href="utility-model.html"><i class="ti ti-settings-2"></i><span>Utility Model</span></a>
+    <a class="nav-item" href="industrial-design.html"><i class="ti ti-vector-bezier-2"></i><span>Industrial Design</span></a>
+    <div class="border-t border-slate-100 my-5"></div>
+    <div class="nav-section-label">General</div>
+    <a class="nav-item active" href="all-researches.html"><i class="ti ti-books"></i><span>All Researches</span></a>
+    <a class="nav-item" href="inventory-of-technology.html"><i class="ti ti-device-desktop-analytics"></i><span>Inventory of Technology</span></a>
+    <a class="nav-item" href="event.html"><i class="ti ti-calendar-event"></i><span>Event</span></a>
+  </nav>
+  <div class="p-4 border-t border-outline-variant">
+    <button class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all duration-200">
+      <i class="ti ti-logout" style="font-size:16px;"></i><span>Log Out</span>
+    </button>
+  </div>
+</aside>
+
+<div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/30 z-40 lg:hidden" onclick="closeSidebar()"></div>
+
+<main id="main-content" class="flex-1 ml-[260px] min-h-screen flex flex-col bg-surface">
+  <header class="h-[60px] flex items-center justify-between px-5 lg:px-8 sticky top-0 bg-white/80 backdrop-blur-md z-40 border-b border-outline-variant">
+    <button class="lg:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors text-on-surface-variant" onclick="openSidebar()">
+      <i class="ti ti-menu-2" style="font-size:20px;"></i>
+    </button>
+    <div class="flex items-center gap-4 ml-auto">
+      <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2">
+        <i class="ti ti-clock text-outline" style="font-size:14px;"></i>
+        <span id="live-time" class="text-[13px] font-semibold text-on-surface tabular-nums tracking-tight"></span>
+        <span id="live-ampm" class="text-[10px] font-bold text-outline uppercase"></span>
+      </div>
+      <div class="h-6 w-px bg-outline-variant hidden sm:block"></div>
+      <div class="hidden sm:flex items-center gap-2.5 cursor-pointer group">
+        <div class="text-right">
+          <p class="text-[13px] font-semibold text-on-surface leading-tight">Admin User</p>
+          <p class="text-[10px] text-outline font-semibold uppercase tracking-wider">Administrator</p>
+        </div>
+        <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-outline-variant group-hover:border-primary transition-colors">
+          <img alt="Admin" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDx_bTPkrRdfc88O-w03s2pnSwCgF7LgPrt2lE5zgClCgisqvjKap7jQtLQo5JfHmYYfYN_S1tls3bcQZm33u3_Zf3QUAC1Wiiqlkcmn2TPb_vUXoOL2pZk6vUZRwHiG4PeWqazSdhKyh7u9j1nGFRumZDUUsxqGVyoH7MlxUuof1YELsx_tRgynz5FeHpag_Fm_Tsi10ZsJfLPARtHOfqdTzKYdtwyZ5Nc4_YvnlmExHVdCrLOfjE3N43zOmlQJJ7MpuFfE7Gcrg"/>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="p-5 lg:p-8 space-y-7 flex-1">
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <div>
+        <h2 class="text-2xl font-bold text-on-surface">All Researches</h2>
+        <p class="text-[13px] text-outline mt-0.5">Centralized repository of all research records across IP categories</p>
+      </div>
+    </div>
+
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-3 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+          <i class="ti ti-books text-blue-600" style="font-size:19px;"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Total Records</p>
+          <p class="text-2xl font-bold text-on-surface leading-none mt-0.5" id="stat-total">—</p>
+        </div>
+      </div>
+      <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-3 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+          <i class="ti ti-circle-check text-green-500" style="font-size:19px;"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Approved</p>
+          <p class="text-2xl font-bold text-on-surface leading-none mt-0.5" id="stat-approved">—</p>
+        </div>
+      </div>
+      <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-3 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+          <i class="ti ti-archive text-amber-500" style="font-size:19px;"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Archived</p>
+          <p class="text-2xl font-bold text-on-surface leading-none mt-0.5" id="stat-archived">—</p>
+        </div>
+      </div>
+      <div class="stat-card bg-white rounded-2xl border border-outline-variant p-5 flex items-center gap-3 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+          <i class="ti ti-clock-exclamation text-red-500" style="font-size:19px;"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold text-outline uppercase tracking-widest">Expiring Soon</p>
+          <p class="text-2xl font-bold text-on-surface leading-none mt-0.5" id="stat-expiring">—</p>
+          <p class="text-[10px] text-red-500 font-semibold mt-0.5">Within 90 days</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-2xl border border-outline-variant shadow-sm" style="overflow:visible;">
+
+      <div class="px-5 pt-4 pb-3 border-b border-outline-variant">
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-1.5 bg-slate-50 rounded-xl p-1 border border-slate-200">
+            <button class="tab-btn active" id="tab-active" onclick="switchTab('active')">
+              <i class="ti ti-books" style="font-size:14px;"></i>
+              Active Researches
+              <span class="tab-count" id="tab-count-active">0</span>
+            </button>
+            <button class="tab-btn" id="tab-archived" onclick="switchTab('archived')">
+              <i class="ti ti-archive" style="font-size:14px;"></i>
+              Archived
+              <span class="tab-count" id="tab-count-archived">0</span>
+            </button>
+          </div>
+
+          <div class="flex-1"></div>
+
+          <div class="relative min-w-[200px] flex-1 max-w-xs">
+            <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-outline" style="font-size:15px;"></i>
+            <input id="search-input"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-[13px] focus:ring-1 focus:ring-primary focus:bg-white focus:border-primary transition-all outline-none placeholder:text-outline"
+              placeholder="Search title, author, reference…" type="text" oninput="filterAndRender()"/>
+          </div>
+
+          <div class="relative shrink-0" id="filter-wrapper">
+            <button id="filter-btn" onclick="toggleFilterMenu()"
+              class="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 text-on-surface-variant rounded-lg text-[13px] font-medium hover:bg-slate-100 transition-colors whitespace-nowrap">
+              <i class="ti ti-filter" style="font-size:14px;"></i>
+              <span id="filter-label">All Categories</span>
+              <i class="ti ti-chevron-down text-outline" id="filter-chevron" style="font-size:12px; transition:transform 0.15s;"></i>
+            </button>
+            <div id="filter-menu" class="hidden absolute right-0 mt-1 w-56 bg-white rounded-xl border border-slate-200 shadow-lg z-[200] py-1.5">
+              <div class="px-3 py-1.5 text-[10px] font-bold text-outline uppercase tracking-widest">Filter by Category</div>
+              <button onclick="applyCategoryFilter('All')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="All">All Categories<i class="ti ti-check text-primary" style="font-size:13px;"></i></button>
+              <button onclick="applyCategoryFilter('Copyright')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Copyright">Copyright<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+              <button onclick="applyCategoryFilter('Patent')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Patent">Patent<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+              <button onclick="applyCategoryFilter('Trademark')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Trademark">Trademark<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+              <button onclick="applyCategoryFilter('Utility Model')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Utility Model">Utility Model<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+              <button onclick="applyCategoryFilter('Industrial Design')" class="filter-val w-full text-left px-4 py-2.5 text-[13px] text-on-surface hover:bg-slate-50 flex items-center justify-between transition-colors" data-val="Industrial Design">Industrial Design<i class="ti ti-check text-primary hidden" style="font-size:13px;"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse" style="min-width:980px;">
+          <thead>
+            <tr class="bg-slate-50">
+              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Reference No.</th>
+              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Title</th>
+              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Author(s)</th>
+              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Department</th>
+              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant">Category</th>
+              <th id="th-dynamic" class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant whitespace-nowrap">Date Applied</th>
+              <th class="px-5 py-3 text-[11px] font-bold text-outline uppercase tracking-widest border-b border-outline-variant text-center" style="min-width:130px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body" class="divide-y divide-slate-100">
+            <tr><td colspan="7" class="text-center py-10"><i class="ti ti-loader animate-spin text-primary" style="font-size:24px;"></i><p class="mt-2 text-[12px] text-outline font-medium">Loading records from database…</p></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="empty-state" class="hidden flex flex-col items-center justify-center py-16 text-center">
+        <i class="ti ti-search-off text-slate-300" style="font-size:40px;"></i>
+        <p class="mt-3 text-[13px] text-outline font-medium">No records match your search.</p>
+      </div>
+
+      <div id="archived-notice" class="hidden mx-5 mb-3 mt-1 flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+        <i class="ti ti-info-circle text-amber-600 flex-shrink-0" style="font-size:18px;"></i>
+        <p class="text-[12px] text-amber-800 font-medium">Archived records are retained for <strong>1 year</strong> from archival date, after which they are <strong>automatically and permanently deleted</strong>.</p>
+      </div>
+
+      <div class="px-6 py-4 border-t border-outline-variant flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p id="pagination-info" class="text-[12px] text-outline"></p>
+        <div id="pagination-controls" class="flex items-center gap-1 flex-wrap justify-center"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="detail-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4"
+  style="display:none; background:rgba(15,23,42,0.75); backdrop-filter:blur(4px);"
+  onclick="handleDetailBackdrop(event)">
+  <div id="detail-modal-inner" class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col modal-enter" style="max-height:92vh;">
+
+    <div class="px-7 py-5 border-b border-outline-variant flex items-start justify-between bg-white shrink-0">
+      <div>
+        <div class="flex items-center gap-2.5 mb-1">
+          <div id="dm-cat-badge"></div>
+        </div>
+        <h2 class="text-[18px] font-bold text-on-surface leading-snug" id="dm-title">—</h2>
+        <p class="text-[12px] text-outline mt-0.5 font-medium" id="dm-ref">—</p>
+      </div>
+      <button onclick="closeDetailModal()" class="p-2 hover:bg-slate-100 rounded-full transition-colors text-outline ml-4 flex-shrink-0">
+        <span class="material-symbols-outlined text-[22px]">close</span>
+      </button>
+    </div>
+
+    <div class="p-7 overflow-y-auto flex-1 space-y-6">
+      <div id="dm-status-banner" class="flex items-center gap-3 rounded-xl px-4 py-3 border"></div>
+
+      <div class="grid grid-cols-2 gap-x-8 gap-y-5">
+        <div>
+          <p class="detail-label text-[11px] font-bold text-outline uppercase tracking-wider">Reference Number</p>
+          <p class="detail-value mono text-sm font-semibold text-on-surface mt-0.5" id="dm-ref2">—</p>
+        </div>
+        <div>
+          <p class="detail-label text-[11px] font-bold text-outline uppercase tracking-wider">Category</p>
+          <p class="detail-value text-sm font-semibold text-on-surface mt-0.5" id="dm-cat">—</p>
+        </div>
+        <div>
+          <p class="detail-label text-[11px] font-bold text-outline uppercase tracking-wider">Department</p>
+          <p class="detail-value text-sm font-semibold text-on-surface mt-0.5" id="dm-dept">—</p>
+        </div>
+        <div>
+          <p class="detail-label text-[11px] font-bold text-outline uppercase tracking-wider">College</p>
+          <p class="detail-value text-sm font-semibold text-on-surface mt-0.5" id="dm-college">—</p>
+        </div>
+        <div>
+          <p class="detail-label text-[11px] font-bold text-outline uppercase tracking-wider">Date Applied</p>
+          <p class="detail-value text-sm font-semibold text-on-surface mt-0.5" id="dm-date">—</p>
+        </div>
+        <div>
+          <p class="detail-label text-[11px] font-bold text-outline uppercase tracking-wider">Registration Status</p>
+          <p class="detail-value text-sm font-semibold text-on-surface mt-0.5" id="dm-status">—</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="detail-label text-[11px] font-bold text-outline uppercase tracking-wider">Author(s)</p>
+        <div id="dm-authors" class="flex flex-wrap gap-2 mt-1.5"></div>
+      </div>
+
+      <div id="dm-drive-section" class="hidden">
+        <p class="detail-label text-[11px] font-bold text-outline uppercase tracking-wider">Google Drive Link</p>
+        <a id="dm-drive-link" href="#" target="_blank"
+          class="inline-flex items-center gap-2 text-[13px] font-semibold text-primary hover:underline mt-1">
+          <i class="ti ti-brand-google-drive" style="font-size:16px; color:#1a73e8;"></i>
+          <span id="dm-drive-text">Open in Drive</span>
+        </a>
+      </div>
+
+      <div id="dm-archive-section" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-5 space-y-4">
+        <div class="flex items-center gap-2 mb-1">
+          <i class="ti ti-archive text-amber-600" style="font-size:16px;"></i>
+          <p class="text-[13px] font-bold text-amber-800">Archive Information</p>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <p class="detail-label" style="color:#92400e;">Archive Date</p>
+            <p class="detail-value text-[13px]" id="dm-archive-date">—</p>
+          </div>
+          <div>
+            <p class="detail-label" style="color:#92400e;">Auto-Delete Date</p>
+            <p class="detail-value text-[13px] font-bold text-red-600" id="dm-delete-date">—</p>
+          </div>
+          <div>
+            <p class="detail-label" style="color:#92400e;">Retention Remaining</p>
+            <p class="detail-value text-[13px]" id="dm-retention-text">—</p>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <p class="text-[10px] font-bold text-amber-700 uppercase tracking-widest">Retention Period</p>
+            <p class="text-[11px] text-amber-700 font-semibold" id="dm-retention-pct">—</p>
+          </div>
+          <div class="retention-bar">
+            <div id="dm-retention-fill" class="retention-fill retention-high" style="width:100%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="px-7 py-4 bg-slate-50 border-t border-outline-variant flex items-center justify-end gap-3 shrink-0">
+      <button id="dm-archive-btn" onclick="openArchiveConfirm(currentDetailId)" class="btn-archive hidden">
+        <i class="ti ti-archive" style="font-size:13px;"></i><span>Archive</span>
+      </button>
+      <button id="dm-restore-btn" onclick="openRestoreConfirm(currentDetailId)" class="btn-restore hidden">
+        <i class="ti ti-archive-off" style="font-size:13px;"></i><span>Restore</span>
+      </button>
+      <button onclick="closeDetailModal()"
+        class="px-5 py-2.5 text-[13px] font-semibold text-on-surface-variant bg-white border border-slate-200 hover:border-slate-300 rounded-xl transition-all">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="archive-modal" class="fixed inset-0 z-[70] items-center justify-center p-4 bg-on-surface/50 backdrop-blur-sm" style="display:none;">
+  <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden modal-enter">
+    <div class="bg-amber-50 border-b border-amber-200 px-7 py-5 flex items-center gap-4">
+      <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+        <i class="ti ti-archive text-amber-600" style="font-size:20px;"></i>
+      </div>
+      <div>
+        <h3 class="text-[16px] font-bold text-amber-900">Archive Research?</h3>
+        <p class="text-[12px] text-amber-700 font-medium mt-0.5">This action can be reversed later</p>
+      </div>
+    </div>
+    <div class="px-7 py-5">
+      <p class="text-[13px] text-on-surface leading-relaxed">The research record <strong id="archive-confirm-title" class="text-on-surface"></strong> will be moved to the archive.</p>
+      <div class="mt-4 bg-slate-50 rounded-xl border border-slate-200 px-4 py-3 space-y-2">
+        <div class="flex items-center gap-2 text-[12px] text-on-surface-variant">
+          <i class="ti ti-calendar text-outline" style="font-size:14px;"></i>
+          <span>Archive Date: <strong class="text-on-surface" id="archive-confirm-date">—</strong></span>
+        </div>
+        <div class="flex items-center gap-2 text-[12px] text-on-surface-variant">
+          <i class="ti ti-trash text-red-400" style="font-size:14px;"></i>
+          <span>Auto-Delete Date: <strong class="text-red-600" id="archive-confirm-delete">—</strong></span>
+        </div>
+        <div class="flex items-center gap-2 text-[12px] text-on-surface-variant">
+          <i class="ti ti-clock text-outline" style="font-size:14px;"></i>
+          <span>Retention: <strong class="text-on-surface">1 year (365 days)</strong></span>
+        </div>
+      </div>
+    </div>
+    <div class="px-7 pb-7 flex gap-3">
+      <button onclick="closeArchiveModal()" class="flex-1 py-2.5 text-[13px] font-bold text-on-surface-variant bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Cancel</button>
+      <button onclick="confirmArchive()" class="flex-1 py-2.5 text-[13px] font-bold text-white bg-amber-500 hover:bg-amber-600 rounded-xl transition-colors">Archive Record</button>
+    </div>
+  </div>
+</div>
+
+<div id="restore-modal" class="fixed inset-0 z-[70] items-center justify-center p-4 bg-on-surface/50 backdrop-blur-sm" style="display:none;">
+  <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden modal-enter">
+    <div class="bg-emerald-50 border-b border-emerald-200 px-7 py-5 flex items-center gap-4">
+      <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+        <i class="ti ti-archive-off text-emerald-600" style="font-size:20px;"></i>
+      </div>
+      <div>
+        <h3 class="text-[16px] font-bold text-emerald-900">Restore Research?</h3>
+        <p class="text-[12px] text-emerald-700 font-medium mt-0.5">Move back to active records</p>
+      </div>
+    </div>
+    <div class="px-7 py-5">
+      <p class="text-[13px] text-on-surface leading-relaxed">Restoring <strong id="restore-confirm-title" class="text-on-surface"></strong> will remove it from the archive and return it to the active research list.</p>
+    </div>
+    <div class="px-7 pb-7 flex gap-3">
+      <button onclick="closeRestoreModal()" class="flex-1 py-2.5 text-[13px] font-bold text-on-surface-variant bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Cancel</button>
+      <button onclick="confirmRestore()" class="flex-1 py-2.5 text-[13px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors">Restore Record</button>
+    </div>
+  </div>
+</div>
+
+<div id="success-toast"
+  class="fixed bottom-8 right-8 z-[90] flex items-center gap-3 bg-white border border-emerald-200 shadow-xl rounded-2xl px-5 py-4 pointer-events-none"
+  style="opacity:0; transform:translateY(12px); transition:opacity 0.25s ease, transform 0.25s ease; min-width:260px;">
+  <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="9" r="9" fill="#d1fae5"/>
+      <polyline points="5,9 8,12 13,6" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-draw"/>
+    </svg>
+  </div>
+  <div>
+    <p class="text-[13px] font-bold text-on-surface leading-tight" id="toast-title">Done</p>
+    <p class="text-[11px] text-outline mt-0.5" id="toast-body">Action completed.</p>
+  </div>
+  <div class="absolute bottom-0 left-0 h-[3px] bg-emerald-400 rounded-b-2xl" id="toast-bar" style="width:100%;"></div>
+</div>
+
+<script>
+/* ════════════════════════════════
+   CONFIGURATION (API BASE URL)
+════════════════════════════════ */
+const API_BASE_URL = 'http://localhost:5000/api'; 
+
+/* ════════════════════════════════
+   HELPERS
+════════════════════════════════ */
+function openSidebar()  { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.remove('hidden'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.add('hidden'); }
+
+function fmt(ds) {
+  if (!ds) return '—';
+  const d = new Date(ds.split('T')[0] + 'T00:00:00');
+  if (isNaN(d)) return '—';
+  return d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+}
+function fmtShort(ds) {
+  if (!ds) return '—';
+  const d = new Date(ds.split('T')[0] + 'T00:00:00');
+  if (isNaN(d)) return '—';
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+
+function addDays(ds, n) {
+  const d = new Date(ds.split('T')[0] + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split('T')[0];
+}
+
+function daysRemaining(deleteDate) {
+  const now = new Date(); now.setHours(0,0,0,0);
+  const del = new Date(deleteDate + 'T00:00:00');
+  return Math.max(0, Math.round((del - now) / 86400000));
+}
+
+function retentionPct(archiveDate) {
+  const start = new Date(archiveDate.split('T')[0] + 'T00:00:00');
+  const end   = new Date(archiveDate.split('T')[0] + 'T00:00:00'); end.setFullYear(end.getFullYear() + 1);
+  const now   = new Date(); now.setHours(0,0,0,0);
+  const total = end - start;
+  const elapsed = now - start;
+  return Math.max(0, Math.min(100, Math.round((1 - elapsed / total) * 100)));
+}
+
+function catBadgeHTML(cat) {
+  const map = {
+    'Copyright':      { cls:'cat-copyright',  icon:'ti-copyright' },
+    'Patent':         { cls:'cat-patent',      icon:'ti-file-description' },
+    'Trademark':      { cls:'cat-trademark',   icon:'ti-shield-check' },
+    'Utility Model':  { cls:'cat-utility',     icon:'ti-settings-2' },
+    'Industrial Design':{ cls:'cat-industrial', icon:'ti-vector-bezier-2' },
+  };
+  const m = map[cat] || { cls:'cat-default', icon:'ti-tag' };
+  return `<span class="cat-badge ${m.cls}"><i class="ti ${m.icon}" style="font-size:10px;"></i>${cat||'—'}</span>`;
+}
+
+/* Clock */
+(function() {
+  const tick = () => {
+    const now = new Date();
+    let h = now.getHours();
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const ap = h >= 12 ? 'PM' : 'AM'; h = h%12||12;
+    document.getElementById('live-time').textContent = `${String(h).padStart(2,'0')}:${m}:${s}`;
+    document.getElementById('live-ampm').textContent = ap;
+  };
+  tick(); setInterval(tick, 1000);
+})();
+
+/* ════════════════════════════════
+   STATE
+════════════════════════════════ */
+let ALL_RECORDS     = []; 
+let filteredRecords = [];
+let ROWS_PER_PAGE   = 10;
+let currentPage     = 1;
+let activeTab       = 'active';   
+let activeCatFilter = 'All';
+let currentDetailId = null;
+let pendingArchiveId = null;
+let pendingRestoreId = null;
+
+const normalizeArchived = value => value === true || value === 'true' || value === 1 || value === '1';
+
+/* ════════════════════════════════
+   DATABASE CONNECTION (FETCH GET)
+════════════════════════════════ */
+async function loadDataFromDatabase() {
+  const tbody = document.getElementById('table-body');
+  try {
+    const response = await fetch(`${API_BASE_URL}/research`);
+    if (!response.ok) throw new Error('Database connection failed.');
+
+    const data = await response.json();
+    
+    const normalizeArchived = value => value === true || value === 'true';
+
+    ALL_RECORDS = data.map(record => {
+      let rawCategory = record.category || '';
+      let normalizedCategory = rawCategory.trim();
+      
+      if (normalizedCategory.toLowerCase() === 'utility model') {
+        normalizedCategory = 'Utility Model';
+      } else if (normalizedCategory.toLowerCase() === 'industrial design') {
+        normalizedCategory = 'Industrial Design';
+      } else if (normalizedCategory) {
+        normalizedCategory = normalizedCategory.charAt(0).toUpperCase() + normalizedCategory.slice(1).toLowerCase();
+      }
+
+      return {
+        ...record,
+        id: String(record._id),
+        category: normalizedCategory,
+        referenceNo: record.referenceId || '—',
+        title: record.researchTitle || '—',
+        dateApplied: record.date || '',
+        archived: normalizeArchived(record.archived)
+      };
+    });
+
+    updateStats();
+    filterAndRender();
+
+  } catch (error) {
+    console.error("Error loading data:", error);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="text-center py-10 text-red-500 font-medium">
+          <i class="ti ti-database-off block text-3xl mb-1"></i>
+          Failed to connect to database server at Port 5000.
+        </td>
+      </tr>`;
+  }
+}
+
+/* ════════════════════════════════
+   STATS
+════════════════════════════════ */
+function updateStats() {
+  const active   = ALL_RECORDS.filter(r => !r.archived);
+  const archived = ALL_RECORDS.filter(r =>  r.archived);
+  const approved = active.filter(r => r.status === 'Approved with Certificate');
+  const expiring = archived.filter(r => {
+    if (!r.archiveDate) return false;
+    return daysRemaining(addDays(r.archiveDate, 365)) <= 90;
+  });
+  document.getElementById('stat-total').textContent    = ALL_RECORDS.length;
+  document.getElementById('stat-approved').textContent = approved.length;
+  document.getElementById('stat-archived').textContent = archived.length;
+  document.getElementById('stat-expiring').textContent = expiring.length;
+  document.getElementById('tab-count-active').textContent   = active.length;
+  document.getElementById('tab-count-archived').textContent = archived.length;
+}
+
+/* ════════════════════════════════
+   TAB
+════════════════════════════════ */
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tab-active').classList.toggle('active', tab === 'active');
+  document.getElementById('tab-archived').classList.toggle('active', tab === 'archived');
+
+  const th = document.getElementById('th-dynamic');
+  th.textContent = tab === 'archived' ? 'Archive / Delete Date' : 'Date Applied';
+
+  document.getElementById('archived-notice').classList.toggle('hidden', tab === 'active');
+
+  currentPage = 1;
+  filterAndRender();
+}
+
+/* ════════════════════════════════
+   FILTER DROPDOWN
+════════════════════════════════ */
+function toggleFilterMenu() {
+  const m = document.getElementById('filter-menu');
+  const c = document.getElementById('filter-chevron');
+  const open = !m.classList.contains('hidden');
+  m.classList.toggle('hidden', open);
+  c.style.transform = open ? '' : 'rotate(180deg)';
+}
+function applyCategoryFilter(val) {
+  activeCatFilter = val;
+  document.querySelectorAll('.filter-val').forEach(b => b.querySelector('i').classList.toggle('hidden', b.dataset.val !== val));
+  document.getElementById('filter-label').textContent = val === 'All' ? 'All Categories' : val;
+  document.getElementById('filter-menu').classList.add('hidden');
+  document.getElementById('filter-chevron').style.transform = '';
+  currentPage = 1; filterAndRender();
+}
+document.addEventListener('click', e => {
+  const w = document.getElementById('filter-wrapper');
+  if (w && !w.contains(e.target)) document.getElementById('filter-menu').classList.add('hidden');
+});
+
+/* ════════════════════════════════
+   FILTER + RENDER
+════════════════════════════════ */
+function filterAndRender() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  const pool = ALL_RECORDS.filter(r => normalizeArchived(r.archived) === (activeTab === 'archived'));
+  filteredRecords = pool.filter(r => {
+    const catOk = activeCatFilter === 'All' || r.category === activeCatFilter;
+    const qOk   = !q || (r.referenceNo||'').toLowerCase().includes(q)
+                     || (r.title||'').toLowerCase().includes(q)
+                     || (r.authors||[]).join(', ').toLowerCase().includes(q)
+                     || (r.department||'').toLowerCase().includes(q)
+                     || (r.category||'').toLowerCase().includes(q);
+    return catOk && qOk;
+  });
+  render();
+}
+
+/* ════════════════════════════════
+   RENDER TABLE
+════════════════════════════════ */
+function render() {
+  const tbody   = document.getElementById('table-body');
+  const emptyEl = document.getElementById('empty-state');
+  const total   = filteredRecords.length;
+  const tp = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
+  if (currentPage > tp) currentPage = tp;
+  const start = (currentPage - 1) * ROWS_PER_PAGE;
+  const page  = filteredRecords.slice(start, start + ROWS_PER_PAGE);
+
+  if (total === 0) {
+    tbody.innerHTML = '';
+    emptyEl.classList.remove('hidden');
+  } else {
+    emptyEl.classList.add('hidden');
+    tbody.innerHTML = page.map(r => {
+      const idStr   = r.id; 
+      const auArr   = r.authors || [];
+      const auShown = auArr.slice(0, 2).join(', ');
+      const auExtra = auArr.length > 2 ? `<span style="font-size:10px;font-weight:600;color:#9ca3af;background:#f3f4f6;border:1px solid #e5e7eb;padding:1px 6px;border-radius:20px;margin-left:3px;">+${auArr.length-2}</span>` : '';
+      const auTitle = auArr.join(', ');
+
+      let dynamicCell;
+      if (activeTab === 'archived' && r.archiveDate) {
+        const delDate   = addDays(r.archiveDate, 365);
+        const remaining = daysRemaining(delDate);
+        const pct       = retentionPct(r.archiveDate);
+        const barCls    = pct > 50 ? 'retention-high' : pct > 20 ? 'retention-medium' : 'retention-low';
+        const urgentCls = remaining <= 30 ? 'text-red-600 font-bold' : remaining <= 90 ? 'text-amber-600 font-semibold' : 'text-on-surface-variant';
+        dynamicCell = `
+          <div class="text-[11px] text-on-surface-variant">
+            <div class="flex items-center gap-1.5 mb-1">
+              <i class="ti ti-calendar-event" style="font-size:11px;color:#727785;"></i>
+              <span>${fmtShort(r.archiveDate)}</span>
+            </div>
+            <div class="flex items-center gap-1.5 mb-2">
+              <i class="ti ti-trash" style="font-size:11px;color:#ef4444;"></i>
+              <span class="${urgentCls}">${fmtShort(delDate)}</span>
+            </div>
+            <div class="retention-bar" style="width:90px;">
+              <div class="retention-fill ${barCls}" style="width:${pct}%;"></div>
+            </div>
+            <div class="${urgentCls} text-[10px] mt-0.5">${remaining}d remaining</div>
+          </div>`;
+      } else {
+        dynamicCell = `<span class="text-[12px] text-on-surface-variant">${fmt(r.dateApplied)}</span>`;
+      }
+
+      return `
+        <tr class="hover:bg-slate-50/70 transition-colors" data-id="${idStr}">
+          <td class="px-5 py-4 text-[12px] font-bold text-on-surface tracking-wide whitespace-nowrap">${r.referenceNo||'—'}</td>
+          <td class="px-5 py-4 text-[13px] text-on-surface font-medium" style="max-width:220px;">
+            <div class="truncate" title="${(r.title||'').replace(/"/g,'"')}">${r.title||'—'}</div>
+          </td>
+          <td class="px-5 py-4 text-[12px] text-on-surface-variant">
+            <span title="${auTitle}">${auShown}${auExtra}</span>
+          </td>
+          <td class="px-5 py-4 text-[12px] text-on-surface-variant whitespace-nowrap">${r.department||'—'}</td>
+          <td class="px-5 py-4">${catBadgeHTML(r.category)}</td>
+          <td class="px-5 py-4">${dynamicCell}</td>
+          <td class="px-5 py-4 text-center">
+            <div class="flex items-center justify-center gap-1.5">
+              <button onclick="openDetailModal('${idStr}')" title="View"
+                class="w-8 h-8 flex items-center justify-center rounded-lg text-primary bg-blue-50 border border-blue-100 hover:bg-primary hover:text-white hover:border-primary transition-all">
+                <i class="ti ti-eye" style="font-size:15px;"></i>
+              </button>
+              ${r.archived
+                ? `<button onclick="openRestoreConfirm('${idStr}')" title="Restore"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-emerald-600 bg-emerald-50 border border-emerald-100 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-all">
+                    <i class="ti ti-archive-off" style="font-size:15px;"></i>
+                  </button>`
+                : `<button onclick="openArchiveConfirm('${idStr}')" title="Archive"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-amber-600 bg-amber-50 border border-amber-100 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all">
+                    <i class="ti ti-archive" style="font-size:15px;"></i>
+                  </button>`
+              }
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  const shownEnd   = Math.min(start + ROWS_PER_PAGE, total);
+  const shownStart = total === 0 ? 0 : start + 1;
+  document.getElementById('pagination-info').textContent = `Showing ${shownStart}–${shownEnd} of ${total} record${total!==1?'s':''}`;
+  renderPagination(tp);
+}
+
+/* ════════════════════════════════
+   PAGINATION
+════════════════════════════════ */
+function renderPagination(totalPages) {
+  const ctrl = document.getElementById('pagination-controls');
+  ctrl.innerHTML = '';
+  const btn = (labelOrIcon, tp, disabled, active, isIcon) => {
+    const b = document.createElement('button');
+    b.className = `page-btn${active ? ' active' : ''}`;
+    b.disabled = disabled;
+    b.innerHTML = isIcon ? `<span class="material-symbols-outlined" style="font-size:16px;">${labelOrIcon}</span>` : labelOrIcon;
+    if (!disabled && !active) b.onclick = () => { currentPage = tp; render(); };
+    ctrl.appendChild(b);
+  };
+  const ellipsis = () => { const s = document.createElement('span'); s.className='page-ellipsis'; s.textContent='…'; ctrl.appendChild(s); };
+  btn('chevron_left', currentPage-1, currentPage===1, false, true);
+  if (totalPages <= 7) { for (let i=1;i<=totalPages;i++) btn(i,i,false,i===currentPage,false); }
+  else {
+    btn(1,1,false,currentPage===1,false);
+    if (currentPage>3) ellipsis();
+    const s=Math.max(2,currentPage-1), e=Math.min(totalPages-1,currentPage+1);
+    for (let i=s;i<=e;i++) btn(i,i,false,i===currentPage,false);
+    if (currentPage<totalPages-2) ellipsis();
+    btn(totalPages,totalPages,false,currentPage===totalPages,false);
+  }
+  btn('chevron_right', currentPage+1, currentPage===totalPages, false, true);
+}
+
+/* ════════════════════════════════
+   DETAIL MODAL
+════════════════════════════════ */
+function openDetailModal(id) {
+  const r = ALL_RECORDS.find(x => x.id === id);
+  if (!r) return;
+  currentDetailId = id;
+
+  document.getElementById('dm-title').textContent = r.title || '—';
+  document.getElementById('dm-ref').textContent   = r.referenceNo || '—';
+  document.getElementById('dm-ref2').textContent  = r.referenceNo || '—';
+  document.getElementById('dm-cat').textContent   = r.category || '—';
+  document.getElementById('dm-dept').textContent  = r.department || '—';
+  document.getElementById('dm-college').textContent = r.college || '—';
+  document.getElementById('dm-date').textContent   = fmt(r.dateApplied);
+  document.getElementById('dm-status').textContent = r.status || '—';
+  document.getElementById('dm-cat-badge').innerHTML = catBadgeHTML(r.category);
+
+  const banner = document.getElementById('dm-status-banner');
+  const statusColors = {
+    'Approved with Certificate': 'bg-emerald-50 border-emerald-200 text-emerald-800',
+    'Paid':                      'bg-sky-50 border-sky-200 text-sky-800',
+    'Received E-SOA':            'bg-purple-50 border-purple-200 text-purple-800',
+    'Submitted to IPOPHL':       'bg-blue-50 border-blue-200 text-blue-800',
+  };
+  const statusIcons = {
+    'Approved with Certificate': 'ti-circle-check',
+    'Paid':                      'ti-cash',
+    'Received E-SOA':            'ti-mail-check',
+    'Submitted to IPOPHL':       'ti-send',
+  };
+  const sc = statusColors[r.status] || 'bg-slate-50 border-slate-200 text-slate-700';
+  const si = statusIcons[r.status]  || 'ti-circle-dot';
+  banner.className = `flex items-center gap-3 rounded-xl px-4 py-3 border ${sc}`;
+  banner.innerHTML = `<i class="ti ${si}" style="font-size:18px;"></i><p class="text-[13px] font-semibold">${r.status}</p>`;
+
+  const auContainer = document.getElementById('dm-authors');
+  auContainer.innerHTML = (r.authors||[]).map(a =>
+    `<span class="inline-flex items-center gap-1.5 text-[12px] font-medium text-on-surface-variant bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5">
+      <i class="ti ti-user" style="font-size:11px;"></i>${a}
+    </span>`
+  ).join('');
+
+  const driveSection = document.getElementById('dm-drive-section');
+  if (r.googleDriveLink) {
+    driveSection.classList.remove('hidden');
+    document.getElementById('dm-drive-link').href = r.googleDriveLink;
+    document.getElementById('dm-drive-text').textContent = r.googleDriveLink.length > 50 ? r.googleDriveLink.slice(0,50)+'…' : r.googleDriveLink;
+  } else {
+    driveSection.classList.add('hidden');
+  }
+
+  const archiveSec = document.getElementById('dm-archive-section');
+  if (r.archived && r.archiveDate) {
+    archiveSec.classList.remove('hidden');
+    const delDate   = addDays(r.archiveDate, 365);
+    const remaining = daysRemaining(delDate);
+    const pct       = retentionPct(r.archiveDate);
+    const barCls    = pct > 50 ? 'retention-high' : pct > 20 ? 'retention-medium' : 'retention-low';
+    document.getElementById('dm-archive-date').textContent     = fmt(r.archiveDate);
+    document.getElementById('dm-delete-date').textContent      = fmt(delDate);
+    document.getElementById('dm-retention-text').textContent   = `${remaining} day${remaining!==1?'s':''} remaining`;
+    document.getElementById('dm-retention-pct').textContent    = `${pct}% remaining`;
+    const fill = document.getElementById('dm-retention-fill');
+    fill.style.width = pct + '%';
+    fill.className = `retention-fill ${barCls}`;
+  } else {
+    archiveSec.classList.add('hidden');
+  }
+
+  document.getElementById('dm-archive-btn').classList.toggle('hidden',  r.archived);
+  document.getElementById('dm-restore-btn').classList.toggle('hidden', !r.archived);
+
+  document.getElementById('detail-modal').style.display = 'flex';
+}
+function closeDetailModal() {
+  document.getElementById('detail-modal').style.display = 'none';
+  currentDetailId = null;
+}
+function handleDetailBackdrop(e) {
+  if (e.target === document.getElementById('detail-modal')) closeDetailModal();
+}
+
+/* ════════════════════════════════
+   ARCHIVE FLOW
+════════════════════════════════ */
+function openArchiveConfirm(id) {
+  const r = ALL_RECORDS.find(x => x.id === id);
+  if (!r) return;
+  pendingArchiveId = id;
+  const archiveDate = new Date().toISOString().split('T')[0];
+  const deleteDate  = addDays(archiveDate, 365);
+  document.getElementById('archive-confirm-title').textContent = `"${r.title.slice(0,50)}${r.title.length>50?'…':''}"`;
+  document.getElementById('archive-confirm-date').textContent   = fmt(archiveDate);
+  document.getElementById('archive-confirm-delete').textContent = fmt(deleteDate);
+  document.getElementById('archive-modal').style.display = 'flex';
+}
+function closeArchiveModal() {
+  document.getElementById('archive-modal').style.display = 'none';
+  pendingArchiveId = null;
+}
+async function confirmArchive() {
+  if (!pendingArchiveId) return;
+  const todayDate = new Date().toISOString().split('T')[0];
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/research/${pendingArchiveId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archived: true, archiveDate: todayDate })
+    });
+
+    if (!response.ok) throw new Error('Failed to update data on the database.');
+
+    const idx = ALL_RECORDS.findIndex(r => r.id === pendingArchiveId);
+    if (idx !== -1) {
+      ALL_RECORDS[idx].archived    = true;
+      ALL_RECORDS[idx].archiveDate = todayDate;
+    }
+    
+    closeArchiveModal();
+    closeDetailModal();
+    updateStats();
+    filterAndRender();
+    showToast('Record Archived', 'Research moved to archive. It will be retained for 1 year.');
+
+  } catch (error) {
+    console.error(error);
+    alert('Error: Hindi ma-archive ang record. Pakisuri kung umaandar ang iyong backend.');
+  }
+}
+
+/* ════════════════════════════════
+   RESTORE FLOW
+════════════════════════════════ */
+function openRestoreConfirm(id) {
+  const r = ALL_RECORDS.find(x => x.id === id);
+  if (!r) return;
+  pendingRestoreId = id;
+  document.getElementById('restore-confirm-title').textContent = `"${r.title.slice(0,50)}${r.title.length>50?'…':''}"`;
+  document.getElementById('restore-modal').style.display = 'flex';
+}
+function closeRestoreModal() {
+  document.getElementById('restore-modal').style.display = 'none';
+  pendingRestoreId = null;
+}
+async function confirmRestore() {
+  if (!pendingRestoreId) return;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/research/${pendingRestoreId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archived: false, archiveDate: "" })
+    });
+
+    if (!response.ok) throw new Error('Failed to restore data in database.');
+
+    const idx = ALL_RECORDS.findIndex(r => r.id === pendingRestoreId);
+    if (idx !== -1) {
+      ALL_RECORDS[idx].archived    = false;
+      ALL_RECORDS[idx].archiveDate = null;
+    }
+
+    closeRestoreModal();
+    closeDetailModal();
+    updateStats();
+    filterAndRender();
+    showToast('Record Restored', 'Research has been returned to active records.');
+
+  } catch (error) {
+    console.error(error);
+    alert('Error: Hindi ma-restore ang record galing database.');
+  }
+}
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
+function showToast(title, body) {
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-body').textContent  = body;
+  const toast = document.getElementById('success-toast');
+  const bar   = document.getElementById('toast-bar');
+  bar.style.transition = 'none'; bar.style.width = '100%';
+  toast.style.opacity = '1'; toast.style.transform = 'translateY(0)';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    bar.style.transition = 'width 3.3s linear'; bar.style.width = '0%';
+  }));
+  setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateY(12px)'; }, 3500);
+}
+
+/* ════════════════════════════════
+   INITIALIZATION
+════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  loadDataFromDatabase();
+});
+</script>
+</body>
+</html>

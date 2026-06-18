@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>User Management | IP Management System</title>
+<title>User Management | Admin</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <script>
   tailwind.config = {
     darkMode:"class",
     theme:{ extend:{ colors:{
-      "background":"#f9f9ff","surface-container-low":"#f2f3fd","surface-container":"#ecedf7",
-      "surface-container-highest":"#e1e2ec","surface-container-lowest":"#ffffff",
-      "primary":"#0058be","on-surface":"#191b23","on-surface-variant":"#424754",
-      "outline":"#727785","outline-variant":"#c2c6d6","surface":"#f9f9ff"
+      "background":"#f9f9ff",
+      "primary":"#0058be",
+      "on-surface":"#191b23",
+      "outline":"#e2e8f0"
     }, fontFamily:{ sans:["Inter","sans-serif"] } } }
   }
 </script>
@@ -27,37 +27,29 @@
   ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 
   /* ── Sidebar ── */
-  .nav-item { display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:8px; cursor:pointer; transition:background 0.15s,color 0.15s,transform 0.15s; text-decoration:none; color:#424754; font-size:13.5px; font-weight:400; width:100%; }
-  .nav-item:hover { background:#f1f5f9; color:#191b23; transform:translateX(4px); }
-  .nav-item.active { background:#fee2e2; color:#dc2626; font-weight:500; transform:none; }
-  .nav-item.active i { color:#dc2626; }
-  .nav-item i { font-size:18px; width:20px; text-align:center; flex-shrink:0; }
-  .nav-section-label { font-size:10px; font-weight:600; color:#727785; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin:12px 0 4px; }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:8px; cursor:pointer; transition:background 0.15s,color 0.15s; text-decoration:none; color:#424754; font-size:13px; font-weight:500; width:100%; }
+  .nav-item:hover { background:#f1f5f9; color:#191b23; }
+  .nav-item.active { background:#e8f0fd; color:#0058be; font-weight:600; }
+  .nav-item.active i { color:#0058be; }
+  .nav-item i { font-size:18px; width:20px; text-align:center; flex-shrink:0; color:#727785; transition:color 0.15s; }
+  .nav-item:hover i { color:#191b23; }
+  .nav-section-label { font-size:10px; font-weight:700; color:#a0a6b8; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin:16px 0 6px; }
 
   /* ── Header ── */
-  .live-time-badge { display:flex; align-items:center; gap:6px; background:#f2f3fd; border:1px solid #e1e2ec; border-radius:8px; padding:5px 11px; font-size:12px; font-weight:600; color:#424754; white-space:nowrap; }
+  .live-time-badge { display:flex; align-items:center; gap:6px; background:#f4f7fc; border:1px solid #e2e8f0; border-radius:8px; padding:5px 11px; font-size:12px; font-weight:600; color:#424754; white-space:nowrap; }
   .live-time-badge i { color:#0058be; font-size:14px; }
 
   /* ── Page entrance ── */
-  #mainContent { opacity:0; transform:translateY(8px); transition:opacity 0.5s ease-out,transform 0.5s ease-out; }
-
-  /* ── Stat cards ── */
-  .stat-card { background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:18px 20px; display:flex; align-items:center; gap:14px; transition:transform 0.2s,box-shadow 0.2s; }
-  .stat-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.07); }
+  #mainContent { opacity:0; transform:translateY(8px); transition:opacity 0.4s ease-out,transform 0.4s ease-out; }
 
   /* ── Table ── */
-  .tbl-th { padding:10px 16px; font-size:10px; font-weight:700; color:#727785; text-transform:uppercase; letter-spacing:0.09em; border-bottom:1px solid #edf0f7; background:#fafafa; white-space:nowrap; }
-  .tbl-td { padding:13px 16px; font-size:13px; border-bottom:1px solid #f4f5f9; vertical-align:middle; color:#424754; }
+  .tbl-th { padding:12px 16px; font-size:10px; font-weight:700; color:#727785; text-transform:uppercase; letter-spacing:0.06em; border-bottom:1px solid #edf0f7; background:#ffffff; white-space:nowrap; }
+  .tbl-td { padding:14px 16px; font-size:13px; border-bottom:1px solid #f4f5f9; vertical-align:middle; color:#424754; font-weight:500; }
   table tbody tr { transition:background 0.1s; }
   table tbody tr:hover { background:#fafbff; }
 
-  /* ── Toolbar inputs ── */
-  .toolbar-search { width:100%; background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:9px 12px 9px 36px; font-size:13px; font-family:'Inter',sans-serif; outline:none; transition:all 0.15s; color:#191b23; }
-  .toolbar-search:focus { border-color:#0058be; box-shadow:0 0 0 3px rgba(0,88,190,0.08); }
-  .toolbar-search::placeholder { color:#a0a6b8; }
-
   /* ── Badges ── */
-  .badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
+  .badge { display:inline-flex; align-items:center; padding:5px 12px; border-radius:20px; font-size:11px; font-weight:600; }
   .badge-role-admin { background:#f3e8ff; color:#7e22ce; border: 1px solid #e9d5ff; }
   .badge-role-staff { background:#e0f2fe; color:#0369a1; border: 1px solid #bae6fd; }
   .badge-status-active { background:#dcfce7; color:#15803d; border: 1px solid #bbf7d0; }
@@ -74,21 +66,23 @@
   .modal-overlay.open { display:flex; }
   @keyframes modalIn { from{opacity:0;transform:translateY(10px) scale(0.97);}to{opacity:1;transform:none;} }
 
-  /* ── Form fields ── */
-  .field-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.10em; color:#727785; display:block; margin-bottom:5px; }
-  .field-input { width:100%; background:#f9f9ff; border:1.5px solid #e2e8f0; border-radius:10px; padding:10px 14px; font-family:'Inter',sans-serif; font-size:13px; color:#191b23; outline:none; transition:border-color 0.15s,box-shadow 0.15s,background 0.15s; }
-  .field-input:focus { border-color:#0058be; background:#fff; box-shadow:0 0 0 3px rgba(0,88,190,0.09); }
-  .field-input::placeholder { color:#b0b5c4; }
+  /* ── Form Fields ── */
+  .field-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#727785; display:block; margin-bottom:8px; }
+  .field-input { width:100%; background:#f4f7fc; border:1px solid #e4e9f2; border-radius:14px; padding:12px 16px; font-family:'Inter',sans-serif; font-size:14px; color:#191b23; outline:none; transition:border-color 0.15s,box-shadow 0.15s, background-color 0.15s; }
+  .field-input:focus { border-color:#0058be; background:#ffffff; box-shadow:0 0 0 3px rgba(0,88,190,0.06); }
+  .field-input::placeholder { color:#8e9aa8; font-weight:400; }
+  
+  .dropdown-trigger { width:100%; display:flex; align-items:center; justify-content:between; background:#f4f7fc; border:1px solid #e4e9f2; border-radius:14px; padding:12px 16px; font-family:'Inter',sans-serif; font-size:14px; color:#191b23; font-weight:500; cursor:pointer; text-align:left; transition:all 0.15s; }
+  .dropdown-trigger:focus { border-color:#0058be; background:#ffffff; box-shadow:0 0 0 3px rgba(0,88,190,0.06); outline:none; }
+  
   .pw-wrap { position:relative; }
-  .pw-wrap .field-input { padding-right:42px; }
-  .pw-eye { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#b0b5c4; font-size:15px; transition:color 0.12s; padding:2px; }
+  .pw-wrap .field-input { padding-right:44px; }
+  .pw-eye { position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#b0b5c4; font-size:16px; transition:color 0.12s; padding:2px; }
   .pw-eye:hover { color:#0058be; }
 
-  /* ── Confirm modal ── */
+  /* ── Confirm & Toasts ── */
   .confirm-overlay { position:fixed; inset:0; background:rgba(15,20,40,0.45); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; z-index:300; padding:16px; }
   .confirm-overlay.open { display:flex; }
-
-  /* ── Toast ── */
   .toast { position:fixed; bottom:24px; right:24px; z-index:400; display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:13px 18px; box-shadow:0 10px 36px rgba(0,0,0,0.11); opacity:0; transform:translateY(12px); transition:opacity 0.22s,transform 0.22s; pointer-events:none; min-width:250px; }
   .toast.show { opacity:1; transform:translateY(0); }
 
@@ -96,61 +90,62 @@
   .skeleton { background:linear-gradient(90deg,#f2f3fd 25%,#e6e7f2 50%,#f2f3fd 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
   @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
-  /* ── Role / Status chip toggles ── */
-  .role-chip { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:10px; border:1.5px solid #e2e8f0; background:#fff; font-size:13px; font-family:'Inter',sans-serif; font-weight:500; color:#424754; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
-  .role-chip:hover { border-color:#0058be; color:#0058be; background:#f0f6ff; }
-  .role-chip.selected { border-color:#0058be; background:#e8f0fd; color:#0058be; font-weight:600; }
-
-  /* ── Pill filter dropdown opts ── */
-  .spill-opt, .rpill-opt { display:flex; align-items:center; width:100%; padding:9px 12px; border-radius:9px; border:none; background:none; font-size:13px; font-family:'Inter',sans-serif; font-weight:500; color:#424754; cursor:pointer; transition:background 0.12s; text-align:left; }
-  .spill-opt:hover, .rpill-opt:hover { background:#f2f3fd; color:#191b23; }
-  .spill-opt.active, .rpill-opt.active { background:#e8f0fd; color:#0058be; font-weight:700; }
+  .spill-opt, .rpill-opt { display:flex; align-items:center; width:100%; padding:10px 14px; border-radius:10px; border:none; background:none; font-size:13px; font-family:'Inter',sans-serif; font-weight:500; color:#424754; cursor:pointer; transition:background 0.12s; text-align:left; }
+  .spill-opt:hover, .rpill-opt:hover { background:#f4f7fc; color:#191b23; }
+  .spill-opt.active, .rpill-opt.active { background:#e8f0fd; color:#0058be; font-weight:600; }
 </style>
 </head>
 <body>
 
+<div id="stTotal" class="hidden"></div>
+<div id="stActive" class="hidden"></div>
+<div id="stInactive" class="hidden"></div>
+
 <aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-[#e2e8f0] bg-white flex flex-col z-50">
-  <div class="flex items-center gap-3 px-5 py-5 border-b border-[#e2e8f0]">
-    <div class="w-9 h-9 rounded-xl bg-[#0058be] flex items-center justify-center text-white flex-shrink-0">
+  <div class="flex items-center gap-3 px-6 py-6 border-b border-[#f0f2f7]">
+    <div class="w-9 h-9 rounded-xl bg-[#0058be] flex items-center justify-center text-white flex-shrink-0 shadow-sm shadow-blue-500/20">
       <i class="ti ti-building-bank" style="font-size:18px;"></i>
     </div>
     <div>
-      <h1 class="text-sm font-semibold leading-tight text-[#191b23]">IP Management</h1>
-      <p class="text-[10px] text-[#727785] font-semibold tracking-widest uppercase">System</p>
+      <h1 class="text-[15px] font-bold leading-tight text-[#191b23]">IP Management</h1>
+      <p class="text-[10px] text-[#727785] font-bold tracking-widest uppercase mt-0.5">System</p>
     </div>
   </div>
-  <nav class="flex-1 overflow-y-auto px-3 pt-3 pb-2 space-y-2">
+  <nav class="flex-1 overflow-y-auto px-4 pt-4 pb-4 space-y-1.5">
     <div class="nav-section-label">Overview</div>
     <a class="nav-item" href="admin-dashboard.html"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></a>
+    
     <div class="nav-section-label">Management</div>
+    <a class="nav-item" href="admin-researches.html">
+      <i class="ti ti-file-text"></i><span>Researches</span>
+    </a>
     <a class="nav-item active" href="admin-users.html">
       <i class="ti ti-users"></i><span>User Management</span>
-      <span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#fee2e2] text-[#dc2626]" id="sbBadge">—</span>
+      <span class="ml-auto text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#dbeafe] text-[#0058be]" id="sbBadge">—</span>
     </a>
     <a class="nav-item" href="admin-logs.html"><i class="ti ti-clipboard-list"></i><span>Activity Logs</span></a>
   </nav>
 </aside>
 
 <header class="fixed top-0 left-0 right-0 pl-[260px] z-40 bg-white/80 backdrop-blur-md border-b border-[#e2e8f0]">
-  <div class="flex items-center justify-between h-[60px] w-full px-6 gap-4">
+  <div class="flex items-center justify-between h-[64px] w-full px-8 gap-4">
     <div>
-      <h2 class="text-[15px] font-bold text-[#191b23] leading-tight">User Management</h2>
-      <p class="text-[11px] text-[#727785]">Admin Panel › Users</p>
+      <h2 class="text-[16px] font-bold text-[#191b23] leading-tight">User Management</h2>
     </div>
-    <div class="flex items-center gap-4 shrink-0">
+    <div class="flex items-center gap-5 shrink-0">
       <div class="live-time-badge"><i class="ti ti-clock"></i><span id="clockDisplay">--:-- --</span></div>
       <div class="h-6 w-px bg-[#e2e8f0]"></div>
       <div class="relative" id="profileWrap">
-        <div onclick="toggleProfile(event)" class="w-9 h-9 rounded-full bg-[#f2f3fd] flex items-center justify-center border-2 border-[#e2e8f0] cursor-pointer hover:ring-2 hover:ring-[#0058be]/30 transition-all shadow-sm">
-          <span class="text-[11px] font-bold text-[#424754]">SA</span>
+        <div onclick="toggleProfile(event)" class="w-10 h-10 rounded-full bg-[#f4f7fc] flex items-center justify-center border border-[#e2e8f0] cursor-pointer hover:ring-2 hover:ring-[#0058be]/30 transition-all shadow-sm">
+          <span class="text-[12px] font-bold text-[#0058be]">SA</span>
         </div>
-        <div id="profileDropdown" class="hidden absolute right-0 top-[calc(100%+8px)] min-w-[150px] bg-white border border-[#e2e8f0] rounded-xl p-1.5 shadow-xl z-50">
-          <div class="px-3 py-2 border-b border-[#f2f3fd] mb-1">
-            <p class="text-[12px] font-semibold text-[#191b23]">Super Admin</p>
-            <p class="text-[10px] font-semibold text-[#727785] uppercase tracking-wider">Administrator</p>
+        <div id="profileDropdown" class="hidden absolute right-0 top-[calc(100%+8px)] min-w-[160px] bg-white border border-[#e2e8f0] rounded-xl p-1.5 shadow-lg z-50">
+          <div class="px-3 py-2.5 border-b border-[#f0f2f7] mb-1">
+            <p class="text-[13px] font-semibold text-[#191b23]">Super Admin</p>
+            <p class="text-[10px] font-bold text-[#727785] uppercase tracking-wider mt-0.5">Administrator</p>
           </div>
           <button onclick="window.location.href='index.html'" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-semibold text-[#dc2626] hover:bg-[#fef2f2] transition-colors text-left">
-            <i class="ti ti-logout" style="font-size:14px;"></i>Log Out
+            Log Out
           </button>
         </div>
       </div>
@@ -158,112 +153,82 @@
   </div>
 </header>
 
-<main id="mainContent" class="pl-[280px] pt-[76px] min-h-screen">
-  <div class="py-6 px-8 max-w-[1400px]">
+<main id="mainContent" class="pl-[260px] pt-[64px] min-h-screen">
+  <div class="py-8 px-8 max-w-[1400px] mx-auto">
 
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h2 class="text-[26px] font-bold leading-tight text-[#191b23] tracking-tight">User Management</h2>
-        <p class="text-[13px] text-[#727785] mt-0.5">Manage system accounts, roles, and access.</p>
+        <h2 class="text-[24px] font-bold leading-tight text-[#191b23] tracking-tight">User Accounts</h2>
+        <p class="text-[13px] text-[#727785] mt-1 font-medium">Manage system access, roles, and administrative privileges.</p>
       </div>
-      <button onclick="openAddModal()" class="h-[40px] px-5 bg-[#0058be] text-white rounded-xl font-semibold text-[13px] flex items-center gap-2 hover:opacity-90 transition-all shadow-sm shadow-[#0058be]/20">
-        <i class="ti ti-user-plus" style="font-size:15px;"></i>Add User
+      <button onclick="openAddModal()" class="h-[42px] px-5 bg-[#0058be] text-white rounded-xl font-semibold text-[13px] flex items-center justify-center hover:opacity-90 transition-all shadow-sm shadow-[#0058be]/20">
+        <span class="material-symbols-outlined text-[18px]">add</span> Add User
       </button>
     </div>
 
-    <div class="grid grid-cols-4 gap-4 mb-6">
-      <div class="stat-card" style="border-left:3px solid #0058be;">
-        <div class="p-2 rounded-lg flex-shrink-0" style="background:#e8f0fd;"><i class="ti ti-users" style="font-size:17px;color:#0058be;"></i></div>
-        <div><p class="text-[24px] font-bold text-[#191b23] leading-none" id="stTotal"><span class="skeleton inline-block w-8 h-6"></span></p><p class="text-[10px] font-semibold uppercase tracking-wider text-[#727785] mt-0.5">Total Users</p></div>
-      </div>
-      <div class="stat-card" style="border-left:3px solid #059669;">
-        <div class="p-2 rounded-lg flex-shrink-0" style="background:#d1fae5;"><i class="ti ti-user-check" style="font-size:17px;color:#059669;"></i></div>
-        <div><p class="text-[24px] font-bold text-[#191b23] leading-none" id="stActive"><span class="skeleton inline-block w-8 h-6"></span></p><p class="text-[10px] font-semibold uppercase tracking-wider text-[#727785] mt-0.5">Active</p></div>
-      </div>
-      <div class="stat-card" style="border-left:3px solid #727785;">
-        <div class="p-2 rounded-lg flex-shrink-0" style="background:#f2f3fd;"><i class="ti ti-user-pause" style="font-size:17px;color:#727785;"></i></div>
-        <div><p class="text-[24px] font-bold text-[#191b23] leading-none" id="stInactive"><span class="skeleton inline-block w-8 h-6"></span></p><p class="text-[10px] font-semibold uppercase tracking-wider text-[#727785] mt-0.5">Inactive</p></div>
-      </div>
-      <div class="stat-card" style="border-left:3px solid #dc2626;">
-        <div class="p-2 rounded-lg flex-shrink-0" style="background:#fef2f2;"><i class="ti ti-shield-lock" style="font-size:17px;color:#dc2626;"></i></div>
-        <div><p class="text-[24px] font-bold text-[#191b23] leading-none" id="stAdmins"><span class="skeleton inline-block w-8 h-6"></span></p><p class="text-[10px] font-semibold uppercase tracking-wider text-[#727785] mt-0.5">Admins</p></div>
-      </div>
-    </div>
-
     <div class="bg-white rounded-2xl border border-[#e2e8f0] shadow-sm overflow-hidden">
-
-      <div class="flex items-center gap-3 px-5 py-4 border-b border-[#f0f2f7]">
+      <div class="flex items-center gap-3 px-6 py-4 border-b border-[#f0f2f7]">
         <div class="relative flex-1">
-          <i class="ti ti-search absolute left-4 top-1/2 -translate-y-1/2 text-[#a0a6b8] text-[15px] pointer-events-none"></i>
+          <i class="ti ti-search absolute left-4 top-1/2 -translate-y-1/2 text-[#a0a6b8] text-[16px] pointer-events-none"></i>
           <input id="tableSearch" type="text" autocomplete="off"
-            placeholder="Search name, email, or role…"
-            class="w-full h-[42px] bg-white border border-[#e2e8f0] rounded-xl pl-11 pr-4 text-[13px] text-[#191b23] outline-none focus:border-[#0058be] focus:ring-2 focus:ring-[#0058be]/10 transition-all placeholder:text-[#a0a6b8]"/>
+            placeholder="Search users..."
+            class="w-full h-[42px] bg-white border border-[#e2e8f0] rounded-xl pl-11 pr-4 text-[13px] text-[#191b23] outline-none focus:border-[#0058be] transition-all placeholder:text-[#a0a6b8]"/>
         </div>
         
-        <div class="relative shrink-0">
-          <button id="statusPillBtn" onclick="toggleStatusPill(event)"
-            class="h-[42px] flex items-center gap-2 px-4 border border-[#e2e8f0] rounded-xl text-[13px] font-medium text-[#424754] bg-white hover:bg-[#f9f9ff] transition-all">
-            <i class="ti ti-adjustments-horizontal text-[15px] text-[#727785]"></i>
-            <span id="statusPillLabel">All Status</span>
-            <i class="ti ti-chevron-down text-[12px] text-[#a0a6b8]" id="statusChevron"></i>
-          </button>
-          <div id="statusPillDropdown" style="display:none;position:absolute;right:0;top:calc(100%+6px);min-width:170px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:6px;box-shadow:0 10px 32px rgba(0,0,0,0.11);z-index:100;">
-            <div style="padding:5px 10px 4px;font-size:10px;font-weight:700;color:#a0a6b8;text-transform:uppercase;letter-spacing:0.08em;">Filter by Status</div>
-            <button class="spill-opt active" data-val="all"      onclick="setStatusPill('all',this,'All Status')">All Status</button>
-            <button class="spill-opt"        data-val="Active"   onclick="setStatusPill('Active',this,'Active')">Active</button>
-            <button class="spill-opt"        data-val="Inactive" onclick="setStatusPill('Inactive',this,'Inactive')">Inactive</button>
+        <div class="relative shrink-0 flex gap-2">
+          <div class="relative">
+            <button id="statusPillBtn" onclick="toggleStatusPill(event)"
+              class="h-[42px] flex items-center gap-2 px-4 border border-[#e2e8f0] rounded-xl text-[13px] font-semibold text-[#424754] bg-white hover:bg-[#f4f7fc] transition-all">
+              <span id="statusPillLabel">All Status</span>
+              <i class="ti ti-chevron-down text-[12px] text-[#a0a6b8]" id="statusChevron"></i>
+            </button>
+            <div id="statusPillDropdown" style="display:none;position:absolute;right:0;top:calc(100%+6px);min-width:170px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:6px;box-shadow:0 10px 32px rgba(0,0,0,0.11);z-index:100;">
+              <div style="padding:5px 10px 4px;font-size:10px;font-weight:700;color:#a0a6b8;text-transform:uppercase;letter-spacing:0.08em;">Filter by Status</div>
+              <button class="spill-opt active" data-val="all"      onclick="setStatusPill('all',this,'All Status')">All Status</button>
+              <button class="spill-opt"        data-val="Active"   onclick="setStatusPill('Active',this,'Active')">Active</button>
+              <button class="spill-opt"        data-val="Inactive" onclick="setStatusPill('Inactive',this,'Inactive')">Inactive</button>
+            </div>
           </div>
-        </div>
-        
-        <div class="relative shrink-0">
-          <button id="rolePillBtn" onclick="toggleRolePill(event)"
-            class="h-[42px] flex items-center gap-2 px-4 border border-[#e2e8f0] rounded-xl text-[13px] font-medium text-[#424754] bg-white hover:bg-[#f9f9ff] transition-all">
-            <i class="ti ti-users text-[15px] text-[#727785]"></i>
-            <span id="rolePillLabel">All Roles</span>
-            <i class="ti ti-chevron-down text-[12px] text-[#a0a6b8]" id="roleChevron"></i>
-          </button>
-          <div id="rolePillDropdown" style="display:none;position:absolute;right:0;top:calc(100%+6px);min-width:160px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:6px;box-shadow:0 10px 32px rgba(0,0,0,0.11);z-index:100;">
-            <div style="padding:5px 10px 4px;font-size:10px;font-weight:700;color:#a0a6b8;text-transform:uppercase;letter-spacing:0.08em;">Filter by Role</div>
-            <button class="rpill-opt active" data-val="all"   onclick="setRolePill('all',this,'All Roles')">All Roles</button>
-            <button class="rpill-opt"        data-val="admin" onclick="setRolePill('admin',this,'Admin')">Admin</button>
-            <button class="rpill-opt"        data-val="staff" onclick="setRolePill('staff',this,'Staff')">Staff</button>
-          </div>
-        </div>
 
-        <button onclick="exportUsers()" title="Export CSV"
-          class="h-[42px] w-[42px] flex items-center justify-center bg-[#0058be] text-white rounded-xl hover:bg-[#004fa6] transition-all flex-shrink-0 shadow-sm shadow-[#0058be]/20">
-          <i class="ti ti-download" style="font-size:17px;"></i>
-        </button>
+          <div class="relative">
+            <button id="rolePillBtn" onclick="toggleRolePill(event)"
+              class="h-[42px] flex items-center gap-2 px-4 border border-[#e2e8f0] rounded-xl text-[13px] font-semibold text-[#424754] bg-white hover:bg-[#f4f7fc] transition-all">
+              <span id="rolePillLabel">All Roles</span>
+              <i class="ti ti-chevron-down text-[12px] text-[#a0a6b8]" id="roleChevron"></i>
+            </button>
+            <div id="rolePillDropdown" style="display:none;position:absolute;right:0;top:calc(100%+6px);min-width:160px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:6px;box-shadow:0 10px 32px rgba(0,0,0,0.11);z-index:100;">
+              <div style="padding:5px 10px 4px;font-size:10px;font-weight:700;color:#a0a6b8;text-transform:uppercase;letter-spacing:0.08em;">Filter by Role</div>
+              <button class="rpill-opt active" data-val="all"   onclick="setRolePill('all',this,'All Roles')">All Roles</button>
+              <button class="rpill-opt"        data-val="admin" onclick="setRolePill('admin',this,'Admin')">Admin</button>
+              <button class="rpill-opt"        data-val="staff" onclick="setRolePill('staff',this,'Staff')">Staff</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div id="tableLoading" class="p-6 space-y-3">
         <div class="skeleton h-10 rounded-lg w-full"></div>
         <div class="skeleton h-12 rounded-lg w-full"></div>
         <div class="skeleton h-12 rounded-lg w-full"></div>
-        <div class="skeleton h-12 rounded-lg w-full"></div>
-        <div class="skeleton h-12 rounded-lg w-full"></div>
       </div>
 
       <div id="tableError" class="hidden flex-col items-center justify-center py-16 text-center">
-        <div class="w-12 h-12 rounded-2xl bg-[#fef2f2] flex items-center justify-center mb-3">
-          <i class="ti ti-wifi-off" style="font-size:20px;color:#dc2626;"></i>
-        </div>
-        <p class="text-[14px] font-semibold text-[#191b23] mb-1">Could not load users</p>
-        <p class="text-[12px] text-[#727785] mb-4" id="tableErrorMsg">Check your connection and try again.</p>
-        <button onclick="loadUsers()" class="text-[13px] font-semibold text-[#0058be] hover:underline flex items-center gap-1">
-          <i class="ti ti-refresh text-[13px]"></i>Retry
-        </button>
+        <i class="ti ti-wifi-off mb-2 text-red-500 text-3xl"></i>
+        <p class="text-[14px] font-bold text-[#191b23]">Could not load users</p>
+        <p class="text-[13px] text-[#727785] mb-3" id="tableErrorMsg"></p>
+        <button onclick="loadUsers()" class="text-[13px] font-semibold text-[#0058be] underline">Retry</button>
       </div>
 
       <div id="tableWrap" class="hidden overflow-x-auto">
         <table class="w-full border-collapse text-left">
           <thead>
             <tr>
-              <th class="tbl-th">User</th>
+              <th class="tbl-th">User Name</th>
               <th class="tbl-th">Email</th>
               <th class="tbl-th">Role</th>
               <th class="tbl-th">Status</th>
-              <th class="tbl-th">Created</th>
+              <th class="tbl-th">Date Added</th>
+              <th class="tbl-th">Last Login</th>
               <th class="tbl-th text-center">Action</th>
             </tr>
           </thead>
@@ -272,15 +237,11 @@
       </div>
 
       <div id="emptyState" class="hidden flex-col items-center justify-center py-16 text-center">
-        <div class="w-12 h-12 rounded-2xl bg-[#f2f3fd] flex items-center justify-center mb-3">
-          <i class="ti ti-users-off" style="font-size:20px;color:#c2c6d6;"></i>
-        </div>
-        <p class="text-[14px] font-semibold text-[#191b23] mb-1">No users found</p>
-        <p class="text-[12px] text-[#727785]">Try adjusting your search or filters.</p>
+        <p class="text-[14px] font-bold text-[#191b23]">No users found</p>
       </div>
 
-      <div id="paginationBar" class="hidden items-center justify-between px-5 py-3.5 border-t border-[#f0f2f7] flex-wrap gap-3">
-        <p id="pagInfo" class="text-[12px] text-[#727785]"></p>
+      <div id="paginationBar" class="hidden items-center justify-between px-6 py-4 border-t border-[#f0f2f7] flex-wrap gap-3">
+        <p id="pagInfo" class="text-[12px] font-medium text-[#727785]"></p>
         <div id="pagControls" class="flex items-center gap-1"></div>
       </div>
     </div>
@@ -290,88 +251,106 @@
 
 
 <div class="modal-overlay" id="userModal">
-  <div class="relative w-full max-w-[520px] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col" style="animation:modalIn 0.22s ease;max-height:92vh;">
+  <div class="relative w-full max-w-[600px] rounded-3xl bg-white shadow-2xl flex flex-col pb-6 mx-auto transition-all overflow-visible" style="animation:modalIn 0.22s ease;">
 
-    <div class="px-7 pt-6 pb-4 border-b border-[#f0f2f7] flex items-start justify-between gap-4">
+    <div class="px-8 pt-7 pb-5 border-b border-[#f0f2f7] flex items-start justify-between gap-4">
       <div>
         <h3 class="text-[20px] font-bold text-[#191b23] leading-tight" id="drawerTitle">Add New User</h3>
-        <p class="text-[13px] text-[#727785] mt-1" id="drawerSubtitle">Fill in the user details below.</p>
-        <div id="drawerIdRow" class="hidden mt-2.5 inline-flex items-center gap-2 bg-[#f4f5f9] rounded-lg px-3 py-1.5">
-          <span class="text-[10px] font-semibold text-[#727785] uppercase tracking-wider">ID</span>
+        <p class="text-[13px] font-medium text-[#727785] mt-1" id="drawerSubtitle">Fill in the user details below.</p>
+        <div id="drawerIdRow" class="hidden mt-3 inline-flex items-center gap-2 bg-[#f4f7fc] rounded-lg px-3 py-1.5 border border-[#e2e8f0]">
+          <span class="text-[10px] font-bold text-[#727785] uppercase tracking-wider">ID</span>
           <span class="text-[11px] font-bold text-[#424754] font-mono" id="drawerUserId"></span>
         </div>
       </div>
-      <button onclick="closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-[#727785] hover:bg-[#f2f3fd] transition-all flex-shrink-0">
-        <i class="ti ti-x" style="font-size:16px;"></i>
+      <button onclick="closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-[#a0a6b8] hover:bg-[#f4f7fc] hover:text-[#191b23] transition-all flex-shrink-0">
+        <i class="ti ti-x" style="font-size:18px;"></i>
       </button>
     </div>
 
-    <div class="px-7 py-5 overflow-y-auto flex-1 space-y-5">
+    <div class="px-8 py-6 space-y-6 overflow-visible">
 
-      <div>
-        <label class="field-label">Full Name <span class="text-[#dc2626]">*</span></label>
-        <div class="grid grid-cols-3 gap-2.5 mt-1.5">
-          <input class="field-input" id="umFname" type="text" placeholder="First"/>
-          <input class="field-input" id="umMname" type="text" placeholder="Middle"/>
-          <input class="field-input" id="umLname" type="text" placeholder="Last"/>
+      <div id="formSectionPersonal" class="space-y-4">
+        <div class="text-[11px] font-extrabold tracking-widest text-[#0058be] uppercase border-b border-[#edf0f7] pb-1">Personal Details</div>
+        <div>
+          <label class="field-label">Full Name <span class="text-[#dc2626]">*</span></label>
+          <div class="grid grid-cols-3 gap-3">
+            <input class="field-input" id="umFname" type="text" placeholder="First Name"/>
+            <input class="field-input" id="umMname" type="text" placeholder="Middle Name"/>
+            <input class="field-input" id="umLname" type="text" placeholder="Last Name"/>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Email Address <span class="text-[#dc2626]">*</span></label>
+          <input class="field-input" id="umEmail" type="email" placeholder="e.g. user@university.edu"/>
         </div>
       </div>
 
-      <div>
-        <label class="field-label">Email Address <span class="text-[#dc2626]">*</span></label>
-        <input class="field-input mt-1.5" id="umEmail" type="email" placeholder="e.g. juan@university.edu"/>
-      </div>
-
-      <div>
-        <label class="field-label" id="passLabel">Password <span class="text-[#dc2626]" id="passRequired">*</span></label>
-        <div class="pw-wrap mt-1.5">
-          <input class="field-input" id="umPass" type="password" placeholder="e.g. ••••••••"/>
-          <button class="pw-eye" type="button" onclick="togglePw()"><i class="ti ti-eye" id="pwIcon"></i></button>
+      <div id="formSectionSecurity" class="space-y-4">
+        <div class="text-[11px] font-extrabold tracking-widest text-[#0058be] uppercase border-b border-[#edf0f7] pb-1">Security Credentials</div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="field-label" id="passLabel">Password <span class="text-[#dc2626]">*</span></label>
+            <div class="pw-wrap">
+              <input class="field-input" id="umPass" type="password" placeholder="Enter password"/>
+              <button class="pw-eye" type="button" onclick="togglePw('umPass', 'pwIcon')"><i class="ti ti-eye" id="pwIcon"></i></button>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Confirm Password <span class="text-[#dc2626]">*</span></label>
+            <div class="pw-wrap">
+              <input class="field-input" id="umConfirmPass" type="password" placeholder="Confirm password entry"/>
+              <button class="pw-eye" type="button" onclick="togglePw('umConfirmPass', 'pwConfirmIcon')"><i class="ti ti-eye" id="pwConfirmIcon"></i></button>
+            </div>
+          </div>
         </div>
-        <p class="text-[11px] text-[#a0a6b8] mt-1.5" id="passHint">Minimum 8 characters.</p>
+        <p class="text-[12px] font-medium text-[#8e9aa8]" id="passHint">Minimum 6 alphanumeric characters required. Special characters are blocked.</p>
       </div>
 
-      <div>
-        <label class="field-label">Role <span class="text-[#dc2626]">*</span></label>
-        <div class="flex flex-wrap gap-2 mt-2" id="roleChips">
-          <button type="button" class="role-chip" data-val="admin" onclick="selectChip('role','admin',this)">
-            <i class="ti ti-shield-lock" style="font-size:13px;"></i> Admin
-          </button>
-          <button type="button" class="role-chip" data-val="staff" onclick="selectChip('role','staff',this)">
-            <i class="ti ti-user" style="font-size:13px;"></i> Staff
-          </button>
+      <div id="formSectionSystem" class="space-y-4 overflow-visible">
+        <div class="text-[11px] font-extrabold tracking-widest text-[#0058be] uppercase border-b border-[#edf0f7] pb-1">System Allocation</div>
+        <div class="grid grid-cols-2 gap-5 overflow-visible">
+          <div class="relative overflow-visible">
+            <label class="field-label">Role <span class="text-[#dc2626]">*</span></label>
+            <button type="button" id="roleSelectTrigger" onclick="toggleModalDropdown(event, 'roleModalDropdown')" class="dropdown-trigger">
+              <span id="roleSelectLabel">Select Role</span>
+              <i class="ti ti-chevron-down text-[#727785] text-[15px] ml-auto"></i>
+            </button>
+            <div id="roleModalDropdown" style="display:none; position:absolute; left:0; right:0; top:calc(100% + 4px); background:#fff; border:1px solid #e4e9f2; border-radius:14px; padding:6px; box-shadow:0 10px 25px rgba(0,0,0,0.12); z-index:999;">
+              <button type="button" class="spill-opt" onclick="selectModalOption('role', 'admin', 'Admin')">Admin</button>
+              <button type="button" class="spill-opt" onclick="selectModalOption('role', 'staff', 'Staff')">Staff</button>
+            </div>
+            <input type="hidden" id="umRole" value=""/>
+          </div>
+
+          <div class="relative overflow-visible">
+            <label class="field-label">Status <span class="text-[#dc2626]">*</span></label>
+            <button type="button" id="statusSelectTrigger" onclick="toggleModalDropdown(event, 'statusModalDropdown')" class="dropdown-trigger">
+              <span id="statusSelectLabel">Active</span>
+              <i class="ti ti-chevron-down text-[#727785] text-[15px] ml-auto"></i>
+            </button>
+            <div id="statusModalDropdown" style="display:none; position:absolute; left:0; right:0; top:calc(100% + 4px); background:#fff; border:1px solid #e4e9f2; border-radius:14px; padding:6px; box-shadow:0 10px 25px rgba(0,0,0,0.12); z-index:999;">
+              <button type="button" class="spill-opt" onclick="selectModalOption('status', 'Active', 'Active')">Active</button>
+              <button type="button" class="spill-opt" onclick="selectModalOption('status', 'Inactive', 'Inactive')">Inactive</button>
+            </div>
+            <input type="hidden" id="umStatus" value="Active"/>
+          </div>
         </div>
-        <input type="hidden" id="umRole"/>
       </div>
 
-      <div>
-        <label class="field-label">Status</label>
-        <div class="flex flex-wrap gap-2 mt-2" id="statusChips">
-          <button type="button" class="role-chip selected" data-val="Active" onclick="selectChip('status','Active',this)">
-            <i class="ti ti-circle-check" style="font-size:13px;"></i> Active
-          </button>
-          <button type="button" class="role-chip" data-val="Inactive" onclick="selectChip('status','Inactive',this)">
-            <i class="ti ti-circle-pause" style="font-size:13px;"></i> Inactive
-          </button>
-        </div>
-        <input type="hidden" id="umStatus" value="Active"/>
-      </div>
-
-      <div id="umError" class="hidden text-[12px] text-[#dc2626] bg-[#fef2f2] border border-[#fca5a5] rounded-xl px-4 py-3 flex items-center gap-2">
-        <i class="ti ti-alert-circle flex-shrink-0"></i>
+      <div id="umError" class="hidden text-[13px] font-medium text-[#dc2626] bg-[#fef2f2] border border-[#fca5a5] rounded-xl px-4 py-3 flex items-center gap-2">
+        <i class="ti ti-alert-circle flex-shrink-0 text-[16px]"></i>
         <span id="umErrorText"></span>
       </div>
     </div>
 
-    <div class="px-7 py-4 flex items-center justify-between gap-3 border-t border-[#f0f2f7]">
-      <button id="deleteBtn" onclick="triggerDelete()" class="hidden text-[13px] font-medium text-[#a0a6b8] hover:text-[#dc2626] flex items-center gap-1.5 transition-colors">
-        <i class="ti ti-trash" style="font-size:13px;"></i>Delete user
+    <div class="px-8 pt-5 flex items-center justify-between gap-3 border-t border-[#f0f2f7] bg-white">
+      <button id="deleteBtn" onclick="triggerDelete()" class="hidden text-[13px] font-semibold text-[#a0a6b8] hover:text-[#dc2626] transition-colors">
+        Delete Account
       </button>
       <div class="flex gap-3 ml-auto">
-        <button onclick="closeModal()" class="px-6 py-2.5 text-[14px] font-semibold text-[#424754] border border-[#e2e8f0] rounded-xl hover:bg-[#f2f3fd] transition-all">Cancel</button>
-        <button onclick="saveUser()" id="umSaveBtn"
-          class="px-6 py-2.5 text-[14px] font-bold text-white bg-[#0058be] rounded-xl hover:bg-[#004fa6] transition-all flex items-center gap-2">
-          <i class="ti ti-device-floppy" style="font-size:15px;"></i>
+        <button onclick="closeModal()" class="px-6 py-2.5 text-[13px] font-bold text-[#424754] bg-white border border-[#e2e8f0] rounded-xl hover:bg-[#f4f7fc] transition-all">Cancel</button>
+        <button onclick="interceptFormSubmit()" id="umSaveBtn"
+          class="px-6 py-2.5 text-[13px] font-bold text-white bg-[#0058be] rounded-xl hover:bg-[#004fa6] transition-all flex items-center justify-center shadow-sm shadow-[#0058be]/20">
           <span id="umSaveLabel">Save User</span>
         </button>
       </div>
@@ -381,14 +360,14 @@
 
 
 <div class="confirm-overlay" id="confirmModal">
-  <div class="w-full max-w-sm rounded-2xl bg-white shadow-2xl p-7 text-center" style="animation:modalIn 0.2s ease;">
-    <div id="confIcon" class="mx-auto mb-4 w-12 h-12 rounded-full flex items-center justify-center bg-[#fef2f2]">
-      <i class="ti ti-trash" style="font-size:20px;color:#dc2626;"></i>
+  <div class="w-full max-w-sm rounded-2xl bg-white shadow-2xl p-8 text-center border border-[#e2e8f0]" style="animation:modalIn 0.2s ease;">
+    <div id="confIcon" class="mx-auto mb-4 w-12 h-12 rounded-xl flex items-center justify-center bg-[#fef2f2] border border-[#fecaca]">
+      <i class="ti" style="font-size:22px;color:#dc2626;" id="confIconTag"></i>
     </div>
-    <h3 class="text-[15px] font-bold text-[#191b23] mb-2" id="confTitle">Delete User</h3>
-    <p class="text-[13px] text-[#727785] mb-6 leading-relaxed" id="confMsg">Are you sure?</p>
+    <h3 class="text-[18px] font-bold text-[#191b23] mb-2" id="confTitle">Delete User</h3>
+    <p class="text-[13px] font-medium text-[#727785] mb-6 leading-relaxed" id="confMsg">Are you sure?</p>
     <div class="flex gap-3">
-      <button onclick="closeConfirm()" class="flex-1 py-2.5 border border-[#e2e8f0] rounded-xl text-[13px] font-semibold text-[#424754] hover:bg-[#f0f2f7] transition-all">Cancel</button>
+      <button onclick="closeConfirm()" class="flex-1 py-2.5 border border-[#e2e8f0] rounded-xl text-[13px] font-bold text-[#424754] hover:bg-[#f4f7fc] transition-all">Cancel</button>
       <button id="confBtn" class="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-white transition-all bg-[#dc2626] hover:bg-[#b91c1c]" onclick="executeConfirm()">Delete</button>
     </div>
   </div>
@@ -397,20 +376,20 @@
 
 <div class="toast" id="toast">
   <div id="toastIcon" class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-[#e8f0fd]">
-    <i class="ti ti-check" style="font-size:14px;color:#0058be;"></i>
+    <i class="ti ti-check" style="font-size:15px;color:#0058be;"></i>
   </div>
   <div class="flex-1 min-w-0">
     <p class="text-[13px] font-bold text-[#191b23]" id="toastTitle"></p>
-    <p class="text-[11px] text-[#727785] mt-0.5" id="toastMsg"></p>
+    <p class="text-[12px] font-medium text-[#727785] mt-0.5" id="toastMsg"></p>
   </div>
 </div>
 
 
 <script>
 /* ══════════════════════════════════
-   CONFIG
+   CONFIG & STATE VARIABLES
 ══════════════════════════════════ */
-const API_BASE = 'http://localhost:5000/api'; // <--- Change port here if needed
+const API_BASE = 'http://localhost:5000/api'; 
 const ROWS_PER_PAGE = 10;
 
 let allUsers    = [];
@@ -418,30 +397,41 @@ let filtered    = [];
 let currentPage = 1;
 let editingId   = null;   
 let pendingDeleteId = null;
+let confirmActionCallback = null;
 
 /* ══════════════════════════════════
-   INIT
+   INITIALIZATION
 ══════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   const mc = document.getElementById('mainContent');
-  setTimeout(() => { mc.style.opacity='1'; mc.style.transform='translateY(0)'; }, 80);
+  setTimeout(() => { if(mc) { mc.style.opacity='1'; mc.style.transform='translateY(0)'; } }, 80);
   const searchInput = document.getElementById('tableSearch');
   if (searchInput) {
     searchInput.value = '';
-    searchInput.autocomplete = 'off';
     searchInput.addEventListener('input', filterAndRender);
   }
   startClock();
   loadUsers();
 });
 
+/* Global Window Clicks */
 document.addEventListener('click', e => {
   if (!document.getElementById('profileWrap').contains(e.target))
     document.getElementById('profileDropdown').classList.add('hidden');
+  
   const spb = document.getElementById('statusPillBtn');
   const rpb = document.getElementById('rolePillBtn');
   if (spb && !spb.contains(e.target)) document.getElementById('statusPillDropdown').style.display='none';
   if (rpb && !rpb.contains(e.target)) document.getElementById('rolePillDropdown').style.display='none';
+
+  const rmt = document.getElementById('roleSelectTrigger');
+  if (rmt && !rmt.contains(e.target) && !document.getElementById('roleModalDropdown').contains(e.target)) {
+    document.getElementById('roleModalDropdown').style.display = 'none';
+  }
+  const smt = document.getElementById('statusSelectTrigger');
+  if (smt && !smt.contains(e.target) && !document.getElementById('statusModalDropdown').contains(e.target)) {
+    document.getElementById('statusModalDropdown').style.display = 'none';
+  }
 });
 
 function toggleProfile(e) {
@@ -450,21 +440,50 @@ function toggleProfile(e) {
 }
 
 /* ══════════════════════════════════
-   CLOCK
+   LIVE SYSTEM CLOCK
 ══════════════════════════════════ */
 function startClock() {
   function tick() {
+    const clockEl = document.getElementById('clockDisplay');
+    if(!clockEl) return;
     const n = new Date(); let h = n.getHours();
     const m = String(n.getMinutes()).padStart(2,'0'), s = String(n.getSeconds()).padStart(2,'0');
     const ap = h>=12?'PM':'AM'; h=h%12||12;
-    document.getElementById('clockDisplay').textContent =
-      `${String(h).padStart(2,'0')}:${m}:${s} ${ap}`;
+    clockEl.textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ap}`;
   }
   tick(); setInterval(tick, 1000);
 }
 
 /* ══════════════════════════════════
-   LOAD FROM API
+   MODAL DROPDOWN HANDLERS
+══════════════════════════════════ */
+function toggleModalDropdown(e, targetId) {
+  e.stopPropagation();
+  const targetMenu = document.getElementById(targetId);
+  const isOpen = targetMenu.style.display === 'block';
+  
+  document.getElementById('roleModalDropdown').style.display = 'none';
+  document.getElementById('statusModalDropdown').style.display = 'none';
+  
+  if (!isOpen) {
+    targetMenu.style.display = 'block';
+  }
+}
+
+function selectModalOption(type, value, displayLabel) {
+  if (type === 'role') {
+    document.getElementById('umRole').value = value;
+    document.getElementById('roleSelectLabel').textContent = displayLabel;
+    document.getElementById('roleModalDropdown').style.display = 'none';
+  } else if (type === 'status') {
+    document.getElementById('umStatus').value = value;
+    document.getElementById('statusSelectLabel').textContent = displayLabel;
+    document.getElementById('statusModalDropdown').style.display = 'none';
+  }
+}
+
+/* ══════════════════════════════════
+   FETCH DATA FROM BACKEND API
 ══════════════════════════════════ */
 async function loadUsers() {
   show('tableLoading'); hide('tableWrap'); hide('emptyState'); hide('tableError'); hide('paginationBar');
@@ -483,23 +502,16 @@ async function loadUsers() {
   }
 }
 
-/* ══════════════════════════════════
-   STATS
-══════════════════════════════════ */
 function updateStats() {
-  const total   = allUsers.length;
-  const active  = allUsers.filter(u => u.status === 'Active').length;
-  const inactive= allUsers.filter(u => u.status !== 'Active').length;
-  const admins  = allUsers.filter(u => (u.role||'').toLowerCase() === 'admin').length;
-  setText('stTotal',   total);
-  setText('stActive',  active);
-  setText('stInactive',inactive);
-  setText('stAdmins',  admins);
-  setText('sbBadge',   total);
+  const total = allUsers.length;
+  setText('stTotal', total);
+  setText('stActive', allUsers.filter(u => u.status === 'Active').length);
+  setText('stInactive', allUsers.filter(u => u.status === 'Inactive').length);
+  setText('sbBadge', total);
 }
 
 /* ══════════════════════════════════
-   PILL FILTER DROPDOWNS
+   MAIN TABLE PILL FILTER DROPDOWNS
 ══════════════════════════════════ */
 let _activeStatus = 'all';
 let _activeRole   = 'all';
@@ -542,42 +554,7 @@ function setRolePill(val, el, label) {
 }
 
 /* ══════════════════════════════════
-   CHIP SELECTOR (role / status)
-══════════════════════════════════ */
-function selectChip(group, val, el) {
-  const container = group === 'role' ? document.getElementById('roleChips') : document.getElementById('statusChips');
-  container.querySelectorAll('.role-chip').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById(group === 'role' ? 'umRole' : 'umStatus').value = val;
-}
-
-/* ══════════════════════════════════
-   EXPORT CSV (Without Dept)
-══════════════════════════════════ */
-function exportUsers() {
-  if (!filtered.length) return showToast('Nothing to export', 'No users match the current filter.', true);
-  const headers = ['ID','First Name','Middle Name','Last Name','Email','Role','Status','Created'];
-  const rows = filtered.map(u => [
-    u._id||u.id||'',
-    u.fname||'',
-    u.mname||'',
-    u.lname||'',
-    u.email||'',
-    u.role||'',
-    u.status||'',
-    u.createdAt ? new Date(u.createdAt).toLocaleDateString() : (u.created||'')
-  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
-  const csv = [headers.join(','), ...rows].join('\n');
-  const blob = new Blob([csv], { type:'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `users_${new Date().toISOString().split('T')[0]}.csv`;
-  a.click();
-  showToast('Exported', `${filtered.length} users exported as CSV.`);
-}
-
-/* ══════════════════════════════════
-   FILTER & RENDER
+   FILTER & RENDER MANAGEMENT
 ══════════════════════════════════ */
 function filterAndRender() {
   const q  = (document.getElementById('tableSearch').value || '').toLowerCase().trim();
@@ -585,14 +562,9 @@ function filterAndRender() {
   const sf = _activeStatus;
 
   filtered = allUsers.filter(u => {
-    // Aligned to backend schema (fname, mname, lname)
-    const fname  = u.fname || '';
-    const mname  = u.mname || '';
-    const lname  = u.lname || '';
-    const full   = `${fname} ${mname} ${lname}`.toLowerCase();
-    const email  = (u.email || '').toLowerCase();
-    const role   = (u.role || '').toLowerCase();
-
+    const full = `${u.fname||''} ${u.mname||''} ${u.lname||''}`.toLowerCase();
+    const email = (u.email || '').toLowerCase();
+    const role  = (u.role || '').toLowerCase();
     const mQ = !q || full.includes(q) || email.includes(q) || role.includes(q);
     const mR = rf === 'all' || role === rf.toLowerCase();
     const mS = sf === 'all' || (u.status || '') === sf;
@@ -612,119 +584,75 @@ function renderTable() {
   const page  = filtered.slice(start, start + ROWS_PER_PAGE);
 
   tbody.innerHTML = '';
-
-  if (total === 0) {
-    hide('tableWrap'); hide('paginationBar');
-    showEl('emptyState');
-    return;
-  }
-  hide('emptyState');
-  show('tableWrap');
-
-  const AVATAR_COLORS = ['#0058be','#424754','#059669','#727785','#924700','#0058be'];
+  if (total === 0) { hide('tableWrap'); hide('paginationBar'); showEl('emptyState'); return; }
+  
+  hide('emptyState'); show('tableWrap');
 
   page.forEach((u, i) => {
-    // Aligned to backend schema
-    const fname  = u.fname || '';
-    const mname  = u.mname || '';
-    const lname  = u.lname || '';
-    const email  = u.email || '';
-    const role   = u.role  || '—';
-    const status = u.status|| '—';
-    const created= u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : (u.created || '—');
-    const fullName = [fname, mname, lname].filter(Boolean).join(' ');
-    const initials = ((fname[0]||'') + (lname[0]||'')).toUpperCase() || '??';
-    const ac = AVATAR_COLORS[(start + i) % AVATAR_COLORS.length];
+    const fullName = [u.fname, u.mname, u.lname].filter(Boolean).join(' ');
     const uid = u._id || u.id || '';
 
-    // Color coded Badges
-    const roleBadge = (role.toLowerCase() === 'admin') 
+    const roleBadge = ((u.role||'').toLowerCase() === 'admin') 
         ? `<span class="badge badge-role-admin">Admin</span>`
         : `<span class="badge badge-role-staff">Staff</span>`;
 
-    const statusBadge = status === 'Active'
+    const statusBadge = u.status === 'Active'
       ? `<span class="badge badge-status-active"><span class="w-1.5 h-1.5 rounded-full bg-[#15803d] mr-1.5"></span>Active</span>`
       : `<span class="badge badge-status-inactive"><span class="w-1.5 h-1.5 rounded-full bg-[#4b5563] mr-1.5"></span>Inactive</span>`;
+
+    // Flexible fallback engine para sa Last Login date field structures
+    const rawLastLogin = u.lastLogin || u.last_login || u.lastlogin;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="tbl-td">
-        <div class="flex items-center gap-3">
-          <div style="width:34px;height:34px;border-radius:10px;background:${ac};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">${initials}</div>
-          <div>
-            <p class="text-[13px] font-semibold text-[#191b23] leading-tight">${fullName}</p>
-          </div>
-        </div>
+        <p class="text-[13px] font-bold text-[#191b23]">${fullName}</p>
       </td>
-      <td class="tbl-td" style="font-size:12px;color:#727785;">${email}</td>
+      <td class="tbl-td text-[#727785]">${u.email||''}</td>
       <td class="tbl-td">${roleBadge}</td>
       <td class="tbl-td">${statusBadge}</td>
-      <td class="tbl-td" style="font-size:11px;color:#a0a6b8;white-space:nowrap;">${created}</td>
+      <td class="tbl-td text-[#a0a6b8] text-[12px]">${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</td>
+      <td class="tbl-td text-[#a0a6b8] text-[12px]">${rawLastLogin ? new Date(rawLastLogin).toLocaleDateString() : '—'}</td>
       <td class="tbl-td text-center">
-        <button
-          onclick="openViewEdit('${uid}')"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e2e8f0] text-[12px] font-semibold text-[#424754] hover:bg-[#f2f3fd] hover:border-[#0058be] hover:text-[#0058be] transition-all">
-          <i class="ti ti-pencil" style="font-size:13px;"></i>Edit
+        <button onclick="openViewEdit('${uid}')" class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-[#dbeafe] bg-[#f4f7fc] text-[12px] font-bold text-[#0058be] hover:bg-[#dbeafe] transition-all">
+          View
         </button>
       </td>`;
     tbody.appendChild(tr);
   });
 
-  // Pagination
-  const from = total === 0 ? 0 : start + 1;
-  const to   = Math.min(start + ROWS_PER_PAGE, total);
-  setText('pagInfo', `Showing ${from}–${to} of ${total} user${total !== 1 ? 's' : ''}`);
-  const ctrl = document.getElementById('pagControls');
-  ctrl.innerHTML = '';
-  showEl('paginationBar');
-  document.getElementById('paginationBar').style.display='flex';
+  setText('pagInfo', `Showing ${start+1}–${Math.min(start+ROWS_PER_PAGE, total)} of ${total} users`);
+  const ctrl = document.getElementById('pagControls'); ctrl.innerHTML = '';
+  showEl('paginationBar'); document.getElementById('paginationBar').style.display='flex';
 
   const mkBtn = (lbl, pg, active, disabled, isIcon) => {
-    const b = document.createElement('button');
-    b.className = 'page-btn' + (active ? ' active' : '');
-    b.disabled  = disabled;
-    b.innerHTML = isIcon ? `<i class="ti ti-${lbl}" style="font-size:13px;"></i>` : lbl;
+    const b = document.createElement('button'); b.className = 'page-btn' + (active ? ' active' : ''); b.disabled = disabled;
+    b.innerHTML = isIcon ? `<i class="ti ti-${lbl}"></i>` : lbl;
     if (!disabled && !active) b.onclick = () => { currentPage = pg; renderTable(); };
     ctrl.appendChild(b);
   };
-
   mkBtn('chevron-left', currentPage - 1, false, currentPage === 1, true);
-  const pg = [];
-  if (pages <= 7) { for (let i = 1; i <= pages; i++) pg.push(i); }
-  else {
-    pg.push(1);
-    if (currentPage > 3) pg.push('…');
-    for (let i = Math.max(2, currentPage-1); i <= Math.min(pages-1, currentPage+1); i++) pg.push(i);
-    if (currentPage < pages - 2) pg.push('…');
-    pg.push(pages);
-  }
-  pg.forEach(p => {
-    if (p === '…') { const sp = document.createElement('span'); sp.className='page-btn'; sp.textContent='…'; ctrl.appendChild(sp); }
-    else mkBtn(p, p, p === currentPage, false, false);
-  });
+  for(let i=1; i<=pages; i++) { if(i==1 || i==pages || (i>=currentPage-1 && i<=currentPage+1)) mkBtn(i, i, i===currentPage, false, false); }
   mkBtn('chevron-right', currentPage + 1, false, currentPage === pages, true);
 }
 
 /* ══════════════════════════════════
-   OPEN MODAL (Add or Edit)
+   FORM MODAL ACTIONS
 ══════════════════════════════════ */
 function openAddModal() {
   editingId = null;
   clearForm();
   document.getElementById('drawerTitle').textContent    = 'Add New User';
-  document.getElementById('drawerSubtitle').textContent = 'Fill in the user details below.';
+  document.getElementById('drawerSubtitle').textContent = 'Create a secure system user identification log entry.';
   document.getElementById('drawerIdRow').classList.add('hidden');
   document.getElementById('deleteBtn').classList.add('hidden');
   document.getElementById('umSaveLabel').textContent    = 'Save User';
-  document.getElementById('passRequired').style.display = 'inline';
-  document.getElementById('passHint').textContent       = 'Minimum 8 characters.';
-  document.getElementById('umRole').value               = '';
-  document.getElementById('umStatus').value             = 'Active';
-  resetChips('roleChips');
-  setChips('statusChips', 'Active');
+  
+  document.getElementById('roleSelectLabel').textContent = 'Select Role';
+  document.getElementById('statusSelectLabel').textContent = 'Active';
+  
   hideErr();
   document.getElementById('userModal').classList.add('open');
-  setTimeout(() => document.getElementById('umFname').focus(), 80);
 }
 
 function openViewEdit(uid) {
@@ -732,30 +660,31 @@ function openViewEdit(uid) {
   if (!u) return;
   editingId = uid;
 
-  const fname  = u.fname  || '';
-  const mname  = u.mname  || '';
-  const lname  = u.lname  || '';
-
-  document.getElementById('drawerTitle').textContent    = 'Edit User';
-  document.getElementById('drawerSubtitle').textContent = `Editing account for ${fname} ${lname}`.trim();
+  document.getElementById('drawerTitle').textContent    = 'Account Parameters';
+  document.getElementById('drawerSubtitle').textContent = `Reviewing user structural attributes inside index data registry.`;
   document.getElementById('drawerIdRow').classList.remove('hidden');
   document.getElementById('drawerUserId').textContent   = uid;
-  document.getElementById('umFname').value  = fname;
-  document.getElementById('umMname').value  = mname;
-  document.getElementById('umLname').value  = lname;
+  document.getElementById('umFname').value  = u.fname || '';
+  document.getElementById('umMname').value  = u.mname || '';
+  document.getElementById('umLname').value  = u.lname || '';
   document.getElementById('umEmail').value  = u.email || '';
-  document.getElementById('umPass').value   = '';
   
-  const role   = (u.role || '').toLowerCase();
-  const status = u.status || 'Active';
-  document.getElementById('umRole').value   = role;
-  document.getElementById('umStatus').value = status;
-  setChips('roleChips',   role);
-  setChips('statusChips', status);
+  // FIXED LOGIC: Kinukuha na rito ang totoong password mula sa backend para hindi na maging ******
+  const assignedPassword = u.password || '';
+  document.getElementById('umPass').value   = assignedPassword;
+  document.getElementById('umConfirmPass').value = assignedPassword;
+  
+  const currentRole = (u.role || '').toLowerCase();
+  const currentStatus = u.status || 'Active';
+
+  document.getElementById('umRole').value   = currentRole;
+  document.getElementById('umStatus').value = currentStatus;
+  
+  document.getElementById('roleSelectLabel').textContent = currentRole === 'admin' ? 'Admin' : 'Staff';
+  document.getElementById('statusSelectLabel').textContent = currentStatus;
+
   document.getElementById('deleteBtn').classList.remove('hidden');
   document.getElementById('umSaveLabel').textContent   = 'Update User';
-  document.getElementById('passRequired').style.display= 'none';
-  document.getElementById('passHint').textContent      = 'Leave blank to keep the existing password.';
   hideErr();
   document.getElementById('userModal').classList.add('open');
 }
@@ -766,28 +695,74 @@ function closeModal() {
 }
 
 function clearForm() {
-  ['umFname','umMname','umLname','umEmail','umPass'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('umRole').value   = '';
-  document.getElementById('umStatus').value = 'Active';
-  resetChips('roleChips');
-  setChips('statusChips', 'Active');
-}
-
-function resetChips(containerId) {
-  document.getElementById(containerId).querySelectorAll('.role-chip').forEach(c => c.classList.remove('selected'));
-}
-function setChips(containerId, val) {
-  const container = document.getElementById(containerId);
-  container.querySelectorAll('.role-chip').forEach(c => {
-    c.classList.toggle('selected', c.dataset.val.toLowerCase() === val.toLowerCase());
+  ['umFname','umMname','umLname','umEmail','umPass','umConfirmPass','umRole'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
   });
+  document.getElementById('umStatus').value = 'Active';
 }
 
 /* ══════════════════════════════════
-   SAVE (Create or Update)
+   INTERCEPT FORM SUBMISSION
+══════════════════════════════════ */
+function interceptFormSubmit() {
+  hideErr();
+  const fname = document.getElementById('umFname').value.trim();
+  const lname = document.getElementById('umLname').value.trim();
+  const email = document.getElementById('umEmail').value.trim();
+  const role = document.getElementById('umRole').value;
+  const pass = document.getElementById('umPass').value;
+  const confirmPass = document.getElementById('umConfirmPass').value;
+
+  if (!fname || !lname || !email || !role) {
+    return showErr('Missing input parameters. Please complete all required profile details.');
+  }
+
+  // Mandatory ang password kapag gagawa ng bagong user
+  if (!editingId && !pass) {
+    return showErr('Password field is required to register a new system profile.');
+  }
+
+  // Client-side duplication checking
+  const isDuplicate = allUsers.some(user => {
+    const userId = user._id || user.id;
+    return user.email.toLowerCase() === email.toLowerCase() && userId !== editingId;
+  });
+
+  if (isDuplicate) {
+    return showErr('Existing user');
+  }
+
+  // STRICT RULE: Confirm password match block
+  if (pass !== confirmPass) {
+    return showErr('Validation failure. Confirm password matrix string does not match.');
+  }
+
+  // STRICT RULE: Minimum length must be at least 6 characters & No special characters block
+  if (pass) {
+    if (pass.length < 6) {
+      return showErr('Password validation dropped: Minimum length required is 6 characters.');
+    }
+    const alphaNumericRegex = /^[a-zA-Z0-9]+$/;
+    if (!alphaNumericRegex.test(pass)) {
+      return showErr('Password validation dropped: Special characters are completely restricted.');
+    }
+  }
+
+  openConfirmModal(
+    editingId ? 'Modify User Details' : 'Register System Profile',
+    `Are you sure you want to proceed with processing structural updates into the system core for this identity record?`,
+    'ti-device-floppy',
+    '#0058be',
+    'Execute',
+    () => { saveUser(); }
+  );
+}
+
+/* ══════════════════════════════════
+   SAVE OPERATION
 ══════════════════════════════════ */
 async function saveUser() {
-  // ALIGNED MAP TO BACKEND
   const payload = {
     fname: document.getElementById('umFname').value.trim(),
     mname: document.getElementById('umMname').value.trim(),
@@ -796,148 +771,104 @@ async function saveUser() {
     role: document.getElementById('umRole').value,
     status: document.getElementById('umStatus').value || 'Active'
   };
-  
   const pass = document.getElementById('umPass').value;
-
-  if (!payload.fname || !payload.lname || !payload.email || !payload.role) {
-    return showErr('Please fill in all required fields and select a role.');
-  }
-  if (!editingId && !pass) return showErr('Please enter a password for the new user.');
-  if (pass && pass.length < 8) return showErr('Password must be at least 8 characters.');
-  
-  const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRx.test(payload.email)) return showErr('Please enter a valid email address.');
-
   if (pass) payload.password = pass;
 
   const btn = document.getElementById('umSaveBtn');
   btn.disabled = true;
-  btn.innerHTML = '<i class="ti ti-loader-2 animate-spin" style="font-size:14px;"></i> Saving…';
+  btn.innerHTML = 'Processing...';
 
   try {
-    let res;
-    if (editingId) {
-      res = await fetch(`${API_BASE}/users/${editingId}`, {
-        method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
-      });
-    } else {
-      res = await fetch(`${API_BASE}/users`, {
-        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
-      });
-    }
-    if (!res.ok) {
-      const err = await res.json().catch(()=>({}));
-      throw new Error(err.message || `Server error ${res.status}`);
-    }
+    let res = await fetch(`${API_BASE}/users${editingId ? '/' + editingId : ''}`, {
+      method: editingId ? 'PUT' : 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Action execution dropped by server validation protocols.');
     closeModal();
-    showToast(editingId ? 'User Updated' : 'User Created', `${payload.fname} ${payload.lname} has been ${editingId?'updated':'added'}.`);
+    showToast('Success Saved', 'User logs catalog synchronization complete.');
     await loadUsers();
   } catch (err) {
-    showErr(err.message || 'Failed to save. Try again.');
+    showErr(err.message);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="ti ti-device-floppy" style="font-size:15px;"></i><span id="umSaveLabel">' + (editingId ? 'Update User' : 'Save User') + '</span>';
+    btn.innerHTML = `<span id="umSaveLabel">${editingId ? 'Update User' : 'Save User'}</span>`;
   }
 }
 
 /* ══════════════════════════════════
-   DELETE
+   CONFIRMATION MODAL WRAPPER
 ══════════════════════════════════ */
-function triggerDelete() {
-  const u = allUsers.find(x => (x._id || x.id) == editingId);
-  if (!u) return;
-  pendingDeleteId = editingId;
-  const fname = u.fname || '';
-  const lname = u.lname || '';
-  document.getElementById('confMsg').textContent =
-    `Permanently remove ${fname} ${lname}? This cannot be undone.`;
+function openConfirmModal(title, msg, iconClass, btnBgColor, actionText, callback) {
+  document.getElementById('confTitle').textContent = title;
+  document.getElementById('confMsg').textContent = msg;
+  
+  const iconTag = document.getElementById('confIconTag');
+  iconTag.className = `ti ${iconClass}`;
+  iconTag.style.color = btnBgColor;
+  
+  const confIconContainer = document.getElementById('confIcon');
+  confIconContainer.style.borderColor = `${btnBgColor}33`;
+  confIconContainer.style.backgroundColor = `${btnBgColor}11`;
+  
+  const mainBtn = document.getElementById('confBtn');
+  mainBtn.textContent = actionText;
+  mainBtn.style.backgroundColor = btnBgColor;
+  
+  confirmActionCallback = callback;
   document.getElementById('confirmModal').classList.add('open');
 }
 
-function closeConfirm() {
-  document.getElementById('confirmModal').classList.remove('open');
-  pendingDeleteId = null;
+function triggerDelete() {
+  pendingDeleteId = editingId;
+  openConfirmModal(
+    'Delete User',
+    'Are you completely sure you want to permanently separate and erase this identity parameter logging record?',
+    'ti-trash',
+    '#dc2626',
+    'Delete',
+    () => { executeConfirm(); }
+  );
 }
 
-async function executeConfirm() {
-  if (!pendingDeleteId) return;
-  const u = allUsers.find(x => (x._id || x.id) == pendingDeleteId);
-  const btn = document.getElementById('confBtn');
-  btn.textContent = 'Deleting…'; btn.disabled = true;
-  try {
-    const res = await fetch(`${API_BASE}/users/${pendingDeleteId}`, { method: 'DELETE' });
-    if (!res.ok) throw new Error(`Server error ${res.status}`);
+function closeConfirm() { 
+  document.getElementById('confirmModal').classList.remove('open'); 
+  confirmActionCallback = null;
+}
+
+function executeConfirm() {
+  if (confirmActionCallback) {
+    confirmActionCallback();
     closeConfirm();
-    closeModal();
-    const fname = u ? (u.fname||'User') : 'User';
-    const lname = u ? (u.lname||'')     : '';
-    showToast('User Deleted', `${fname} ${lname} has been removed.`);
-    await loadUsers();
-  } catch (err) {
-    closeConfirm();
-    showToast('Delete Failed', err.message || 'Could not delete. Try again.', true);
-  } finally {
-    btn.textContent = 'Delete'; btn.disabled = false;
   }
 }
 
 /* ══════════════════════════════════
-   PASSWORD TOGGLE
+   VISIBILITY HELPERS
 ══════════════════════════════════ */
-function togglePw() {
-  const inp = document.getElementById('umPass');
-  const ico = document.getElementById('pwIcon');
-  const isText = inp.type === 'text';
-  inp.type = isText ? 'password' : 'text';
-  ico.className = isText ? 'ti ti-eye' : 'ti ti-eye-off';
+function togglePw(inputId, iconId) {
+  const inp = document.getElementById(inputId);
+  const ico = document.getElementById(iconId);
+  if(!inp || !ico) return;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  ico.className = inp.type === 'password' ? 'ti ti-eye' : 'ti ti-eye-off';
 }
-
-/* ══════════════════════════════════
-   TOAST
-══════════════════════════════════ */
-let _toastTimer;
-function showToast(title, msg, isError = false) {
-  const t   = document.getElementById('toast');
-  const ico = document.getElementById('toastIcon');
+function showToast(title, msg) {
+  const t = document.getElementById('toast');
   document.getElementById('toastTitle').textContent = title;
-  document.getElementById('toastMsg').textContent   = msg || '';
-  if (isError) {
-    ico.style.background = '#fef2f2';
-    ico.innerHTML = '<i class="ti ti-alert-circle" style="font-size:14px;color:#dc2626;"></i>';
-  } else {
-    ico.style.background = '#e8f0fd';
-    ico.innerHTML = '<i class="ti ti-check" style="font-size:14px;color:#0058be;"></i>';
-  }
-  clearTimeout(_toastTimer);
+  document.getElementById('toastMsg').textContent = msg;
   t.classList.add('show');
-  _toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
-
-/* ══════════════════════════════════
-   ERROR HELPERS
-══════════════════════════════════ */
-function showErr(msg) {
-  document.getElementById('umError').classList.remove('hidden');
-  document.getElementById('umErrorText').textContent = msg;
-}
+function showErr(msg) { document.getElementById('umError').classList.remove('hidden'); document.getElementById('umErrorText').textContent = msg; }
 function hideErr() { document.getElementById('umError').classList.add('hidden'); }
-
-/* ══════════════════════════════════
-   DOM HELPERS
-══════════════════════════════════ */
-function show(id)   { const el=document.getElementById(id); if(el){ el.classList.remove('hidden'); el.style.display=''; } }
-function hide(id)   { const el=document.getElementById(id); if(el){ el.classList.add('hidden'); el.style.display='none'; } }
-function showEl(id) { const el=document.getElementById(id); if(el){ el.classList.remove('hidden'); el.style.display='flex'; } }
-function setText(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
-
-/* close on backdrop click / ESC */
-document.getElementById('userModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
-document.getElementById('confirmModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeConfirm(); });
-document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape') return;
-  if (document.getElementById('confirmModal').classList.contains('open')) { closeConfirm(); return; }
-  if (document.getElementById('userModal').classList.contains('open'))    { closeModal();   return; }
-});
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+function showEl(id) { document.getElementById(id).classList.remove('hidden'); }
+function setText(id, text) { 
+  const el = document.getElementById(id);
+  if(el) el.textContent = text; 
+}
 </script>
 </body>
 </html>

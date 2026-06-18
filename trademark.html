@@ -658,8 +658,8 @@ function updateStatusStyle(sel) {
 /* ── STATS ── */
 function updateStats() {
   document.getElementById('stat-total').textContent    = ALL_RECORDS.length;
-  document.getElementById('stat-approved').textContent = ALL_RECORDS.filter(r => r.status === 'Approved').length;
-  document.getElementById('stat-pending').textContent  = ALL_RECORDS.filter(r => r.status !== 'Approved').length;
+  document.getElementById('stat-approved').textContent = ALL_RECORDS.filter(r => r.status === 'Approved with Certificate').length;
+  document.getElementById('stat-pending').textContent  = ALL_RECORDS.filter(r => r.status !== 'Approved with Certificate').length;
 }
 
 /* ── FILTER DROPDOWN ── */
@@ -800,6 +800,7 @@ function mapRecord(item) {
     _id: String(item._id), _rawDateTime: rawDateTime,
     referenceNo: item.referenceId || item.referenceNo || item.refNo || String(item._id),
     title, owner, dept, status: item.status || 'Submitted to IPOPHL', dateOfFiling,
+    archived: isArchived(item)
   };
 }
 
@@ -809,7 +810,7 @@ async function fetchTrademarks() {
     const res  = await fetch(API_URL);
     const data = await res.json();
     const raw  = Array.isArray(data) ? data : (data.data ?? []);
-    ALL_RECORDS     = raw.filter(i => (i.category||'').toLowerCase() === CATEGORY).map(mapRecord);
+    ALL_RECORDS     = raw.filter(item => !isArchived(item) && (item.category||'').toLowerCase() === CATEGORY).map(mapRecord);
     filteredRecords = sortByDateDesc([...ALL_RECORDS]);
     updateStats(); render(); checkAndHighlightResearch();
   } catch (err) {

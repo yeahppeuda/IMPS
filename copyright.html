@@ -294,7 +294,7 @@
           </div>
           <button onclick="openExportModal()" title="Export to PDF"
             class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors shrink-0">
-            <i class="ti ti-file-type-pdf" style="font-size:17px;"></i>
+            <i class="ti ti-download" style="font-size:16px;"></i>
           </button>
         </div>
 
@@ -344,7 +344,7 @@
         <div>
           <h2 class="text-[18px] font-bold text-on-surface flex items-center gap-2">
             <i class="ti ti-file-type-pdf text-red-500" style="font-size:20px;"></i>
-            Export — Print Preview
+            Print Preview
           </h2>
           <p class="text-[12px] text-outline mt-0.5">Set date range, preview the table, then download as PDF.</p>
         </div>
@@ -726,10 +726,11 @@
 
   /* ── STAT CARDS ── */
   function updateStats() {
-    document.getElementById('stat-total').textContent    = ALL_RECORDS.length;
-    document.getElementById('stat-approved').textContent = ALL_RECORDS.filter(r => r.status === 'Approved with Certificate').length;
-    document.getElementById('stat-pending').textContent  = ALL_RECORDS.filter(r => r.status !== 'Approved with Certificate').length;
-  }
+  const active = ALL_RECORDS.filter(r => !r.archived);
+  document.getElementById('stat-total').textContent    = active.length;
+  document.getElementById('stat-approved').textContent = active.filter(r => r.status === 'Approved with Certificate').length;
+  document.getElementById('stat-pending').textContent  = active.filter(r => r.status !== 'Approved with Certificate').length;
+}
 
   /* ── FILTER DROPDOWN ── */
   function toggleFilterMenu() {
@@ -759,20 +760,27 @@
   }
 
   /* ── SEARCH + FILTER ── */
-  function filterAndRender() {
-    const q = document.getElementById('search-input').value.toLowerCase().trim();
-    filteredRecords = ALL_RECORDS.filter(r => {
-      let ms = activeStatusFilter === 'All' ? true : r.status === activeStatusFilter;
-      const mq = !q || (r.referenceNo||'').toLowerCase().includes(q) || (r.title||'').toLowerCase().includes(q)
-                    || (r.author||'').toLowerCase().includes(q)      || (r.dept||'').toLowerCase().includes(q)
-                    || (r.status||'').toLowerCase().includes(q);
-      return ms && mq;
-    });
-    filteredRecords = sortByDateDesc(filteredRecords);
-    currentPage = 1;
-    render();
-    checkAndHighlightResearch();
-  }
+  // SA LOOB NG IYONG FILTER/RENDER LOGIC SA COPYRIGHT.HTML
+function filterAndRender() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+
+  // 1. SALAIN MUNA: Alisin ang lahat ng naka-archive na records
+  const activeRecords = ALL_RECORDS.filter(r => !r.archived);
+
+  // 2. I-APPLY ANG SEARCH FILTER (Gamit ang activeRecords sa halip na ALL_RECORDS)
+  filteredRecords = activeRecords.filter(r => {
+    const sOk = (activeStatusFilter === 'All' || r.status === activeStatusFilter);
+    const qOk = !q || (r.referenceNo || '').toLowerCase().includes(q)
+                   || (r.title || '').toLowerCase().includes(q)
+                   || (r.author || '').toLowerCase().includes(q)
+                   || (r.dept || '').toLowerCase().includes(q)
+                   || (r.status || '').toLowerCase().includes(q);
+    return sOk && qOk;
+  });
+
+  currentPage = 1;
+  render();
+}
 
   /* ── RENDER TABLE ── */
   function render() {
@@ -875,30 +883,31 @@
     btn('chevron_right', currentPage + 1, currentPage === totalPages, false, true);
   }
 
-  /* ── MAP API RECORD ── */
-  function mapRecord(item) {
-    const title = (item.researchTitle?.trim()) || (item.title?.trim()) || 'No Title';
-    let author = 'Unknown';
-    if (Array.isArray(item.authors) && item.authors.length)            author = item.authors.join(', ');
-    else if (typeof item.author   === 'string' && item.author.trim())   author = item.author.trim();
-    const dept = item.department || item.dept || 'N/A';
-
-    let rawDateTime  = item.createdAt || null;
-    let dateOfFiling = '';
-    if (item.date)            dateOfFiling = item.date.split('T')[0];
-    else if (item.dateApplied) dateOfFiling = item.dateApplied.split('T')[0];
-    else if (item.createdAt)   dateOfFiling = item.createdAt.split('T')[0];
-
-    return {
-      _id: String(item._id),
-      _rawDateTime: rawDateTime,
-      referenceNo: item.referenceId || item.referenceNo || item.refNo || String(item._id),
-      title, author, dept,
-      status: item.status || 'Submitted to IPOPHL',
-      dateOfFiling,
-      googleDriveLink: item.googleDriveLink || '',
-    };
+function mapRecord(item) {
+  const rawDateTime = item.createdAt || '';
+  let dateOfFiling = item.date || '';
+  if (dateOfFiling.includes('T')) {
+    dateOfFiling = dateOfFiling.split('T')[0];
   }
+  const title = item.researchTitle || item.title || '—';
+  const author = Array.isArray(item.authors) ? item.authors.join(', ') : (item.author || '—');
+  const dept = item.department || item.dept || '—';
+
+  return {
+    _id: String(item._id),
+    _rawDateTime: rawDateTime,
+    referenceNo: item.referenceId || item.referenceNo || item.refNo || String(item._id),
+    title,
+    author,
+    dept,
+    status: item.status || 'Submitted to IPOPHL',
+    dateOfFiling,
+    googleDriveLink: item.googleDriveLink || '',
+    
+    // ── ETO ANG DAPAT MONG IDAGDAG ──
+    archived: item.archived === true || item.archived === 'true'
+  };
+}
 
   /* ── FETCH ── */
   async function fetchCopyrights() {
@@ -906,15 +915,16 @@
       const res  = await fetch(API_URL);
       const data = await res.json();
       const raw  = Array.isArray(data) ? data : (data.data ?? []);
-      ALL_RECORDS     = raw.filter(i => (i.category || '').toLowerCase() === CATEGORY).map(mapRecord);
-      filteredRecords = sortByDateDesc([...ALL_RECORDS]);
-      updateStats(); render(); checkAndHighlightResearch();
+      ALL_RECORDS = raw.filter(i => (i.category || '').toLowerCase() === CATEGORY).map(mapRecord);
+      updateStats();
+      filterAndRender();   // ✅ dito na ma-apply yung archived filter pati search/status filter
+      checkAndHighlightResearch();
     } catch (err) {
       console.error('Fetch failed:', err);
       document.getElementById('table-body').innerHTML =
         `<tr><td colspan="7" class="text-center py-8 text-red-500 text-[13px] font-medium">Failed to load records. Make sure the API server is running.</td></tr>`;
     }
-  }
+}
 
   /* ── OPEN DETAIL MODAL ── */
   function openResearchModal(mongoId) {
@@ -1116,8 +1126,9 @@
     let ty = 8 + imgH + 3;
 
     // ── Navy + Gold double rule ──
+    const ruleMargin = 8
     doc.setDrawColor(0, 45, 114);
-    doc.setLineWidth(1.1);
+    doc.setLineWidth(0.5);
     doc.line(margin, ty, pw - margin, ty);
     ty += 1.6;
     doc.setDrawColor(192, 160, 32);
@@ -1184,43 +1195,43 @@
     });
 
     doc.autoTable({
-      startY: ty + 7,
-      head: [['Reference No.', 'Title', 'Author(s)', 'Department', 'Status', 'Date Applied']],
-      body: tableData,
-      theme: 'grid',
-      headStyles: {
-        fillColor: [255, 255, 255],
-        textColor: [20, 20, 20],
-        fontStyle: 'bold',
-        fontSize: 8.5,
-        cellPadding: { top: 4, bottom: 4, left: 3, right: 3 },
-        lineColor: [80, 80, 80],
-        lineWidth: 0.4,
-        halign: 'left',
-        valign: 'middle',
-      },
-      bodyStyles: {
-        fontSize: 8,
-        cellPadding: { top: 3.5, bottom: 3.5, left: 3, right: 3 },
-        textColor: [30, 30, 30],
-        fillColor: [255, 255, 255],
-        lineColor: [160, 160, 160],
-        lineWidth: 0.25,
-        valign: 'middle',
-        overflow: 'linebreak',
-      },
-      columnStyles: {
-        0: { cellWidth: 30, fontStyle: 'bold' },
-        1: { cellWidth: 45 },
-        2: { cellWidth: 38 },
-        3: { cellWidth: 28 },
-        4: { cellWidth: 24 },
-        5: { cellWidth: 15 },
-      },
-      alternateRowStyles: { fillColor: [255, 255, 255] },
-      margin: { left: margin, right: margin },
-      tableWidth: pw - (margin * 2),
-    });
+  startY: ty + 7,
+  head: [['Reference No.', 'Title', 'Author(s)', 'Department', 'Status', 'Date Applied']],
+  body: tableData,
+  theme: 'grid',
+  headStyles: {
+    fillColor: [255, 255, 255],
+    textColor: [20, 20, 20],
+    fontStyle: 'bold',
+    fontSize: 7.5,
+    cellPadding: { top: 3, bottom: 3, left: 2, right: 2 },
+    lineColor: [80, 80, 80],
+    lineWidth: 0.25,
+    halign: 'left',
+    valign: 'middle',
+  },
+  bodyStyles: {
+    fontSize: 7,
+    cellPadding: { top: 2.5, bottom: 2.5, left: 2, right: 2 },
+    textColor: [30, 30, 30],
+    fillColor: [255, 255, 255],
+    lineColor: [160, 160, 160],
+    lineWidth: 0.25,
+    valign: 'middle',
+    overflow: 'linebreak',
+  },
+  columnStyles: {
+    0: { cellWidth: 24, fontStyle: 'bold' },   // Reference No.
+    1: { cellWidth: 40, fontStyle: 'bold' },   // Title
+    2: { cellWidth: 34, fontStyle: 'bold' },   // Author(s)
+    3: { cellWidth: 25, fontStyle: 'bold' },   // Department
+    4: { cellWidth: 21 },                      // Status
+    5: { cellWidth: 16 },                      // Date Applied
+  },
+  alternateRowStyles: { fillColor: [255, 255, 255] },
+  margin: { left: 25, right: 25 },
+  tableWidth: 160,
+});
 
     // ── Footer ──
     const pages = doc.internal.getNumberOfPages();

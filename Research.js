@@ -5,18 +5,23 @@ const ResearchSchema = new mongoose.Schema({
   researchTitle:     { type: String, default: "" },
   referenceId:       { type: String, default: "" },
   department:        { type: String, default: "" },
+  college:           { type: String, default: "" }, // Idinagdag para sa view requirements ng modal mo
   authors:           { type: [String], default: [] },
-  status:            { type: String, default: "Submitted to IPO" },
-  date:              { type: String, default: "" },  // keep as String — frontend sends "YYYY-MM-DD"
-  googleDriveLink:   { type: String, trim: true, default: "" },  // Google Drive link for related documents
+  status:            { type: String, default: "Submitted to IPOPHL" },
+  date:              { type: String, default: "" },  
+  googleDriveLink:   { type: String, trim: true, default: "" },  
+  
+  // Archive Retention System Fields
+  archived:          { type: Boolean, default: false },
+  archiveDate:       { type: String, default: "" }, // "YYYY-MM-DD"
 
   // Formality Defect tracking (for patent)
-  defectNoticeDate:  { type: String, default: "" },  // "YYYY-MM-DD" string
-  defectNoticeDate2: { type: String, default: "" },  // "YYYY-MM-DD" string
-  defectNoticeDate3: { type: String, default: "" },  // "YYYY-MM-DD" string
-  defectNoticeDate4: { type: String, default: "" },  // "YYYY-MM-DD" string
-  defectNoticeDate5: { type: String, default: "" },  // "YYYY-MM-DD" string
-  defectConfirmed:  { type: Boolean, default: false },
+  defectNoticeDate:  { type: String, default: "" },  
+  defectNoticeDate2: { type: String, default: "" },  
+  defectNoticeDate3: { type: String, default: "" },  
+  defectNoticeDate4: { type: String, default: "" },  
+  defectNoticeDate5: { type: String, default: "" },  
+  defectConfirmed:   { type: Boolean, default: false },
   defectConfirmed2:  { type: Boolean, default: false },
   defectConfirmed3:  { type: Boolean, default: false },
   defectConfirmed4:  { type: Boolean, default: false },

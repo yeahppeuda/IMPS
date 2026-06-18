@@ -561,19 +561,6 @@
                 placeholder="Comma-separated names"/>
               <p class="text-[10px] text-outline mt-1">Separate multiple authors with commas</p>
             </div>
-            <div>
-              <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">
-                Google Drive Link
-                <span class="text-[10px] font-normal text-outline normal-case tracking-normal ml-1">(optional)</span>
-              </label>
-              <div class="relative">
-                <i class="ti ti-brand-google-drive absolute left-3.5 top-1/2 -translate-y-1/2" style="font-size:16px; color:#1a73e8;"></i>
-                <input id="field-gdrive" type="url" disabled oninput="markDirty()"
-                  class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 pl-9 border border-slate-200 bg-slate-50 outline-none transition-all"
-                  placeholder="https://drive.google.com/…"/>
-              </div>
-              <p class="text-[10px] text-outline mt-1">Paste a Google Drive folder or file link for related documents</p>
-            </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
@@ -599,6 +586,19 @@
             <div id="display-date-filing" class="text-[14px] font-medium text-on-surface py-1.5">—</div>
             <input id="field-date-filing" type="date" disabled onchange="recalcSubstantive(); markDirty();"
               class="modal-field w-full text-[13px] font-medium text-on-surface rounded-lg py-2.5 px-3 border border-slate-200 bg-slate-50 outline-none transition-all hidden"/>
+          </div>
+          <div class="pt-4">
+            <label class="text-[10px] font-bold text-outline uppercase tracking-widest block mb-2">
+              Google Drive Link
+              <span class="text-[10px] font-normal text-outline normal-case tracking-normal ml-1">(optional)</span>
+            </label>
+            <div class="relative">
+              <i class="ti ti-brand-google-drive absolute left-3.5 top-1/2 -translate-y-1/2" style="font-size:16px; color:#1a73e8;"></i>
+              <input id="field-gdrive" type="url" disabled oninput="markDirty()"
+                class="modal-field w-full text-[14px] font-medium text-on-surface rounded-lg py-2.5 px-3 pl-9 border border-slate-200 bg-slate-50 outline-none transition-all"
+                placeholder="https://drive.google.com/…"/>
+            </div>
+            <p class="text-[10px] text-outline mt-1">Paste a Google Drive folder or file link for related documents</p>
           </div>
         </div>
       </div>
@@ -1276,6 +1276,7 @@ function mapRecord(item) {
     status: item.status || 'Submitted to IPOPHL',
     dateOfFiling,
     googleDriveLink: item.googleDriveLink || '',
+    archived: isArchived(item),
 
     // Add mapping for the new defects array
     defects: Array.isArray(item.defects) ? item.defects : [],
@@ -1301,7 +1302,7 @@ async function fetchPatents() {
     const data = await res.json();
     const raw  = Array.isArray(data) ? data : (data.data ?? []);
     console.log('🔄 Fetched records sample:', raw.slice(0,2).map(r => ({ id: r._id, defectsCount: (r.defects || []).length, dates: [r.defectNoticeDate, r.defectNoticeDate2, r.defectNoticeDate3, r.defectNoticeDate4, r.defectNoticeDate5] })));
-    ALL_RECORDS     = raw.filter(i => (i.category || '').toLowerCase() === CATEGORY).map(mapRecord);
+    ALL_RECORDS     = raw.filter(item => !isArchived(item) && (item.category || '').toLowerCase() === CATEGORY).map(mapRecord);
     filteredRecords = sortByDateDesc([...ALL_RECORDS]);
     updateStats(); render();
     checkAndHighlightResearch();

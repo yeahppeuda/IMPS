@@ -57,10 +57,6 @@
   .toast-icon { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   @keyframes toastIn { from{opacity:0;transform:translateY(-10px) scale(0.96)} to{opacity:1;transform:none} }
 
-
-
-
-
   .live-time-badge { display:flex; align-items:center; gap:6px; background:#f2f3fd; border:1px solid #e1e2ec; border-radius:8px; padding:5px 11px; font-size:12px; font-weight:600; color:#424754; white-space:nowrap; flex-shrink:0; }
   .live-time-badge i { color:#0058be; font-size:14px; }
 
@@ -109,14 +105,15 @@
   <nav class="flex-1 overflow-y-auto px-3 pt-3 pb-2 space-y-2" aria-label="Admin navigation">
     <a class="nav-item active" href="admin-dashboard.html"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></a>
     <div class="nav-section-label">Management</div>
+    <!-- BAGONG MODULE: Researches -->
+    <a class="nav-item" href="admin-researches.html">
+      <i class="ti ti-database"></i><span>Researches</span>
+    </a>
     <a class="nav-item" href="admin-users.html">
       <i class="ti ti-users"></i><span>User Management</span>
       <span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600" id="nav-pending-users">…</span>
     </a>
     <a class="nav-item" href="admin-logs.html"><i class="ti ti-clipboard-list"></i><span>Activity Logs</span></a>
-    <div class="border-t border-slate-100 my-2"></div>
-    <div class="nav-section-label">General</div>
-    <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i><span>User Dashboard</span></a>
   </nav>
 </aside>
 
@@ -420,8 +417,6 @@ function getCategory(record) {
 }
 
 function getCollege(record) {
-  // Mirror exact logic from user dashboard:
-  // r.college || (r.department split before '—' or '--') || ''
   const col = record.college;
   if (col && col.trim()) return col.trim();
   const dept = record.department;
@@ -523,7 +518,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadAllData() {
-  // Fire all requests in parallel
   const [researchResult, usersResult, logsResult] = await Promise.allSettled([
     fetchResearch(),
     fetchUsers(),
@@ -541,7 +535,6 @@ async function loadAllData() {
 
   _researchRecords = records || [];
 
-  // DEBUG: open browser console to see actual field names from your DB
   if (_researchRecords.length > 0) {
     console.log('[DEBUG] Sample record fields:', Object.keys(_researchRecords[0]));
     console.log('[DEBUG] Sample record:', _researchRecords[0]);
@@ -576,7 +569,6 @@ async function fetchUsers() {
 }
 
 async function fetchLogs() {
-  // Try /logs, then /activity, then /audit-logs
   for (const endpoint of ['logs', 'activity', 'audit-logs', 'audit_logs']) {
     try {
       const res = await fetch(`${API_BASE}/${endpoint}`);
@@ -585,7 +577,7 @@ async function fetchLogs() {
       return Array.isArray(data) ? data : (data.data || data.logs || []);
     } catch { continue; }
   }
-  return null; // No logs endpoint found
+  return null;
 }
 
 /* ═══════════════════════════════════════
@@ -608,13 +600,9 @@ function aggregateRecords(records) {
   const thisY = now.getFullYear();
   const thisM = now.getMonth();
 
-  // Category counts
   const cats  = { copyright: 0, patent: 0, trademark: 0, utility: 0, design: 0 };
-
-  // College breakdown
   const colleges = {};
 
-  // Time series — monthly (12 months of current year)
   const monthly = {
     copyright: new Array(12).fill(0),
     patent:    new Array(12).fill(0),
@@ -623,7 +611,6 @@ function aggregateRecords(records) {
     design:    new Array(12).fill(0),
   };
 
-  // Time series — yearly (last 6 years)
   const currentYear = thisY;
   const yearLabels  = Array.from({ length: 6 }, (_, i) => String(currentYear - 5 + i));
   const yearly = {
@@ -634,7 +621,6 @@ function aggregateRecords(records) {
     design:    new Array(6).fill(0),
   };
 
-  // Time series — weekly (last 12 weeks)
   const weekly = {
     copyright: new Array(12).fill(0),
     patent:    new Array(12).fill(0),
@@ -652,34 +638,27 @@ function aggregateRecords(records) {
     const d       = getDate(r);
     const status  = getStatus(r);
 
-    // Category tally
     if (cats[cat] !== undefined) cats[cat]++;
 
-    // College tally
     if (college) {
       colleges[college] = (colleges[college] || 0) + 1;
     }
 
-    // Approval count
     if (['approved', 'approved', 'accept', 'accepted', 'granted'].includes(status)) approved++;
 
     if (d) {
       const recY = d.getFullYear();
       const recM = d.getMonth();
 
-      // This month count
       if (recY === thisY && recM === thisM) thisMonth++;
 
-      // Monthly chart (current year only)
       if (recY === thisY && cats[cat] !== undefined) {
         if (monthly[cat]) monthly[cat][recM]++;
       }
 
-      // Yearly chart
       const yIdx = yearLabels.indexOf(String(recY));
       if (yIdx >= 0 && yearly[cat]) yearly[cat][yIdx]++;
 
-      // Weekly chart — which of the last 12 weeks?
       const msPerWeek = 7 * 24 * 3600 * 1000;
       const weeksAgo  = Math.floor((Date.now() - d.getTime()) / msPerWeek);
       if (weeksAgo >= 0 && weeksAgo < 12 && weekly[cat]) {
@@ -720,7 +699,6 @@ function renderKPIs(agg) {
   const monthPct    = research ? Math.round(thisMonth / research * 100) : 0;
 
   set('kpi-total-users',    users  || '—');
-  // Active users shown as a badge on the Users card
   const activeEl = document.getElementById('kpi-active-users');
   if (activeEl) activeEl.textContent = users ? `${active} active` : '—';
   set('kpi-research',       research.toLocaleString());
@@ -732,7 +710,6 @@ function renderKPIs(agg) {
   set('kpi-approved-pct',   research ? approvedPct + '%' : '—');
   setBar('kpi-approved-bar', approvedPct);
 
-  // Nav badge: pending / inactive users
   const pending = users - active;
   set('nav-pending-users', pending > 0 ? pending : '');
 }
@@ -747,8 +724,6 @@ function renderCatCards(agg) {
   set('cat-utility',   agg.cats.utility.toLocaleString());
   set('cat-design',    agg.cats.design.toLocaleString());
 }
-
-
 
 /* ═══════════════════════════════════════
    QUICK INSIGHTS
@@ -806,7 +781,6 @@ function renderActivity(logs) {
   hide('activityLoading');
 
   if (!logs || !logs.length) {
-    // No logs API — show a helpful message
     show('activityEmpty');
     document.getElementById('activityEmpty').innerHTML = `
       <i class="ti ti-database-off" style="font-size:32px;opacity:0.3;"></i>
@@ -818,7 +792,6 @@ function renderActivity(logs) {
   const feed = document.getElementById('activityFeed');
   feed.innerHTML = '';
 
-  // Show most recent 6 entries
   const recent = [...logs]
     .sort((a, b) => new Date(b.createdAt || b.timestamp || b.date || 0) - new Date(a.createdAt || a.timestamp || a.date || 0))
     .slice(0, 6);
@@ -853,19 +826,17 @@ function renderActivity(logs) {
 }
 
 /* ═══════════════════════════════════════
-   SYSTEM HEALTH — real metrics
+   SYSTEM HEALTH
 ═══════════════════════════════════════ */
 async function renderSysStats(agg, users) {
   const el = document.getElementById('sysStatsContent');
 
-  // 1. Try to fetch real health data from your backend
   let health = null;
   try {
     const res = await fetch(`${API_BASE}/health`);
     if (res.ok) health = await res.json();
-  } catch { /* server may not have /health yet */ }
+  } catch {}
 
-  // 2. Try navigator.storage for actual browser storage quota
   let storageUsedGB = null, storageTotalGB = null, storagePct = 0;
   try {
     if (navigator.storage && navigator.storage.estimate) {
@@ -874,23 +845,20 @@ async function renderSysStats(agg, users) {
       storageTotalGB = (est.quota  / 1024 ** 3).toFixed(1);
       storagePct     = Math.round(est.usage / est.quota * 100);
     }
-  } catch { /* not supported */ }
+  } catch {}
 
-  // 3. Page load / response time via Performance API
   let responseMs = null;
   try {
     const nav = performance.getEntriesByType('navigation')[0];
     if (nav) responseMs = Math.round(nav.responseEnd - nav.requestStart);
-  } catch { /* not supported */ }
+  } catch {}
 
-  // 4. Connection info
   let connectionLabel = 'Unknown';
   try {
     const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     if (conn) connectionLabel = `${(conn.effectiveType || '').toUpperCase()} ${conn.downlink ? '· ' + conn.downlink + ' Mbps' : ''}`.trim();
-  } catch { /* not supported */ }
+  } catch {}
 
-  // 5. Build stat rows — prefer health API data, fall back to what we can measure
   const uptime    = health?.uptime      ? formatUptime(health.uptime)      : null;
   const cpuPct    = health?.cpu?.usage  ?? health?.cpuUsage               ?? null;
   const memUsed   = health?.memory?.used   ?? health?.memUsed             ?? null;
@@ -903,7 +871,6 @@ async function renderSysStats(agg, users) {
   const serverUp  = health?.status          ?? (health ? 'ok' : null);
   const dbSize    = health?.database?.size   ?? health?.dbSize            ?? null;
 
-  // Overall status badge
   const statusEl = document.getElementById('sysHealthStatus');
   if (statusEl) {
     const allOk = serverUp && ['ok','healthy','up','online'].includes(String(serverUp).toLowerCase());
@@ -916,7 +883,6 @@ async function renderSysStats(agg, users) {
 
   const rows = [];
 
-  // Server / API status
   rows.push({
     icon:  'ti-server',
     label: 'API Server',
@@ -927,7 +893,6 @@ async function renderSysStats(agg, users) {
     dot:   '#059669',
   });
 
-  // CPU — from /health endpoint only
   if (cpuPct !== null) {
     rows.push({
       icon:  'ti-cpu',
@@ -940,7 +905,6 @@ async function renderSysStats(agg, users) {
     });
   }
 
-  // Memory — from /health endpoint
   if (memPct !== null) {
     rows.push({
       icon:  'ti-memory',
@@ -953,7 +917,6 @@ async function renderSysStats(agg, users) {
     });
   }
 
-  // Disk — from /health endpoint
   if (diskPct !== null) {
     rows.push({
       icon:  'ti-device-floppy',
@@ -966,7 +929,6 @@ async function renderSysStats(agg, users) {
     });
   }
 
-  // Browser storage quota (always available as fallback)
   if (storageUsedGB !== null && diskPct === null) {
     rows.push({
       icon:  'ti-device-floppy',
@@ -979,7 +941,6 @@ async function renderSysStats(agg, users) {
     });
   }
 
-  // Database
   if (dbConn !== null || dbSize !== null) {
     const dbOk = dbConn && ['ok','connected','healthy','up','online'].includes(String(dbConn).toLowerCase());
     rows.push({
@@ -993,7 +954,6 @@ async function renderSysStats(agg, users) {
     });
   }
 
-  // Page load time (always available)
   if (responseMs !== null) {
     rows.push({
       icon:  'ti-timeline',
@@ -1006,7 +966,6 @@ async function renderSysStats(agg, users) {
     });
   }
 
-  // Network
   if (connectionLabel !== 'Unknown') {
     rows.push({
       icon:  'ti-wifi',
@@ -1019,7 +978,6 @@ async function renderSysStats(agg, users) {
     });
   }
 
-  // If we got nothing useful from the health endpoint, show a note
   if (rows.length <= 2 && !health) {
     rows.push({
       icon:  'ti-info-circle',
@@ -1051,7 +1009,6 @@ async function renderSysStats(agg, users) {
   });
 }
 
-/* helpers for system health */
 function formatBytes(bytes) {
   if (!bytes || isNaN(bytes)) return '—';
   const b = Number(bytes);
@@ -1094,6 +1051,7 @@ document.addEventListener('click', e => {
   }
 });
 </script>
+
 <!-- Toast notification -->
 <div id="toastNotif" class="toast-notif">
   <div class="toast-icon" id="toastIcon">
