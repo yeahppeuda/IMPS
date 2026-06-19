@@ -492,9 +492,10 @@ function updateStatusStyle(sel) {
 
 /* STAT CARDS */
 function updateStats() {
-  document.getElementById('stat-total').textContent    = ALL_RECORDS.length;
-  document.getElementById('stat-approved').textContent = ALL_RECORDS.filter(r => r.status === 'Approved').length;
-  document.getElementById('stat-pending').textContent  = ALL_RECORDS.filter(r => r.status !== 'Approved').length;
+  const active = ALL_RECORDS.filter(r => !r.archived);
+  document.getElementById('stat-total').textContent    = active.length;
+  document.getElementById('stat-approved').textContent = active.filter(r => r.status === 'Approved').length;
+  document.getElementById('stat-pending').textContent  = active.filter(r => r.status !== 'Approved').length;
 }
 
 /* FILTER DROPDOWN */
@@ -522,7 +523,8 @@ document.addEventListener('click', e => {
 /* SEARCH + FILTER */
 function filterAndRender() {
   const q = document.getElementById('search-input').value.toLowerCase().trim();
-  filteredRecords = ALL_RECORDS.filter(r => {
+  const activeRecords = ALL_RECORDS.filter(r => !r.archived);
+  filteredRecords = activeRecords.filter(r => {
     const matchStatus = activeStatusFilter === 'All' || r.status === activeStatusFilter;
     const matchSearch = !q ||
       (r.referenceNo || '').toLowerCase().includes(q) ||
@@ -618,21 +620,19 @@ function mapRecord(item) {
     status: item.status || 'Submitted to IPOPHL',
     dateApplied,
     googleDriveLink: item.googleDriveLink || '',
-    archived: isArchived(item)
+    archived: item.archived === true || item.archived === 'true'
   };
 }
 
 /* FETCH DATA */
 async function fetchUtilityModels() {
   try {
-    const res  = await fetch(`${API_URL}?category=${encodeURIComponent(CATEGORY)}`);
+    const res  = await fetch(`${API_URL}/${CATEGORY}`);
     const data = await res.json();
     const records = Array.isArray(data) ? data : (data.data ?? []);
-    const filtered = records.filter(item => !isArchived(item) && (item.category || '').trim().toLowerCase() === CATEGORY);
-    ALL_RECORDS     = filtered.map(mapRecord);
-    filteredRecords = [...ALL_RECORDS];
+    ALL_RECORDS = records.filter(item => (item.category || '').trim().toLowerCase() === CATEGORY).map(mapRecord);
     updateStats();
-    render();
+    filterAndRender();
   } catch (err) {
     console.error('Failed to fetch utility models:', err);
   }

@@ -1078,11 +1078,13 @@ function updateStatusStyle(sel) {
 
 /* ── STAT CARDS ── */
 function updateStats() {
-  document.getElementById('stat-total').textContent    = ALL_RECORDS.length;
-  document.getElementById('stat-approved').textContent = ALL_RECORDS.filter(r => r.status === 'Approved with Certificate').length;
-  document.getElementById('stat-pending').textContent  = ALL_RECORDS.filter(r => r.status !== 'Approved with Certificate').length;
+  const active = ALL_RECORDS.filter(r => !r.archived);
+  document.getElementById('stat-total').textContent    = active.length;
+  document.getElementById('stat-approved').textContent = active.filter(r => r.status === 'Approved with Certificate').length;
+  document.getElementById('stat-pending').textContent  = active.filter(r => r.status !== 'Approved with Certificate').length;
   let ser = 0, fd = 0;
-  ALL_RECORDS.forEach(r => { const f = computeRecordFlags(r); if (f.isUrgentSubstantive) ser++; if (f.isUrgentCompliance) fd++; });
+  active.forEach(r => { const f = computeRecordFlags(r); if (f.isUrgentSubstantive) ser++; if (f.isUrgentCompliance) fd++; });
+
   const total = ser + fd;
   document.getElementById('stat-urgent').textContent = total;
   const card    = document.getElementById('alert-card');
@@ -1147,7 +1149,9 @@ function sortByDateDesc(arr) {
 /* ── SEARCH + FILTER ── */
 function filterAndRender() {
   const q = document.getElementById('search-input').value.toLowerCase().trim();
-  filteredRecords = ALL_RECORDS.filter(r => {
+  const activeRecords = ALL_RECORDS.filter(r => !r.archived);   // ← bagong line
+
+  filteredRecords = activeRecords.filter(r => {                 // ← galing ALL_RECORDS naging activeRecords
     const f = computeRecordFlags(r);
     let ms = false;
     if      (activeStatusFilter === 'All')                ms = true;
@@ -1276,7 +1280,7 @@ function mapRecord(item) {
     status: item.status || 'Submitted to IPOPHL',
     dateOfFiling,
     googleDriveLink: item.googleDriveLink || '',
-    archived: isArchived(item),
+    archived: item.archived === true || item.archived === 'true',
 
     // Add mapping for the new defects array
     defects: Array.isArray(item.defects) ? item.defects : [],
@@ -1301,10 +1305,9 @@ async function fetchPatents() {
     const res  = await fetch(API_URL);
     const data = await res.json();
     const raw  = Array.isArray(data) ? data : (data.data ?? []);
-    console.log('🔄 Fetched records sample:', raw.slice(0,2).map(r => ({ id: r._id, defectsCount: (r.defects || []).length, dates: [r.defectNoticeDate, r.defectNoticeDate2, r.defectNoticeDate3, r.defectNoticeDate4, r.defectNoticeDate5] })));
-    ALL_RECORDS     = raw.filter(item => !isArchived(item) && (item.category || '').toLowerCase() === CATEGORY).map(mapRecord);
-    filteredRecords = sortByDateDesc([...ALL_RECORDS]);
-    updateStats(); render();
+    ALL_RECORDS = raw.filter(i => (i.category || '').toLowerCase() === CATEGORY).map(mapRecord);
+    updateStats();
+    filterAndRender();  
     checkAndHighlightResearch();
   } catch (err) {
     console.error('Fetch failed:', err);
